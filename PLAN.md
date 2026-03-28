@@ -61,7 +61,10 @@ groups:
 ### Phase 2: The Search & Interaction
 - [ ] Implement fuzzy search in JS to find apps by name or description.
 - [ ] Add keyboard navigation (Arrow keys to select, Esc to clear).
-- [ ] Add a library for icons used inside the app, for things like Ghostty, Zellij, etc.
+- [ ] Add icons for app cards and UI chrome:
+    - **Simple Icons** (`svelte-simple-icons`) for brand/app logos (NeoVim, tmux, KDE, etc.)
+    - **Lucide** (`lucide-svelte`) for UI chrome (search, settings, close, back, etc.)
+    - Custom fallback SVGs in `frontend/src/lib/icons/custom/` for apps missing from Simple Icons (e.g. Zellij, Yazi). The YAML `icon` field routes unknown names to this folder. Import these SVGs as raw strings (`import YaziIcon from './custom/yazi.svg?raw'`) and inject them inline via Svelte's `{@html}`. This ensures they get bundled into the binary by Vite and no external files are needed at runtime.
 
 ### Phase 3: The Editor (Writing)
 - [ ] Create a "New Shortcut/App" UI form.
@@ -82,4 +85,4 @@ When working on this project:
 ---
 
 ### Suggested First Task for AI:
-*“Create the Go Structs and the YAML parser logic that can read a directory of YAML files and return a platform-filtered list of shortcuts to the frontend.”*
+*"Create the Go Structs and the YAML parser logic that can read a directory of YAML files and return a platform-filtered list of shortcuts to the frontend."*
