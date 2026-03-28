@@ -1,13 +1,15 @@
 # PLAN.md: Project "Button"
 
 ## 1. Project Overview
-**Button** is a cross-platform (Linux/macOS) "Quick-Reference" GUI for personal keyboard shortcuts.
-- **The Problem:** DevOps engineers manage dozens of tools (KDE, Ghostty, Zellij, Neovim, Tmux) with complex, custom keybinds that are hard to memorize.
-- **The Solution:** A lightweight, Raycast-inspired "Prettier YAML Viewer and Editor" accessible via a single global hotkey. It provides a searchable grid of application "Cards" that reveal shortcuts upon selection.
+**Button** is a cross-platform (Linux and macOS) "Quick-Reference" GUI for personal keyboard shortcuts.
+- **The Problem:** DevOps engineers manage dozens of tools (tmux, zellij, NeoVim, Ghostty, WezTerm, KDE) with complex, custom keybinds that are hard to memorize. On top of this, the difference between Linux and macOS shortcuts is not always clear because of the keyboard layout differences.
+- **The Solution:** A lightweight, Raycast-inspired GUI app, accessible via a single global hotkey, that functions as a viewer and editor of YAML configuration for custom shortcuts. It provides a searchable grid of application "Cards" that reveal shortcuts upon selection.
+It's important to note that this app doesn't change any app's functionality or shortcuts, it's just a "quick reference" for the user.
+For the time being it also won't be automatically updated from the app's configuration, instead all changes must be done manually.
 
 ## 2. Technical Stack
 - **Backend:** Go (Golang) 1.21+
-- **Framework:** [Wails v2/v3](https://wails.io/) (Go + Webview Bridge)
+- **Framework:** [Wails v2](https://wails.io/) (Go + Webview Bridge)
 - **Frontend:** Svelte + Tailwind CSS
 - **Data Format:** YAML (stored in `~/.config/button/`)
 - **Target Systems:**
@@ -19,7 +21,7 @@
 ### A. Data Structure (The "Source of Truth")
 The app acts as a GUI layer over a flat-file database.
 - **Location:** `$HOME/.config/button/apps/*.yaml`
-- **Schema Design:** Must support platform-specific overrides.
+- **Schema Design:** Must support default/fallback keybinds, and Linux and macOS specific overrides. See example :
 ```yaml
 app: "App Name"
 icon: "icon-name"
@@ -27,17 +29,17 @@ groups:
   - category: "Navigation"
     shortcuts:
       - desc: "Description"
-        keys: ["Alt", "p"]           # Default/Fallback
-        linux: ["Ctrl", "Shift", "p"] # Linux Override
-        macos: ["Cmd", "p"]          # macOS Override
+        keys: ["Alt", "p"]
+        linux: ["Ctrl", "Shift", "p"]
+        macos: ["Cmd", "p"]
 ```
 
 ### B. The GUI (The "Raycast" Aesthetic)
 - **Single Window:** Center-screen, fixed width (~600px-800px), floating.
 - **Visuals:**
-    - "Glassmorphism" (Blurred transparency).
     - Raycast-style search bar at the top (autofocus on launch).
     - Grid/List of App Cards with icons.
+    - Possible blur, transparency and glass-like effects for macOS and KDE down the line.
 - **Navigation:**
     - `Fuzzy Find` as you type to filter apps or specific shortcuts.
     - `Enter` to drill into a card.
@@ -57,8 +59,9 @@ groups:
 - [ ] Implement "Key Badge" components (rendering `CMD` on Mac and `META` on Linux).
 
 ### Phase 2: The Search & Interaction
-- [ ] Implement fuzzy search (logic in Go or JS) to find apps by name or description.
+- [ ] Implement fuzzy search in JS to find apps by name or description.
 - [ ] Add keyboard navigation (Arrow keys to select, Esc to clear).
+- [ ] Add a library for icons used inside the app, for things like Ghostty, Zellij, etc.
 
 ### Phase 3: The Editor (Writing)
 - [ ] Create a "New Shortcut/App" UI form.
@@ -66,15 +69,15 @@ groups:
 
 ### Phase 4: Polish & Deployment
 - [ ] Global hotkey implementation.
-- [ ] Native blur/transparency for macOS and KDE.
+- [ ] Blur/transparency for macOS and KDE.
 - [ ] Build pipeline for `.app` (Mac) and Binary (Linux).
 
 ## 5. Agent Instructions (How to help me)
 When working on this project:
-1. **Keep it "DevOps-y":** Ensure the YAML structure is clean and easy to edit via CLI (Neovim) outside the app.
+1. **Keep it "DevOps-y":** Ensure the YAML structure is clean and easy to edit outside the app.
 2. **Prioritize Performance:** The window must appear instantly. Avoid heavy JS libraries; keep the Svelte bundle lean.
 3. **Cross-Platform Awareness:** Every time a UI element is built, verify how "Meta", "Cmd", "Ctrl", and "Alt" are represented across OSs.
-4. **Window Management:** If writing Go code for the window, ensure it handles "Focus Lost" events to auto-hide the app (optional but preferred).
+4. **Window Management:** If writing Go code for the window, ensure it handles "Focus Lost" events to auto-hide (or close) the app (optional but preferred).
 
 ---
 
