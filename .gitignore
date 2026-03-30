@@ -27,6 +27,18 @@ go.work.sum
 # env file
 .env
 
+# Wails build output
+build/bin/
+
+# Node
+node_modules/
+
+# Frontend build artifacts
+frontend/dist/
+
+# Wails generated JS bindings
+frontend/wailsjs/
+
 # Editor/IDE
 # .idea/
 # .vscode/
