@@ -21,8 +21,9 @@ For the time being it also won't be automatically updated from the app's configu
 ### A. Data Structure (The "Source of Truth")
 The app acts as a GUI layer over a flat-file database.
 - **Location:** `$HOME/.config/button/apps/*.yaml`
-- **Schema Design:** Must support default/fallback keybinds, and Linux and macOS specific overrides. See example :
+- **Schema Design:** Must support default/fallback keybinds, and Linux and macOS specific overrides. See examples:
 ```yaml
+# Generic app example
 app: "App Name"
 icon: "icon-name"
 groups:
@@ -32,6 +33,30 @@ groups:
         keys: ["Alt", "p"]
         linux: ["Ctrl", "Shift", "p"]
         macos: ["Cmd", "p"]
+```
+```yaml
+# Linear example — shows mixed usage of keys, linux, and macos
+app: "Linear"
+icon: "linear"
+groups:
+  - category: "Navigation"
+    shortcuts:
+      - desc: "Open Settings"
+        keys: ["G", "S"]
+        linux: ["G", "S"]
+        macos: ["G", "S"]
+      - desc: "Go to My Issues"
+        keys: ["G", "I"]
+      - desc: "Command Palette"
+        linux: ["Ctrl", "K"]
+        macos: ["Cmd", "K"]
+  - category: "Issues"
+    shortcuts:
+      - desc: "New Issue"
+        keys: ["C"]
+      - desc: "Assign to Me"
+        linux: ["Ctrl", "Shift", "M"]
+        macos: ["Cmd", "Shift", "M"]
 ```
 
 ### B. The GUI (The "Raycast" Aesthetic)
@@ -53,9 +78,22 @@ groups:
 ## 4. Development Phases
 
 ### Phase 1: The Reader (MVP)
-- [ ] Initialize Wails project with Go + Svelte.
+- [x] Initialize Wails project with Go + Svelte.
 - [ ] Implement Go logic to read `~/.config/button/apps/` and parse YAML files into a JSON-bridge for Svelte.
+    - [ ] Define Go structs (`AppConfig`, `Group`, `Shortcut`) matching the YAML schema, with `yaml` and `json` struct tags.
+    - [ ] Add `gopkg.in/yaml.v3` dependency for YAML parsing.
+    - [ ] Implement directory reader — scan `~/.config/button/apps/*.yaml`, parse each file into an `AppConfig` struct.
+    - [ ] Implement platform detection (`runtime.GOOS`) — resolve each shortcut's key array: use `linux`/`macos` override if present, otherwise fall back to `keys`.
+    - [ ] Expose a Wails-bound method (e.g. `GetApps() []AppConfig`) that returns the platform-filtered list to the frontend.
+    - [ ] Create sample YAML files in `~/.config/button/apps/` for testing (e.g. Linear, NeoVim).
 - [ ] Build basic Svelte UI: Search Bar + App Cards.
+    - [ ] Call `GetApps()` on mount and store the result in Svelte state.
+    - [ ] Build the main layout — center-screen container (~600-800px), dark theme, matching the Raycast aesthetic from Section 3B.
+    - [ ] Build the Search Bar component — text input at the top, autofocused on launch.
+    - [ ] Build the App Card component — displays app name and icon placeholder, clickable to drill into shortcuts.
+    - [ ] Build the App Card grid/list view — renders all apps from `GetApps()`, filtered by the search bar input.
+    - [ ] Build the Shortcut Detail view — shown when an App Card is selected, lists all shortcut groups and their key combos.
+    - [ ] Wire up basic navigation — `Enter` to drill into a card, `Esc` to go back to the card list.
 - [ ] Implement "Key Badge" components (rendering `CMD` on Mac and `META` on Linux).
 
 ### Phase 2: The Search & Interaction
@@ -81,8 +119,3 @@ When working on this project:
 2. **Prioritize Performance:** The window must appear instantly. Avoid heavy JS libraries; keep the Svelte bundle lean.
 3. **Cross-Platform Awareness:** Every time a UI element is built, verify how "Meta", "Cmd", "Ctrl", and "Alt" are represented across OSs.
 4. **Window Management:** If writing Go code for the window, ensure it handles "Focus Lost" events to auto-hide (or close) the app (optional but preferred).
-
----
-
-### Suggested First Task for AI:
-*"Create the Go Structs and the YAML parser logic that can read a directory of YAML files and return a platform-filtered list of shortcuts to the frontend."*
