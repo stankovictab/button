@@ -80,11 +80,13 @@ groups:
 ### Phase 1: The Reader (MVP)
 - [x] Initialize Wails project with Go + Svelte.
 - [ ] Implement Go logic to read `~/.config/button/apps/` and parse YAML files into a JSON-bridge for Svelte.
+    - **Path note:** Never use a raw `~` string — Go does not expand it. Always resolve the config dir via `os.UserHomeDir()` and `filepath.Join`. Both Linux and macOS use `~/.config/button/apps/`.
+    - [ ] In `startup()`, ensure the config directory exists before any reads: call `os.MkdirAll(filepath.Join(home, ".config", "button", "apps"), 0755)`. This is safe to call even if the directory already exists.
     - [ ] Define Go structs (`AppConfig`, `Group`, `Shortcut`) matching the YAML schema, with `yaml` and `json` struct tags.
     - [ ] Add `gopkg.in/yaml.v3` dependency for YAML parsing.
     - [ ] Implement directory reader — scan `~/.config/button/apps/*.yaml`, parse each file into an `AppConfig` struct.
     - [ ] Implement platform detection (`runtime.GOOS`) — resolve each shortcut's key array: use `linux`/`macos` override if present, otherwise fall back to `keys`.
-    - [ ] Expose a Wails-bound method (e.g. `GetApps() []AppConfig`) that returns the platform-filtered list to the frontend.
+    - [ ] Expose a Wails-bound method `GetApps() ([]AppConfig, error)` that returns the platform-filtered list to the frontend. Always return both values — Wails surfaces the error as a rejected promise in the frontend.
     - [ ] Create sample YAML files in `~/.config/button/apps/` for testing (e.g. Linear, NeoVim).
 - [ ] Build basic Svelte UI: Search Bar + App Cards.
     - [ ] Call `GetApps()` on mount and store the result in Svelte state.

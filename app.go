@@ -1,6 +1,7 @@
 package main
 
 import (
+	"button/internal/config"
 	"context"
 	"fmt"
 )
@@ -19,9 +20,20 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+
+	// Ensure the config directory exists before any reads
+	if err := config.EnsureConfigDir(); err != nil {
+		fmt.Println("Warning: could not create config directory:", err)
+	}
+
+	// Start watching the config directory for changes
+	if err := config.WatchConfigDir(ctx); err != nil {
+		fmt.Println("Warning: could not start config watcher:", err)
+	}
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+// GetApps reads all YAML config files from ~/.config/button/apps/
+// and returns them with platform-specific shortcut keys resolved.
+func (a *App) GetApps() (config.AppsResponse, error) {
+	return config.ReadApps()
 }
