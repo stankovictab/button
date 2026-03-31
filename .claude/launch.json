@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Vite Frontend (standalone)",
+      "cwd": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "Wails Dev (full app)",
+      "runtimeExecutable": "/home/stankovictab/go/bin/wails",
+      "runtimeArgs": ["dev"],
+      "port": 34115,
+      "autoPort": false
+    }
+  ]
+}
