@@ -92,13 +92,6 @@
                 <kbd class="hint-key">&uarr;&darr;</kbd> navigate
                 <kbd class="hint-key">esc</kbd> clear / close
             </span>
-            {#if searchQuery && matchingDescs.size > 0}
-                <span class="detail-footer-match">
-                    {matchingDescs.size} shortcut {matchingDescs.size === 1
-                        ? "match"
-                        : "matches"} in {app.app}
-                </span>
-            {/if}
         </div>
     </div>
 {:else}
@@ -282,8 +275,4 @@
         border-radius: 3px;
     }
 
-    .detail-footer-match {
-        font-size: 11px;
-        color: #3a88ed;
-    }
 </style>

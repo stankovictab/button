@@ -6,12 +6,16 @@
         selectedIndex,
         searchQuery = "",
         matchCounts = {},
+        nameMatches = {},
+        width = 310,
         onSelect,
     }: {
         apps: AppConfig[];
         selectedIndex: number;
         searchQuery: string;
         matchCounts: Record<number, number>;
+        nameMatches: Record<number, boolean>;
+        width: number;
         onSelect: (index: number) => void;
     } = $props();
 
@@ -20,7 +24,7 @@
     }
 </script>
 
-<div class="app-list">
+<div class="app-list" style="width: {width}px">
     <div class="app-list-header">
         <span class="app-list-header-label">APPS</span>
         <span class="app-list-header-count">{apps.length}</span>
@@ -31,7 +35,8 @@
             {@const count = totalShortcuts(app)}
             {@const matches = matchCounts[i] ?? 0}
             {@const isSelected = i === selectedIndex}
-            {@const hasNoMatches = searchQuery !== "" && matches === 0}
+            {@const nameMatch = nameMatches[i] ?? false}
+            {@const hasNoMatches = searchQuery !== "" && matches === 0 && !nameMatch}
             <button
                 class="app-row"
                 class:app-row--selected={isSelected}
@@ -55,7 +60,7 @@
                             >
                         </span>
                     {:else}
-                        <span class="app-row-meta">{count}</span>
+                        <span class="app-row-meta">{count} shortcuts</span>
                     {/if}
                 </div>
             </button>
@@ -71,8 +76,8 @@
     .app-list {
         display: flex;
         flex-direction: column;
-        width: 310px;
-        min-width: 240px;
+        min-width: 200px;
+        max-width: 500px;
         border-right: 1px solid #222222;
         background: #111111;
         height: 100%;
@@ -162,6 +167,11 @@
     .app-row--selected .app-row-name {
         color: #4597f5;
         font-weight: 600;
+    }
+
+    .app-row--selected .app-icon {
+        background: #1e3a5f;
+        border-color: #2a4a6f;
     }
 
     .app-row-right {
