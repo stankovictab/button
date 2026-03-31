@@ -128,9 +128,9 @@ groups:
     - Plain-text fallbacks for multi-char keys: `leader`, `space`, `:vs`, etc.
 
 ### Phase 2: The Search & Interaction
-- [ ] Implement fuzzy search in JS (no heavy libraries — a lightweight scorer or manual implementation) to rank apps by name and match shortcut descriptions.
-- [ ] Finalise search result behaviour in app list: decide between hiding non-matching apps, de-ranking them to the bottom, or dimming them. Implement chosen approach.
-- [ ] Auto-switch detail panel to top-ranked app as search query changes.
+- [x] Implement fuzzy search in JS (no heavy libraries — a lightweight scorer or manual implementation) to rank apps by name and match shortcut descriptions.
+- [x] Finalise search result behaviour in app list - non-matching apps should be dimmed. 
+- [x] Auto-switch detail panel to top-ranked app as search query changes.
 - [ ] Add icons for app cards and UI chrome:
     - **Simple Icons** (`svelte-simple-icons`) for brand/app logos (NeoVim, tmux, KDE, etc.)
     - **Lucide** (`lucide-svelte`) for UI chrome (search icon, `?` help icon, Ko-fi icon, etc.)
