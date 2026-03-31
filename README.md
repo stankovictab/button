@@ -1,4 +1,6 @@
-# Button
+<p align="center">
+  <img src="assets/images/button-logo-a-long.png" alt="Button" width="400" />
+</p>
 
 A cross-platform (Linux and macOS) quick-reference GUI for personal keyboard shortcuts.
 
