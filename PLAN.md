@@ -113,15 +113,15 @@ groups:
     - [x] Expose a Wails-bound method `GetApps() (AppsResponse, error)` that returns the platform-filtered list (and any warnings) to the frontend. Always return both values — Wails surfaces the error as a rejected promise in the frontend.
     - [x] Create sample YAML files in `~/.config/button/apps/` for testing (e.g. Linear, NeoVim, Ghostty).
     - [x] **Bonus:** Implemented live file watching via `fsnotify` — the frontend updates automatically when YAML files are added, modified, or removed (no app restart needed).
-- [ ] Build Svelte UI — two-panel layout.
-    - [ ] Call `GetApps()` on mount and store the result in Svelte state.
-    - [ ] Build the top toolbar: search bar (autofocused on launch), OS segmented toggle (set on launch), `?` help button, donation button.
-    - [ ] Build the App List panel (left, ~240px): vertical list rows with icon, name, shortcut count, and match annotation. Wire selection state.
-    - [ ] Build the Shortcut Detail panel (right): always-visible, updates on app selection. Header with icon + match badge. Grouped shortcut rows with key badges.
-    - [ ] Wire unified search: filter/rank app list and highlight matching shortcut rows in the detail panel simultaneously.
-    - [ ] Default selection to the first app in the list on launch.
-    - [ ] Wire keyboard navigation: `↑↓` moves selection in the app list, `esc` clears search or closes the window.
-- [ ] Implement "Key Badge" component — renders key names with raised styling. Handle special cases:
+- [x] Build Svelte UI — two-panel layout.
+    - [x] Call `GetApps()` on mount and store the result in Svelte state.
+    - [x] Build the top toolbar: search bar (autofocused on launch), OS segmented toggle (set on launch), `?` help button, donation button.
+    - [x] Build the App List panel (left, ~240px): vertical list rows with icon, name, shortcut count, and match annotation. Wire selection state.
+    - [x] Build the Shortcut Detail panel (right): always-visible, updates on app selection. Header with icon + match badge. Grouped shortcut rows with key badges.
+    - [x] Wire unified search: filter/rank app list and highlight matching shortcut rows in the detail panel simultaneously.
+    - [x] Default selection to the first app in the list on launch.
+    - [x] Wire keyboard navigation: `↑↓` moves selection in the app list, `esc` clears search or closes the window.
+- [x] Implement "Key Badge" component — renders key names with raised styling. Handle special cases:
     - `Cmd` / `⌘` on macOS, `Ctrl` on Linux for the primary modifier.
     - `Meta` / `Super` on Linux, no direct equivalent on macOS.
     - Symbols: `⌃` for Ctrl, `⌥` for Alt/Option, `⇧` for Shift, `⌘` for Cmd.

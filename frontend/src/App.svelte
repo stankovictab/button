@@ -1,109 +1,229 @@
 <script lang="ts">
-  import { GetApps } from '../wailsjs/go/main/App.js'
-  import { EventsOn } from '../wailsjs/runtime/runtime.js'
-  import { onMount } from 'svelte'
+    import { GetApps, GetCurrentOS } from "../wailsjs/go/main/App.js";
+    import { EventsOn } from "../wailsjs/runtime/runtime.js";
+    import { onMount } from "svelte";
+    import type { AppConfig, AppsResponse } from "./types";
 
-  type Shortcut = {
-    desc: string
-    keys: string[]
-  }
+    import Toolbar from "./lib/components/Toolbar.svelte";
+    import AppList from "./lib/components/AppList.svelte";
+    import ShortcutDetail from "./lib/components/ShortcutDetail.svelte";
 
-  type Group = {
-    category: string
-    shortcuts: Shortcut[]
-  }
+    // --- State ---
+    let apps: AppConfig[] = $state([]);
+    let warnings: string[] = $state([]);
+    let error: string = $state("");
+    let selectedIndex: number = $state(0);
+    let searchQuery: string = $state("");
+    let currentOS: "linux" | "darwin" = $state("linux");
 
-  type AppConfig = {
-    app: string
-    icon: string
-    groups: Group[]
-  }
+    // --- Derived: search matching ---
+    // For each app (by original index), compute which shortcut descriptions match the search.
+    let searchResults = $derived.by(() => {
+        const q = searchQuery.toLowerCase().trim();
+        if (!q) {
+            return {
+                sortedApps: apps,
+                matchCounts: {} as Record<number, number>,
+                matchingSets: {} as Record<number, Set<string>>,
+            };
+        }
 
-  type AppsResponse = {
-    apps: AppConfig[]
-    warnings: string[]
-  }
+        type ScoredApp = {
+            app: AppConfig;
+            originalIndex: number;
+            nameMatch: boolean;
+            matchCount: number;
+            matchingDescs: Set<string>;
+        };
+        const scored: ScoredApp[] = apps.map((app, i) => {
+            const nameMatch = app.app.toLowerCase().includes(q);
+            const matchingDescs = new Set<string>();
+            for (const group of app.groups) {
+                for (const shortcut of group.shortcuts) {
+                    if (shortcut.desc.toLowerCase().includes(q)) {
+                        matchingDescs.add(shortcut.desc);
+                    }
+                }
+            }
+            return {
+                app,
+                originalIndex: i,
+                nameMatch,
+                matchCount: matchingDescs.size,
+                matchingDescs,
+            };
+        });
 
-  let apps: AppConfig[] = $state([])
-  let warnings: string[] = $state([])
-  let error: string = $state("")
+        // Sort: apps with matches first (by match count desc), then name matches, then the rest
+        scored.sort((a, b) => {
+            const aHasMatch = a.nameMatch || a.matchCount > 0 ? 1 : 0;
+            const bHasMatch = b.nameMatch || b.matchCount > 0 ? 1 : 0;
+            if (aHasMatch !== bHasMatch) return bHasMatch - aHasMatch;
+            if (a.matchCount !== b.matchCount)
+                return b.matchCount - a.matchCount;
+            return 0;
+        });
 
-  function applyResponse(resp: AppsResponse) {
-    apps = resp.apps ?? []
-    warnings = resp.warnings ?? []
-    error = ""
-  }
+        const sortedApps = scored.map((s) => s.app);
+        const matchCounts: Record<number, number> = {};
+        const matchingSets: Record<number, Set<string>> = {};
+        scored.forEach((s, newIdx) => {
+            matchCounts[newIdx] = s.matchCount;
+            matchingSets[newIdx] = s.matchingDescs;
+        });
 
-  function loadApps() {
-    GetApps()
-      .then((result: AppsResponse) => applyResponse(result))
-      .catch((err: any) => {
-        error = String(err)
-        apps = []
-        warnings = []
-      })
-  }
+        return { sortedApps, matchCounts, matchingSets };
+    });
 
-  onMount(() => {
-    loadApps()
+    let displayApps = $derived(searchResults.sortedApps);
+    let selectedApp = $derived(displayApps[selectedIndex] ?? null);
+    let currentMatchingDescs = $derived(
+        searchResults.matchingSets[selectedIndex] ?? new Set<string>(),
+    );
 
-    // Listen for live config changes from the file watcher
-    const cleanup = EventsOn("config:changed", (resp: AppsResponse) => {
-      applyResponse(resp)
-    })
+    // --- Auto-select first app when search changes ---
+    $effect(() => {
+        // Access searchQuery to track it
+        searchQuery;
+        selectedIndex = 0;
+    });
 
-    return cleanup
-  })
+    // --- Data loading ---
+    function applyResponse(resp: AppsResponse) {
+        apps = resp.apps ?? [];
+        warnings = resp.warnings ?? [];
+        error = "";
+        // Keep selection in bounds
+        if (selectedIndex >= apps.length) {
+            selectedIndex = Math.max(0, apps.length - 1);
+        }
+    }
+
+    function loadApps() {
+        GetApps()
+            .then((result: AppsResponse) => applyResponse(result))
+            .catch((err: any) => {
+                error = String(err);
+                apps = [];
+                warnings = [];
+            });
+    }
+
+    // --- Keyboard navigation ---
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            if (selectedIndex < displayApps.length - 1) {
+                selectedIndex++;
+            }
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            if (selectedIndex > 0) {
+                selectedIndex--;
+            }
+        } else if (e.key === "Escape") {
+            if (searchQuery) {
+                searchQuery = "";
+            }
+        }
+    }
+
+    onMount(() => {
+        // Detect OS
+        GetCurrentOS()
+            .then((os: string) => {
+                if (os === "darwin" || os === "linux") {
+                    currentOS = os;
+                }
+            })
+            .catch(() => {}); // fallback to 'linux'
+
+        loadApps();
+
+        const cleanup = EventsOn("config:changed", (resp: AppsResponse) => {
+            applyResponse(resp);
+        });
+
+        return cleanup;
+    });
+
+    function toggleOS() {
+        currentOS = currentOS === "linux" ? "darwin" : "linux";
+    }
 </script>
 
-<main class="flex flex-col items-center h-screen bg-gray-900 text-white p-6 overflow-y-auto">
-  <h1 class="text-3xl font-bold mb-2">Button</h1>
-  <p class="text-sm text-gray-400 mb-6">Quick-Reference for Keyboard Shortcuts</p>
+<svelte:window onkeydown={handleKeydown} />
 
-  {#if error}
-    <div class="bg-red-900/50 border border-red-700 rounded-lg p-4 max-w-2xl w-full mb-4">
-      <p class="text-red-300 text-sm font-mono">{error}</p>
+<main class="app-shell">
+    <Toolbar bind:searchQuery {currentOS} onToggleOS={toggleOS} />
+
+    {#if error}
+        <div class="error-bar">
+            <span>{error}</span>
+        </div>
+    {/if}
+
+    {#if warnings.length > 0}
+        <div class="warning-bar">
+            {#each warnings as warning}
+                <span>{warning}</span>
+            {/each}
+        </div>
+    {/if}
+
+    <div class="panels">
+        <AppList
+            apps={displayApps}
+            {selectedIndex}
+            {searchQuery}
+            matchCounts={searchResults.matchCounts}
+            onSelect={(i) => {
+                selectedIndex = i;
+            }}
+        />
+        <ShortcutDetail
+            app={selectedApp}
+            {currentOS}
+            {searchQuery}
+            matchingDescs={currentMatchingDescs}
+        />
     </div>
-  {/if}
-
-  {#if warnings.length > 0}
-    <div class="bg-yellow-900/30 border border-yellow-700/50 rounded-lg p-4 max-w-2xl w-full mb-4">
-      {#each warnings as warning}
-        <p class="text-yellow-300 text-sm font-mono">{warning}</p>
-      {/each}
-    </div>
-  {/if}
-
-  {#if apps.length === 0 && !error}
-    <div class="bg-gray-800 rounded-lg p-6 max-w-2xl w-full text-center">
-      <p class="text-gray-400">No YAML files found in <code class="text-gray-300">~/.config/button/apps/</code></p>
-      <p class="text-gray-500 text-sm mt-2">Drop <code class="text-gray-400">.yaml</code> files there — they'll appear here automatically.</p>
-    </div>
-  {/if}
-
-  <div class="flex flex-col gap-4 max-w-2xl w-full">
-    {#each apps as app}
-      <div class="bg-gray-800 rounded-lg p-4">
-        <h2 class="text-xl font-semibold mb-3">{app.app}</h2>
-
-        {#each app.groups as group}
-          <div class="mb-3">
-            <h3 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">{group.category}</h3>
-            <div class="flex flex-col gap-1">
-              {#each group.shortcuts as shortcut}
-                <div class="flex items-center justify-between py-1.5 px-2 rounded hover:bg-gray-700/50">
-                  <span class="text-sm text-gray-200">{shortcut.desc}</span>
-                  <div class="flex gap-1">
-                    {#each shortcut.keys as key}
-                      <kbd class="px-2 py-0.5 text-xs font-mono bg-gray-700 border border-gray-600 rounded text-gray-300">{key}</kbd>
-                    {/each}
-                  </div>
-                </div>
-              {/each}
-            </div>
-          </div>
-        {/each}
-      </div>
-    {/each}
-  </div>
 </main>
+
+<style>
+    .app-shell {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background: #121212;
+        color: #e5e5e5;
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+            sans-serif;
+    }
+
+    .error-bar {
+        padding: 6px 12px;
+        background: #450a0a;
+        border-bottom: 1px solid #7f1d1d;
+        font-size: 12px;
+        color: #fca5a5;
+    }
+
+    .warning-bar {
+        padding: 6px 12px;
+        background: #451a03;
+        border-bottom: 1px solid #78350f;
+        font-size: 12px;
+        color: #fde68a;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .panels {
+        flex: 1;
+        display: flex;
+        min-height: 0;
+    }
+</style>
