@@ -4,6 +4,7 @@ import (
 	"button/internal/config"
 	"context"
 	"fmt"
+	"runtime"
 )
 
 // App struct
@@ -33,7 +34,13 @@ func (a *App) startup(ctx context.Context) {
 }
 
 // GetApps reads all YAML config files from ~/.config/button/apps/
-// and returns them with platform-specific shortcut keys resolved.
+// and returns them to the frontend. Key resolution is handled client-side
+// so the OS toggle can switch without a backend round-trip.
 func (a *App) GetApps() (config.AppsResponse, error) {
 	return config.ReadApps()
+}
+
+// GetCurrentOS returns the detected operating system ("linux" or "darwin").
+func (a *App) GetCurrentOS() string {
+	return runtime.GOOS
 }

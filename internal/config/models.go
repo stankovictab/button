@@ -5,8 +5,8 @@ package config
 type Shortcut struct {
 	Desc  string   `yaml:"desc" json:"desc"`
 	Keys  []string `yaml:"keys,omitempty" json:"keys"`
-	Linux []string `yaml:"linux,omitempty" json:"-"`
-	MacOS []string `yaml:"macos,omitempty" json:"-"`
+	Linux []string `yaml:"linux,omitempty" json:"linux,omitempty"`
+	MacOS []string `yaml:"macos,omitempty" json:"macos,omitempty"`
 }
 
 // Group is a named category of shortcuts (e.g. "Navigation", "Editing").

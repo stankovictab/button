@@ -64,7 +64,6 @@ func ReadApps() (AppsResponse, error) {
 			continue
 		}
 
-		resolveKeys(&app)
 		resp.Apps = append(resp.Apps, app)
 	}
 
