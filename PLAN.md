@@ -70,13 +70,13 @@ groups:
 - **Visuals:**
     - Dark base: `#111111` window, `#1c1c1c` inputs and secondary surfaces, `#272727` hover states.
     - Blue accent color for selection state and match highlights.
-    - Key badges rendered in a "raised" style: dark background, `1px solid #3f3f3f` border, `2px solid #525252` bottom border for depth. Highlighted key badges (on match) use purple tints.
+    - Key badges rendered in a "raised" style: dark background, `1px solid #3f3f3f` border, `2px solid #525252` bottom border for depth. Highlighted key badges (on match) use blue tints.
     - Possible blur, transparency, and glass-like effects for macOS and KDE down the line.
 
 ### C. App List Panel (Left)
 - **Style:** Vertical list, not a card grid.
-- **Row contents:** App icon (28×28px, rounded 7px), app name, shortcut count. When a search is active, rows that have matching shortcuts show an annotated count (e.g. "18 shortcuts · 2 matches" with the match count in purple).
-- **Selection state:** Selected row has a dark blue background and blue `›` arrow. Clicking any row (or selecting it with arrow keys) updates the detail panel immediately.
+- **Row contents:** App icon (28×28px, rounded 7px), app name, shortcut count. When a search is active, rows that have matching shortcuts show an annotated count (e.g. "18 shortcuts · 2 matches" with the match count).
+- **Selection state:** Selected row has a dark blue background. Clicking any row (or selecting it with arrow keys) updates the detail panel immediately.
 - **Section header:** Small all-caps label showing total app count (e.g. "Apps · 8").
 - **Version:** App version (e.g. "v1.0.0") in the footer, small gray text.
 
@@ -131,6 +131,11 @@ groups:
 - [x] Implement fuzzy search in JS (no heavy libraries — a lightweight scorer or manual implementation) to rank apps by name and match shortcut descriptions.
 - [x] Finalise search result behaviour in app list - non-matching apps should be dimmed. 
 - [x] Auto-switch detail panel to top-ranked app as search query changes.
+- [x] Remove the "x matches" annotation from the detail panel footer, as it's redundant info.
+- [x] If searching for "NeoVim", all apps in the list are dimmed, when only neovim should be non-dimmed.
+- [x] Non-search shortcut count — In the list, rows without matches show just a bare number (35, 26). Search state shows 35 shortcuts · 13 matches. The default state would feel more consistent as 35 shortcuts instead of a lone number.
+- [x] Selected app icon tint — The icon placeholder background stays #1c1c1c even when the row is selected (blue #172554). It could shift to a subtle blue tint to feel more cohesive.
+- [ ] When searching and switching apps, the detail panel should scroll to the matching row.
 - [ ] Add icons for app cards and UI chrome:
     - **Simple Icons** (`svelte-simple-icons`) for brand/app logos (NeoVim, tmux, KDE, etc.)
     - **Lucide** (`lucide-svelte`) for UI chrome (search icon, `?` help icon, Ko-fi icon, etc.)

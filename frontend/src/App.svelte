@@ -15,6 +15,8 @@
     let selectedIndex: number = $state(0);
     let searchQuery: string = $state("");
     let currentOS: "linux" | "darwin" = $state("linux");
+    let listWidth: number = $state(310);
+    let isResizing: boolean = $state(false);
 
     // --- Derived: search matching ---
     // For each app (by original index), compute which shortcut descriptions match the search.
@@ -25,6 +27,7 @@
                 sortedApps: apps,
                 matchCounts: {} as Record<number, number>,
                 matchingSets: {} as Record<number, Set<string>>,
+                nameMatches: {} as Record<number, boolean>,
             };
         }
 
@@ -67,12 +70,14 @@
         const sortedApps = scored.map((s) => s.app);
         const matchCounts: Record<number, number> = {};
         const matchingSets: Record<number, Set<string>> = {};
+        const nameMatches: Record<number, boolean> = {};
         scored.forEach((s, newIdx) => {
             matchCounts[newIdx] = s.matchCount;
             matchingSets[newIdx] = s.matchingDescs;
+            nameMatches[newIdx] = s.nameMatch;
         });
 
-        return { sortedApps, matchCounts, matchingSets };
+        return { sortedApps, matchCounts, matchingSets, nameMatches };
     });
 
     let displayApps = $derived(searchResults.sortedApps);
@@ -150,6 +155,24 @@
     function toggleOS() {
         currentOS = currentOS === "linux" ? "darwin" : "linux";
     }
+
+    // --- Resize handle ---
+    function onResizeStart(e: PointerEvent) {
+        e.preventDefault();
+        isResizing = true;
+        const target = e.currentTarget as HTMLElement;
+        target.setPointerCapture(e.pointerId);
+    }
+
+    function onResizeMove(e: PointerEvent) {
+        if (!isResizing) return;
+        const newWidth = Math.min(Math.max(e.clientX, 200), 500);
+        listWidth = newWidth;
+    }
+
+    function onResizeEnd() {
+        isResizing = false;
+    }
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -171,16 +194,26 @@
         </div>
     {/if}
 
-    <div class="panels">
+    <div class="panels" class:panels--resizing={isResizing}>
         <AppList
             apps={displayApps}
             {selectedIndex}
             {searchQuery}
             matchCounts={searchResults.matchCounts}
+            nameMatches={searchResults.nameMatches}
+            width={listWidth}
             onSelect={(i) => {
                 selectedIndex = i;
             }}
         />
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div
+            class="resize-handle"
+            onpointerdown={onResizeStart}
+            onpointermove={onResizeMove}
+            onpointerup={onResizeEnd}
+            onpointercancel={onResizeEnd}
+        ></div>
         <ShortcutDetail
             app={selectedApp}
             {currentOS}
@@ -225,5 +258,23 @@
         flex: 1;
         display: flex;
         min-height: 0;
+    }
+
+    .panels--resizing {
+        user-select: none;
+        cursor: col-resize;
+    }
+
+    .resize-handle {
+        width: 4px;
+        cursor: col-resize;
+        background: transparent;
+        transition: background 0.15s;
+        flex-shrink: 0;
+    }
+
+    .resize-handle:hover,
+    .panels--resizing .resize-handle {
+        background: #3a88ed;
     }
 </style>
