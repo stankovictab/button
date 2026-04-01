@@ -100,7 +100,7 @@
                                     highlight={searchQuery !== "" && isMatch}
                                 />
                             {:else}
-                                <span class="shortcut-no-keys">--</span>
+                                <span class="shortcut-no-keys">Not set for {currentOS === "darwin" ? "macOS" : "Linux"}</span>
                             {/if}
                         </div>
                     {/each}
