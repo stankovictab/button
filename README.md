@@ -2,7 +2,13 @@
   <img src="assets/images/button-logo-a-long.png" alt="Button" width="400" />
 </p>
 
+<p align="center">
 A cross-platform (Linux and macOS) quick-reference GUI for personal keyboard shortcuts.
+</p>
+
+<p align="center">
+  <img src="assets/images/button-ui.png" alt="Button UI" width="900" />
+</p>
 
 See `PLAN.md` for full project details and roadmap.
 
