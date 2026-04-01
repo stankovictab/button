@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -38,20 +39,40 @@ func ReadApps() (AppsResponse, error) {
 		return AppsResponse{}, err
 	}
 
+	seen := make(map[string]bool)
 	var files []string
 	for _, ext := range []string{"*.yaml", "*.yml"} {
 		matches, err := filepath.Glob(filepath.Join(dir, ext))
 		if err != nil {
 			return AppsResponse{}, fmt.Errorf("failed to glob config files: %w", err)
 		}
-		files = append(files, matches...)
+		for _, m := range matches {
+			if !seen[m] {
+				seen[m] = true
+				files = append(files, m)
+			}
+		}
 	}
+
+	// Sort all files together alphabetically by base name without extension,
+	// so .yaml and .yml files for the same app sort alongside each other correctly.
+	sort.Slice(files, func(i, j int) bool {
+		ni := strings.TrimSuffix(strings.ToLower(filepath.Base(files[i])), filepath.Ext(files[i]))
+		nj := strings.TrimSuffix(strings.ToLower(filepath.Base(files[j])), filepath.Ext(files[j]))
+		return ni < nj
+	})
 
 	var resp AppsResponse
 	resp.Apps = make([]AppConfig, 0, len(files))
 
 	for _, file := range files {
 		name := filepath.Base(file)
+
+		info, err := os.Stat(file)
+		if err != nil {
+			resp.Warnings = append(resp.Warnings, fmt.Sprintf("%s: failed to stat — %s", name, err))
+			continue
+		}
 
 		app, err := parseAppFile(file)
 		if err != nil {
@@ -64,6 +85,7 @@ func ReadApps() (AppsResponse, error) {
 			continue
 		}
 
+		app.ModTime = info.ModTime().Unix()
 		resp.Apps = append(resp.Apps, app)
 	}
 

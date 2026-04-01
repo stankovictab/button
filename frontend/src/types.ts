@@ -14,7 +14,10 @@ export type AppConfig = {
   app: string
   icon: string
   groups: Group[]
+  modTime: number
 }
+
+export type SortMode = "alpha" | "last-updated"
 
 export type AppsResponse = {
   apps: AppConfig[]

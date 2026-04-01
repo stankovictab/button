@@ -2,7 +2,7 @@
     import { GetApps, GetCurrentOS } from "../wailsjs/go/main/App.js";
     import { EventsOn } from "../wailsjs/runtime/runtime.js";
     import { onMount } from "svelte";
-    import type { AppConfig, AppsResponse } from "./types";
+    import type { AppConfig, AppsResponse, SortMode } from "./types";
 
     import Toolbar from "./lib/components/Toolbar.svelte";
     import AppList from "./lib/components/AppList.svelte";
@@ -17,6 +17,18 @@
     let currentOS: "linux" | "darwin" = $state("linux");
     let listWidth: number = $state(310);
     let isResizing: boolean = $state(false);
+    let sortMode: SortMode = $state("alpha");
+
+    // --- Derived: sorted base apps ---
+    let sortedBaseApps = $derived.by(() => {
+        const copy = apps.slice();
+        if (sortMode === "alpha") {
+            copy.sort((a, b) => a.app.localeCompare(b.app));
+        } else {
+            copy.sort((a, b) => b.modTime - a.modTime);
+        }
+        return copy;
+    });
 
     // --- Derived: search matching ---
     // For each app (by original index), compute which shortcut descriptions match the search.
@@ -24,7 +36,7 @@
         const q = searchQuery.toLowerCase().trim();
         if (!q) {
             return {
-                sortedApps: apps,
+                sortedApps: sortedBaseApps,
                 matchCounts: {} as Record<number, number>,
                 matchingSets: {} as Record<number, Set<string>>,
                 nameMatches: {} as Record<number, boolean>,
@@ -38,7 +50,7 @@
             matchCount: number;
             matchingDescs: Set<string>;
         };
-        const scored: ScoredApp[] = apps.map((app, i) => {
+        const scored: ScoredApp[] = sortedBaseApps.map((app, i) => {
             const nameMatch = app.app.toLowerCase().includes(q);
             const matchingDescs = new Set<string>();
             for (const group of app.groups) {
@@ -202,8 +214,13 @@
             matchCounts={searchResults.matchCounts}
             nameMatches={searchResults.nameMatches}
             width={listWidth}
+            {sortMode}
             onSelect={(i) => {
                 selectedIndex = i;
+            }}
+            onToggleSort={() => {
+                sortMode = sortMode === "alpha" ? "last-updated" : "alpha";
+                selectedIndex = 0;
             }}
         />
         <!-- svelte-ignore a11y_no_static_element_interactions -->

@@ -1,6 +1,7 @@
 <script lang="ts">
-    import type { AppConfig } from "../../types";
+    import type { AppConfig, SortMode } from "../../types";
     import AppIcon from "./AppIcon.svelte";
+    import { ArrowUpAZ, Clock } from "lucide-svelte";
 
     let {
         apps,
@@ -9,7 +10,9 @@
         matchCounts = {},
         nameMatches = {},
         width = 310,
+        sortMode = "alpha",
         onSelect,
+        onToggleSort,
     }: {
         apps: AppConfig[];
         selectedIndex: number;
@@ -17,7 +20,9 @@
         matchCounts: Record<number, number>;
         nameMatches: Record<number, boolean>;
         width: number;
+        sortMode: SortMode;
         onSelect: (index: number) => void;
+        onToggleSort: () => void;
     } = $props();
 
     function totalShortcuts(app: AppConfig): number {
@@ -29,6 +34,18 @@
     <div class="app-list-header">
         <span class="app-list-header-label">APPS</span>
         <span class="app-list-header-count">{apps.length}</span>
+        <button
+            class="sort-btn"
+            class:sort-btn--active={sortMode === "last-updated"}
+            onclick={onToggleSort}
+            title={sortMode === "alpha" ? "Sorted alphabetically" : "Sorted by last updated"}
+        >
+            {#if sortMode === "alpha"}
+                <ArrowUpAZ size={13} />
+            {:else}
+                <Clock size={13} />
+            {/if}
+        </button>
     </div>
 
     <div class="app-list-items">
@@ -37,7 +54,8 @@
             {@const matches = matchCounts[i] ?? 0}
             {@const isSelected = i === selectedIndex}
             {@const nameMatch = nameMatches[i] ?? false}
-            {@const hasNoMatches = searchQuery !== "" && matches === 0 && !nameMatch}
+            {@const hasNoMatches =
+                searchQuery !== "" && matches === 0 && !nameMatch}
             <button
                 class="app-row"
                 class:app-row--selected={isSelected}
@@ -87,7 +105,36 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 10px 14px 6px;
+        padding: 10px 10px 6px 14px;
+    }
+
+    .sort-btn {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        border: none;
+        background: transparent;
+        color: #525252;
+        cursor: pointer;
+        transition: background 0.1s, color 0.1s;
+        flex-shrink: 0;
+    }
+
+    .sort-btn:hover {
+        background: #1c1c1c;
+        color: #a1a1a1;
+    }
+
+    .sort-btn--active {
+        color: #4597f5;
+    }
+
+    .sort-btn--active:hover {
+        color: #6aabf7;
     }
 
     .app-list-header-label {
@@ -127,7 +174,18 @@
     }
 
     .app-row--selected {
-        background: #172554 !important;
+        background: linear-gradient(to right, #111111, #1e3a5f) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .app-row--selected::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+        pointer-events: none;
+        border-radius: inherit;
     }
 
     .app-row--dimmed {
@@ -165,12 +223,11 @@
     }
 
     .app-row--selected .app-row-name {
-        color: #4597f5;
+        color: #ffffff;
         font-weight: 600;
     }
 
     .app-row--selected .app-icon {
-        background: #1e3a5f;
         border-color: #2a4a6f;
     }
 
