@@ -199,7 +199,7 @@
                                 <Trash2 size={12} />
                             </button>
                         </div>
-                        <div class="shortcuts-label">SHORTCUTS</div>
+                        <div class="shortcuts-label">Shortcuts</div>
 
                         <!-- Shortcuts in this group -->
                         {#each group.shortcuts as shortcut, si}
@@ -484,11 +484,11 @@
     }
 
     .shortcuts-label {
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
         color: #2e2e2e;
-        padding: 8px 12px 4px;
+        padding: 8px 12px 2px;
     }
 
     .shortcut-entry {

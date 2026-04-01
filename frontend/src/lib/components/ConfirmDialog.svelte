@@ -29,18 +29,26 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
-<div class="backdrop" role="dialog" aria-modal="true" tabindex="-1" onclick={handleBackdropClick}>
+<div
+    class="backdrop"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    onclick={handleBackdropClick}
+>
     <div class="panel">
         <h3 class="title">{title}</h3>
-        <p class="message">{message}</p>
+        <p class="message">{@html message}</p>
         <div class="actions">
-            <button class="btn btn--cancel" onclick={onCancel}>{cancelLabel}</button>
+            <button class="btn btn--cancel" onclick={onCancel}
+                >{cancelLabel}</button
+            >
             <button
                 class="btn"
                 class:btn--danger={danger}
                 class:btn--primary={!danger}
-                onclick={onConfirm}
-            >{confirmLabel}</button>
+                onclick={onConfirm}>{confirmLabel}</button
+            >
         </div>
     </div>
 </div>
@@ -61,7 +69,7 @@
         border: 1px solid #2a2a2a;
         border-radius: 12px;
         padding: 20px 24px;
-        width: 320px;
+        width: 450px;
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
     }
 
@@ -79,6 +87,15 @@
         line-height: 1.5;
     }
 
+    :global(.message code) {
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-size: 12px;
+        color: #d4d4d4;
+        background: #121212;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
     .actions {
         display: flex;
         justify-content: flex-end;
@@ -92,7 +109,9 @@
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
-        transition: background 0.1s, color 0.1s;
+        transition:
+            background 0.1s,
+            color 0.1s;
     }
 
     .btn--cancel {

@@ -2,17 +2,22 @@
     import type { AppConfig } from "../../types";
     import KeyBadge from "./KeyBadge.svelte";
     import AppIcon from "./AppIcon.svelte";
+    import { SquarePen, Trash2 } from "lucide-svelte";
 
     let {
         app,
         currentOS,
         searchQuery = "",
         matchingDescs = new Set<string>(),
+        onEdit,
+        onDelete,
     }: {
         app: AppConfig | null;
         currentOS: "linux" | "darwin";
         searchQuery: string;
         matchingDescs: Set<string>;
+        onEdit?: () => void;
+        onDelete?: () => void;
     } = $props();
 
     function resolveKeys(shortcut: {
@@ -77,6 +82,28 @@
                     {matchingDescs.size === 1 ? "match" : "matches"} for &ldquo;{searchQuery}&rdquo;
                 </div>
             {/if}
+            <div class="detail-header-actions">
+                {#if onEdit}
+                    <button
+                        class="detail-action-btn"
+                        onclick={onEdit}
+                        title="Edit app"
+                        aria-label="Edit app"
+                    >
+                        <SquarePen size={14} />
+                    </button>
+                {/if}
+                {#if onDelete}
+                    <button
+                        class="detail-action-btn detail-action-btn--danger"
+                        onclick={onDelete}
+                        title="Delete app"
+                        aria-label="Delete app"
+                    >
+                        <Trash2 size={14} />
+                    </button>
+                {/if}
+            </div>
         </div>
 
         <!-- Shortcut groups -->
@@ -89,7 +116,9 @@
                         {#each group.shortcuts as shortcut}
                             {@const keys = resolveKeys(shortcut)}
                             <div class="shortcut-row">
-                                <span class="shortcut-desc">{shortcut.desc}</span>
+                                <span class="shortcut-desc"
+                                    >{shortcut.desc}</span
+                                >
                                 {#if keys.length > 0}
                                     <KeyBadge {keys} highlight={false} />
                                 {:else}
@@ -109,11 +138,15 @@
                     )}
                     {#if matchingShortcuts.length > 0}
                         <div class="shortcut-group shortcut-group--match">
-                            <div class="shortcut-group-label">{group.category}</div>
+                            <div class="shortcut-group-label">
+                                {group.category}
+                            </div>
                             {#each matchingShortcuts as shortcut}
                                 {@const keys = resolveKeys(shortcut)}
                                 <div class="shortcut-row">
-                                    <span class="shortcut-desc">{shortcut.desc}</span>
+                                    <span class="shortcut-desc"
+                                        >{shortcut.desc}</span
+                                    >
                                     {#if keys.length > 0}
                                         <KeyBadge {keys} highlight={true} />
                                     {:else}
@@ -227,6 +260,45 @@
         border-radius: 10px;
         white-space: nowrap;
         flex-shrink: 0;
+    }
+
+    .detail-header-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+
+    .detail-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        background: #1c1c1c;
+        color: #a1a1a1;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .detail-action-btn:hover {
+        background: #262626;
+        border-color: #3a3a3a;
+        color: #d4d4d4;
+    }
+
+    .detail-action-btn:active {
+        background: #1c1c1c;
+        border-color: #2a2a2a;
+    }
+
+    .detail-action-btn--danger:hover {
+        background: #3d1f1f;
+        border-color: #5a2a2a;
+        color: #ff6b6b;
     }
 
     .detail-body {

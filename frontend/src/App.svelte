@@ -123,6 +123,18 @@
         notifications = [...notifications, { id: nextNotificationId++, type, message }];
     }
 
+    // --- Utilities ---
+    function escapeHtml(text: string): string {
+        const map: Record<string, string> = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, (char) => map[char]);
+    }
+
     function dismissNotification(id: number) {
         notifications = notifications.filter((n) => n.id !== id);
     }
@@ -348,13 +360,15 @@
             {currentOS}
             {searchQuery}
             matchingDescs={currentMatchingDescs}
+            onEdit={() => handleEditApp(selectedIndex)}
+            onDelete={() => handleDeleteApp(selectedIndex)}
         />
     </div>
 
     {#if showDeleteConfirm && displayApps[deleteTargetIndex]}
         <ConfirmDialog
             title="Delete App"
-            message="Are you sure you want to delete &ldquo;{displayApps[deleteTargetIndex].app}&rdquo;? This will remove its config file from ~/.config/button/apps/."
+            message={`Are you sure you want to delete "${escapeHtml(displayApps[deleteTargetIndex].app)}"?<br>This will remove its config file from <code>~/.config/button/apps/</code>.`}
             confirmLabel="Delete"
             danger={true}
             onConfirm={confirmDelete}
