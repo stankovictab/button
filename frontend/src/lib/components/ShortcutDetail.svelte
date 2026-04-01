@@ -166,7 +166,7 @@
     .detail-header-name {
         font-size: 15px;
         font-weight: 600;
-        color: #e5e5e5;
+        color: #ffffff;
         margin: 0;
     }
 
@@ -275,5 +275,4 @@
         border: 1px solid #2a2a2a;
         border-radius: 3px;
     }
-
 </style>
