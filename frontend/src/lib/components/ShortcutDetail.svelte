@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { AppConfig } from "../../types";
     import KeyBadge from "./KeyBadge.svelte";
+    import AppIcon from "./AppIcon.svelte";
 
     let {
         app,
@@ -40,7 +41,7 @@
         <!-- Header -->
         <div class="detail-header">
             <div class="detail-header-icon">
-                {app.app.charAt(0).toUpperCase()}
+                <AppIcon icon={app.icon} name={app.app} size={22} />
             </div>
             <div class="detail-header-info">
                 <h2 class="detail-header-name">{app.app}</h2>

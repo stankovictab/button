@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { AppConfig } from "../../types";
+    import AppIcon from "./AppIcon.svelte";
 
     let {
         apps,
@@ -44,9 +45,8 @@
                 onclick={() => onSelect(i)}
             >
                 <div class="app-row-left">
-                    <!-- Icon placeholder — will be replaced with real icons in Phase 2 -->
                     <div class="app-icon">
-                        {app.app.charAt(0).toUpperCase()}
+                        <AppIcon icon={app.icon} name={app.app} size={18} />
                     </div>
                     <span class="app-row-name">{app.app}</span>
                 </div>

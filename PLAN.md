@@ -135,12 +135,14 @@ groups:
 - [x] If searching for "NeoVim", all apps in the list are dimmed, when only neovim should be non-dimmed.
 - [x] Non-search shortcut count — In the list, rows without matches show just a bare number (35, 26). Search state shows 35 shortcuts · 13 matches. The default state would feel more consistent as 35 shortcuts instead of a lone number.
 - [x] Selected app icon tint — The icon placeholder background stays #1c1c1c even when the row is selected (blue #172554). It could shift to a subtle blue tint to feel more cohesive.
-- [ ] When searching and switching apps, the detail panel should scroll to the matching row.
-- [ ] Add icons for app cards and UI chrome:
-    - **Simple Icons** (`svelte-simple-icons`) for brand/app logos (NeoVim, tmux, KDE, etc.)
-    - **Lucide** (`lucide-svelte`) for UI chrome (search icon, `?` help icon, Ko-fi icon, etc.)
-    - Custom fallback SVGs in `frontend/src/lib/icons/custom/` for apps missing from Simple Icons (e.g. Zellij, Yazi). The YAML `icon` field routes unknown names to this folder. Import these SVGs as raw strings (`import YaziIcon from './custom/yazi.svg?raw'`) and inject them inline via Svelte's `{@html}`. This ensures they get bundled into the binary by Vite and no external files are needed at runtime.
+- [x] Add icons for app cards and UI chrome:
+    - **Simple Icons** (`simple-icons`) for brand/app logos — SVG strings extracted at build time via a static icon map (`frontend/src/lib/icons/iconMap.ts`). Currently covers: 1Password, Alacritty, Discord, Fish, Ghostty, KDE, Linear, Neovim, Notion, Obsidian, tmux, Vivaldi, Ko-fi.
+    - **Lucide** (`lucide-svelte`) for UI chrome (search icon, clear X, `?` help icon, heart donate icon) — replaced all inline SVGs in `Toolbar.svelte`.
+    - Custom fallback SVGs in `frontend/src/lib/icons/custom/` for apps missing from Simple Icons (e.g. Zellij, Yazi). The YAML `icon` field is resolved via the icon map; unknown names fall back to a first-letter placeholder. Import custom SVGs as raw strings (`import YaziIcon from './custom/yazi.svg?raw'`) and inject them inline via Svelte's `{@html}`. This ensures they get bundled into the binary by Vite and no external files are needed at runtime.
+    - **`AppIcon.svelte`** component handles resolution: checks the icon map for a match (renders brand-colored SVG), otherwise renders a letter fallback. Used in both `AppList.svelte` and `ShortcutDetail.svelte`.
+    - **Still need custom SVGs for:** LazyGit, MangoHUD, musikcube, qimgv, Qtile, VS Code, Zellij (these currently show letter fallbacks).
 - [ ] Implement the `?` help panel: keyboard shortcut reference, app version, links to GitHub, etc.
+- [ ] When searching and switching apps, the detail panel should scroll to the matching row.
 
 ### Phase 3: The Editor (Writing)
 - [ ] Create a "New Shortcut/App" UI form.
