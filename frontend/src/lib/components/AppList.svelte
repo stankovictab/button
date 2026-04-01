@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { AppConfig, SortMode } from "../../types";
     import AppIcon from "./AppIcon.svelte";
-    import { ArrowUpAZ, Clock } from "lucide-svelte";
+    import { ArrowDownAZ, Clock } from "lucide-svelte";
 
     let {
         apps,
@@ -38,10 +38,12 @@
             class="sort-btn"
             class:sort-btn--active={sortMode === "last-updated"}
             onclick={onToggleSort}
-            title={sortMode === "alpha" ? "Sorted alphabetically" : "Sorted by last updated"}
+            title={sortMode === "alpha"
+                ? "Sorted alphabetically"
+                : "Sorted by last updated"}
         >
             {#if sortMode === "alpha"}
-                <ArrowUpAZ size={13} />
+                <ArrowDownAZ size={13} />
             {:else}
                 <Clock size={13} />
             {/if}
@@ -120,7 +122,9 @@
         background: transparent;
         color: #525252;
         cursor: pointer;
-        transition: background 0.1s, color 0.1s;
+        transition:
+            background 0.1s,
+            color 0.1s;
         flex-shrink: 0;
     }
 
@@ -239,7 +243,7 @@
     }
 
     .app-row-meta {
-        font-size: 12px;
+        font-size: 11px;
         color: #777777;
         white-space: nowrap;
     }

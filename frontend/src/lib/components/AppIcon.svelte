@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { iconMap } from '../icons/iconMap';
+    import { iconMap } from "../icons/iconMap";
 
     let {
         icon,
@@ -22,8 +22,11 @@
         {@html entry.svg}
     </span>
 {:else}
-    <span class="app-icon-letter" style="width: {size}px; height: {size}px; font-size: {size * 0.55}px;">
-        {name.charAt(0).toUpperCase()}
+    <span
+        class="app-icon-letter"
+        style="width: {size}px; height: {size}px; font-size: {size * 0.7}px;"
+    >
+        {name.charAt(0)}
     </span>
 {/if}
 
@@ -45,7 +48,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 600;
+        font-weight: 800;
         color: #a1a1a1;
         flex-shrink: 0;
     }

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { Search, X, CircleHelp, Heart } from 'lucide-svelte';
-    import { siGithub } from 'simple-icons';
-    import { BrowserOpenURL } from '../../../wailsjs/runtime/runtime';
+    import { Search, X, CircleHelp, Heart } from "lucide-svelte";
+    import { siGithub } from "simple-icons";
+    import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
 
     let {
         searchQuery = $bindable(""),
@@ -42,6 +42,7 @@
                     searchInput?.focus();
                 }}
                 aria-label="Clear search"
+                title="Clear search"
             >
                 <X size={14} />
             </button>
@@ -56,6 +57,7 @@
             onclick={() => {
                 if (currentOS !== "linux") onToggleOS();
             }}
+            title="Switch to Linux shortcuts"
         >
             Linux
         </button>
@@ -65,6 +67,7 @@
             onclick={() => {
                 if (currentOS !== "darwin") onToggleOS();
             }}
+            title="Switch to macOS shortcuts"
         >
             macOS
         </button>
@@ -78,7 +81,7 @@
     <!-- GitHub button -->
     <button
         class="icon-btn icon-btn--github"
-        onclick={() => BrowserOpenURL('https://github.com/stankovictab/button')}
+        onclick={() => BrowserOpenURL("https://github.com/stankovictab/button")}
         aria-label="GitHub repository"
         title="GitHub repository"
     >
@@ -179,17 +182,28 @@
     }
 
     .os-toggle-btn:hover {
+        background: #252525;
         color: #a1a1a1;
     }
 
     .os-toggle-btn--active-linux {
         background: #1e3a5f;
-        color: #60a5fa;
+        color: #59a4ff;
+    }
+
+    .os-toggle-btn--active-linux:hover {
+        background: #1e3a5f;
+        color: #93c5fd;
     }
 
     .os-toggle-btn--active-macos {
         background: #3d2e1a;
-        color: #f59e0b;
+        color: #ff831e;
+    }
+
+    .os-toggle-btn--active-macos:hover {
+        background: #3d2e1a;
+        color: #f3a620;
     }
 
     .icon-btn {
