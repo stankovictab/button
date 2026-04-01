@@ -19,6 +19,14 @@ export type AppConfig = {
 
 export type SortMode = "alpha" | "last-updated"
 
+export type NotificationType = "error" | "warning" | "info"
+
+export type Notification = {
+  id: number
+  type: NotificationType
+  message: string
+}
+
 export type AppsResponse = {
   apps: AppConfig[]
   warnings: string[]
