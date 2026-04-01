@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Search, X, CircleHelp, Heart } from 'lucide-svelte';
+    import { siGithub } from 'simple-icons';
 
     let {
         searchQuery = $bindable(""),
@@ -72,6 +73,18 @@
     <button class="icon-btn" aria-label="Help" title="Help">
         <CircleHelp size={16} />
     </button>
+
+    <!-- GitHub button -->
+    <a
+        class="icon-btn icon-btn--github"
+        href="https://github.com/stankovictab/button"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub repository"
+        title="GitHub repository"
+    >
+        {@html siGithub.svg}
+    </a>
 
     <!-- Donate button -->
     <button
@@ -207,5 +220,11 @@
     .icon-btn--donate:hover {
         color: #f59e0b;
         border-color: #92400e;
+    }
+
+    .icon-btn--github :global(svg) {
+        width: 15px;
+        height: 15px;
+        fill: currentColor;
     }
 </style>
