@@ -28,12 +28,19 @@
     function totalShortcuts(app: AppConfig): number {
         return app.groups.reduce((sum, g) => sum + g.shortcuts.length, 0);
     }
+
+    let totalShortcutsAll = $derived(
+        apps.reduce((sum, app) => sum + totalShortcuts(app), 0),
+    );
 </script>
 
 <div class="app-list" style="width: {width}px">
     <div class="app-list-header">
-        <span class="app-list-header-label">APPS</span>
+        <span class="app-list-header-label">Apps</span>
         <span class="app-list-header-count">{apps.length}</span>
+        <span class="app-list-header-sep">&middot;</span>
+        <span class="app-list-header-label">Shortcuts</span>
+        <span class="app-list-header-count">{totalShortcutsAll}</span>
         <button
             class="sort-btn"
             class:sort-btn--active={sortMode === "last-updated"}
@@ -108,6 +115,11 @@
         align-items: center;
         gap: 6px;
         padding: 10px 10px 6px 14px;
+    }
+
+    .app-list-header-sep {
+        font-size: 13px;
+        color: #3a3a3a;
     }
 
     .sort-btn {
@@ -246,6 +258,10 @@
         font-size: 11px;
         color: #777777;
         white-space: nowrap;
+    }
+
+    .app-row--selected .app-row-meta {
+        color: #a8c4e8;
     }
 
     .app-row-match-count {

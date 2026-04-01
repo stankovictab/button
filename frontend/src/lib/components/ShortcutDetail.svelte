@@ -100,7 +100,11 @@
                                     highlight={searchQuery !== "" && isMatch}
                                 />
                             {:else}
-                                <span class="shortcut-no-keys">Not set for {currentOS === "darwin" ? "macOS" : "Linux"}</span>
+                                <span class="shortcut-no-keys"
+                                    >Not set for {currentOS === "darwin"
+                                        ? "macOS"
+                                        : "Linux"}</span
+                                >
                             {/if}
                         </div>
                     {/each}
@@ -217,12 +221,10 @@
     }
 
     .shortcut-group-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        color: #525252;
-        text-transform: uppercase;
-        padding: 4px 0 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #696969;
+        padding: 0px 0 6px;
     }
 
     .shortcut-row {
