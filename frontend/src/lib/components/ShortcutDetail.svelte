@@ -82,33 +82,52 @@
         <!-- Shortcut groups -->
         <div class="detail-body">
             {#each app.groups as group}
-                <div class="shortcut-group">
-                    <div class="shortcut-group-label">{group.category}</div>
-                    {#each group.shortcuts as shortcut}
-                        {@const isMatch = matchingDescs.has(shortcut.desc)}
-                        {@const keys = resolveKeys(shortcut)}
-                        <div
-                            class="shortcut-row"
-                            class:shortcut-row--match={searchQuery && isMatch}
-                            class:shortcut-row--dimmed={searchQuery !== "" &&
-                                !isMatch}
-                        >
-                            <span class="shortcut-desc">{shortcut.desc}</span>
-                            {#if keys.length > 0}
-                                <KeyBadge
-                                    {keys}
-                                    highlight={searchQuery !== "" && isMatch}
-                                />
-                            {:else}
-                                <span class="shortcut-no-keys"
-                                    >Not set for {currentOS === "darwin"
-                                        ? "macOS"
-                                        : "Linux"}</span
-                                >
-                            {/if}
+                {#if !searchQuery || matchingDescs.size === 0}
+                    <!-- No active shortcut filter: show all normally -->
+                    <div class="shortcut-group">
+                        <div class="shortcut-group-label">{group.category}</div>
+                        {#each group.shortcuts as shortcut}
+                            {@const keys = resolveKeys(shortcut)}
+                            <div class="shortcut-row">
+                                <span class="shortcut-desc">{shortcut.desc}</span>
+                                {#if keys.length > 0}
+                                    <KeyBadge {keys} highlight={false} />
+                                {:else}
+                                    <span class="shortcut-no-keys"
+                                        >Not set for {currentOS === "darwin"
+                                            ? "macOS"
+                                            : "Linux"}</span
+                                    >
+                                {/if}
+                            </div>
+                        {/each}
+                    </div>
+                {:else}
+                    <!-- Shortcut filter active: show only matching shortcuts, highlight group -->
+                    {@const matchingShortcuts = group.shortcuts.filter((s) =>
+                        matchingDescs.has(s.desc),
+                    )}
+                    {#if matchingShortcuts.length > 0}
+                        <div class="shortcut-group shortcut-group--match">
+                            <div class="shortcut-group-label">{group.category}</div>
+                            {#each matchingShortcuts as shortcut}
+                                {@const keys = resolveKeys(shortcut)}
+                                <div class="shortcut-row">
+                                    <span class="shortcut-desc">{shortcut.desc}</span>
+                                    {#if keys.length > 0}
+                                        <KeyBadge {keys} highlight={true} />
+                                    {:else}
+                                        <span class="shortcut-no-keys"
+                                            >Not set for {currentOS === "darwin"
+                                                ? "macOS"
+                                                : "Linux"}</span
+                                        >
+                                    {/if}
+                                </div>
+                            {/each}
                         </div>
-                    {/each}
-                </div>
+                    {/if}
+                {/if}
             {/each}
         </div>
 
@@ -241,17 +260,16 @@
         background: #1c1c1c;
     }
 
-    .shortcut-row--match {
-        border-left-color: #3a88ed;
-        background: #111827;
+    .shortcut-group--match {
+        border-left: 2px solid #3a88ed;
+        background: #0b1424;
+        border-radius: 0 6px 6px 0;
+        padding: 4px 8px 4px 12px;
+        margin-left: -14px;
     }
 
-    .shortcut-row--match:hover {
-        background: #172554;
-    }
-
-    .shortcut-row--dimmed {
-        opacity: 0.4;
+    .shortcut-group--match .shortcut-group-label {
+        color: #4a82c0;
     }
 
     .shortcut-desc {

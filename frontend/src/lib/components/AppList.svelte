@@ -32,6 +32,12 @@
     let totalShortcutsAll = $derived(
         apps.reduce((sum, app) => sum + totalShortcuts(app), 0),
     );
+
+    let rowEls: HTMLButtonElement[] = $state([]);
+
+    $effect(() => {
+        rowEls[selectedIndex]?.scrollIntoView({ block: "nearest" });
+    });
 </script>
 
 <div class="app-list" style="width: {width}px">
@@ -66,6 +72,7 @@
             {@const hasNoMatches =
                 searchQuery !== "" && matches === 0 && !nameMatch}
             <button
+                bind:this={rowEls[i]}
                 class="app-row"
                 class:app-row--selected={isSelected}
                 class:app-row--dimmed={hasNoMatches}
@@ -78,7 +85,12 @@
                     <span class="app-row-name">{app.app}</span>
                 </div>
                 <div class="app-row-right">
-                    {#if searchQuery && matches > 0}
+                    {#if searchQuery && nameMatch}
+                        <span class="app-row-meta">
+                            {count} shortcuts
+                            <span class="app-row-app-match">&middot; app match</span>
+                        </span>
+                    {:else if searchQuery && matches > 0}
                         <span class="app-row-meta">
                             {count} shortcuts
                             <span class="app-row-match-count"
@@ -266,6 +278,10 @@
 
     .app-row-match-count {
         color: #4597f5;
+    }
+
+    .app-row-app-match {
+        color: #f59e0b;
     }
 
     .app-list-footer {
