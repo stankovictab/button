@@ -141,8 +141,7 @@ groups:
     - Custom fallback SVGs in `frontend/src/lib/icons/custom/` for apps missing from Simple Icons (e.g. Zellij, Yazi). The YAML `icon` field is resolved via the icon map; unknown names fall back to a first-letter placeholder. Import custom SVGs as raw strings (`import YaziIcon from './custom/yazi.svg?raw'`) and inject them inline via Svelte's `{@html}`. This ensures they get bundled into the binary by Vite and no external files are needed at runtime.
     - **`AppIcon.svelte`** component handles resolution: checks the icon map for a match (renders brand-colored SVG), otherwise renders a letter fallback. Used in both `AppList.svelte` and `ShortcutDetail.svelte`.
     - **Still need custom SVGs for:** LazyGit, MangoHUD, musikcube, qimgv, Qtile, VS Code, Zellij (these currently show letter fallbacks).
-- [ ] Implement the `?` help panel: long logo, app version. 
-- [ ] When searching and switching apps, the detail panel should scroll to the matching row.
+- [x] Implement the `?` help panel: long logo, app version. 
 
 ### Phase 3: The Editor (Writing)
 - [ ] Create a "New Shortcut/App" UI form.
