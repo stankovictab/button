@@ -2,6 +2,9 @@
     import { Search, X, CircleHelp, Heart } from "lucide-svelte";
     import { siGithub } from "simple-icons";
     import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
+    import HelpPanel from "./HelpPanel.svelte";
+
+    let showHelp = $state(false);
 
     let {
         searchQuery = $bindable(""),
@@ -74,7 +77,13 @@
     </div>
 
     <!-- Help button -->
-    <button class="icon-btn" aria-label="Help" title="Help">
+    <button
+        class="icon-btn"
+        class:icon-btn--active={showHelp}
+        aria-label="Help"
+        title="Help"
+        onclick={() => (showHelp = !showHelp)}
+    >
         <CircleHelp size={16} />
     </button>
 
@@ -97,6 +106,10 @@
         <Heart size={16} />
     </button>
 </div>
+
+{#if showHelp}
+    <HelpPanel onClose={() => (showHelp = false)} />
+{/if}
 
 <style>
     .toolbar {
@@ -222,6 +235,11 @@
     }
 
     .icon-btn:hover {
+        color: #a1a1a1;
+        border-color: #3f3f3f;
+    }
+
+    .icon-btn--active {
         color: #a1a1a1;
         border-color: #3f3f3f;
     }

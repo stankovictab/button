@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/images/button-logo-a-long.png" alt="Button" width="400" />
+  <img src="assets/images/button-logo-a-long.png" alt="Button" width="330" />
 </p>
 
 <p align="center">
