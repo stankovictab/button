@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Search, X, CircleHelp, Heart } from 'lucide-svelte';
     import { siGithub } from 'simple-icons';
+    import { BrowserOpenURL } from '../../../wailsjs/runtime/runtime';
 
     let {
         searchQuery = $bindable(""),
@@ -75,16 +76,14 @@
     </button>
 
     <!-- GitHub button -->
-    <a
+    <button
         class="icon-btn icon-btn--github"
-        href="https://github.com/stankovictab/button"
-        target="_blank"
-        rel="noopener noreferrer"
+        onclick={() => BrowserOpenURL('https://github.com/stankovictab/button')}
         aria-label="GitHub repository"
         title="GitHub repository"
     >
         {@html siGithub.svg}
-    </a>
+    </button>
 
     <!-- Donate button -->
     <button
