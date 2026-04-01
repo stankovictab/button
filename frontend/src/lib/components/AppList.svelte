@@ -78,7 +78,12 @@
                     <span class="app-row-name">{app.app}</span>
                 </div>
                 <div class="app-row-right">
-                    {#if searchQuery && matches > 0}
+                    {#if searchQuery && nameMatch}
+                        <span class="app-row-meta">
+                            {count} shortcuts
+                            <span class="app-row-app-match">&middot; app match</span>
+                        </span>
+                    {:else if searchQuery && matches > 0}
                         <span class="app-row-meta">
                             {count} shortcuts
                             <span class="app-row-match-count"
@@ -266,6 +271,10 @@
 
     .app-row-match-count {
         color: #4597f5;
+    }
+
+    .app-row-app-match {
+        color: #f59e0b;
     }
 
     .app-list-footer {

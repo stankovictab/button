@@ -11,6 +11,9 @@
  */
 
 import {
+    siKofi,
+    siLinux,
+    siApple,
     si1password,
     siAlacritty,
     siDiscord,
@@ -23,12 +26,13 @@ import {
     siObsidian,
     siTmux,
     siVivaldi,
-    siKofi,
+    siGnubash,
 } from 'simple-icons';
 
 // Custom SVGs (apps not in Simple Icons)
 import yaziSvg from './custom/yazi.svg?raw';
 import vscodeSvg from './custom/vscode.svg?raw';
+import terminalSvg from './custom/terminal.svg?raw';
 
 interface IconEntry {
     svg: string;
@@ -41,6 +45,9 @@ interface IconEntry {
  */
 export const iconMap: Record<string, IconEntry> = {
     // Simple Icons
+    kofi: { svg: siKofi.svg, hex: siKofi.hex },
+    linux: { svg: siLinux.svg, hex: 'cccccc' },
+    apple: { svg: siApple.svg, hex: 'cccccc' },
     '1password': { svg: si1password.svg, hex: si1password.hex },
     alacritty: { svg: siAlacritty.svg, hex: siAlacritty.hex },
     discord: { svg: siDiscord.svg, hex: siDiscord.hex },
@@ -49,13 +56,14 @@ export const iconMap: Record<string, IconEntry> = {
     kde: { svg: siKde.svg, hex: siKde.hex },
     linear: { svg: siLinear.svg, hex: siLinear.hex },
     neovim: { svg: siNeovim.svg, hex: siNeovim.hex },
-    notion: { svg: siNotion.svg, hex: siNotion.hex },
+    notion: { svg: siNotion.svg, hex: 'cccccc' },
     obsidian: { svg: siObsidian.svg, hex: siObsidian.hex },
     tmux: { svg: siTmux.svg, hex: siTmux.hex },
-    vivaldi: { svg: siVivaldi.svg, hex: siVivaldi.hex },
-    kofi: { svg: siKofi.svg, hex: siKofi.hex },
+    vivaldi: { svg: siVivaldi.svg, hex: 'cccccc' },
+    gnubash: { svg: siGnubash.svg, hex: 'ff8400' },
 
     // Custom SVGs
     yazi: { svg: yaziSvg, hex: '6CB644' },
     vscode: { svg: vscodeSvg, hex: '007ACC' },
+    terminal: { svg: terminalSvg, hex: 'a1a1a1' },
 };
