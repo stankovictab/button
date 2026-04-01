@@ -128,12 +128,12 @@
 
     .search-input {
         flex: 1;
+        align-self: stretch;
         background: transparent;
         border: none;
         outline: none;
         color: #e5e5e5;
         font-size: 13px;
-        line-height: 1;
     }
 
     .search-input::placeholder {
