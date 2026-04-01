@@ -17,20 +17,72 @@ func appNameToFilename(name string) string {
 	return dashed + ".yaml"
 }
 
+// flowStrings is a []string that serialises as a YAML flow sequence,
+// e.g. ["Ctrl", ","] instead of a multi-line block sequence.
+type flowStrings []string
+
+func (f flowStrings) MarshalYAML() (interface{}, error) {
+	node := &yaml.Node{
+		Kind:  yaml.SequenceNode,
+		Style: yaml.FlowStyle,
+		Tag:   "!!seq",
+	}
+	for _, s := range f {
+		node.Content = append(node.Content, &yaml.Node{
+			Kind:  yaml.ScalarNode,
+			Tag:   "!!str",
+			Value: s,
+		})
+	}
+	return node, nil
+}
+
+// yamlShortcut mirrors Shortcut but uses flowStrings so key slices are
+// written as inline arrays.
+type yamlShortcut struct {
+	Desc  string      `yaml:"desc"`
+	Keys  flowStrings `yaml:"keys,omitempty"`
+	Linux flowStrings `yaml:"linux,omitempty"`
+	MacOS flowStrings `yaml:"macos,omitempty"`
+}
+
+// yamlGroup mirrors Group but uses yamlShortcut.
+type yamlGroup struct {
+	Category  string         `yaml:"category"`
+	Shortcuts []yamlShortcut `yaml:"shortcuts"`
+}
+
 // yamlAppConfig is the subset of AppConfig that gets persisted to YAML
 // (excludes runtime-only fields like ModTime).
 type yamlAppConfig struct {
-	App    string  `yaml:"app"`
-	Icon   string  `yaml:"icon"`
-	Groups []Group `yaml:"groups"`
+	App    string      `yaml:"app"`
+	Icon   string      `yaml:"icon"`
+	Groups []yamlGroup `yaml:"groups"`
 }
 
 // marshalApp produces clean YAML bytes for the given AppConfig.
+// Key slices are written as inline flow sequences, e.g. ["Ctrl", ","].
 func marshalApp(app AppConfig) ([]byte, error) {
+	groups := make([]yamlGroup, len(app.Groups))
+	for i, g := range app.Groups {
+		shortcuts := make([]yamlShortcut, len(g.Shortcuts))
+		for j, s := range g.Shortcuts {
+			shortcuts[j] = yamlShortcut{
+				Desc:  s.Desc,
+				Keys:  flowStrings(s.Keys),
+				Linux: flowStrings(s.Linux),
+				MacOS: flowStrings(s.MacOS),
+			}
+		}
+		groups[i] = yamlGroup{
+			Category:  g.Category,
+			Shortcuts: shortcuts,
+		}
+	}
 	out := yamlAppConfig{
 		App:    app.App,
 		Icon:   app.Icon,
-		Groups: app.Groups,
+		Groups: groups,
 	}
 	return yaml.Marshal(out)
 }

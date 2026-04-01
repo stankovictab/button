@@ -16,34 +16,34 @@ groups:
 
         # Basic shortcut — same keys on every platform.
       - desc: "Open settings"
-        keys: ["Ctrl", ","]
+        keys: [Ctrl, ","]
 
         # Platform-specific overrides.
         # Use "linux" and/or "macos" to override "keys" per platform.
         # If a platform key is omitted, "keys" is used as the fallback.
       - desc: "Quit"
-        keys: ["Ctrl", "q"]       # fallback (Linux)
-        macos: ["Cmd", "q"]       # override for macOS
+        keys: [Ctrl, q]       # fallback (Linux)
+        macos: [Cmd, q]       # override for macOS
 
       - desc: "New window"
-        keys: ["Ctrl", "n"]
-        macos: ["Cmd", "n"]
+        keys: [Ctrl, n]
+        macos: [Cmd, n]
 
   - category: "Editing"
     shortcuts:
 
       - desc: "Undo"
-        keys: ["Ctrl", "z"]
-        macos: ["Cmd", "z"]
+        keys: [Ctrl, z]
+        macos: [Cmd, z]
 
       - desc: "Redo"
-        keys: ["Ctrl", "Shift", "z"]
-        macos: ["Cmd", "Shift", "z"]
+        keys: [Ctrl, Shift, z]
+        macos: [Cmd, Shift, z]
 
       - desc: "Find"
-        keys: ["Ctrl", "f"]
-        macos: ["Cmd", "f"]
+        keys: [Ctrl, f]
+        macos: [Cmd, f]
 
         # A shortcut with no keys defined will show "Not set for <platform>".
       - desc: "Something Linux-only"
-        linux: ["Ctrl", "Alt", "t"]
+        linux: [Ctrl, Alt, t]

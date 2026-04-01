@@ -30,9 +30,9 @@ groups:
   - category: "Navigation"
     shortcuts:
       - desc: "Description"
-        keys: ["Alt", "p"]
-        linux: ["Ctrl", "Shift", "p"]
-        macos: ["Cmd", "p"]
+        keys: [Alt, p]
+        linux: [Ctrl, Shift, p]
+        macos: [Cmd, p]
 ```
 ```yaml
 # Linear example — shows mixed usage of keys, linux, and macos
@@ -42,21 +42,21 @@ groups:
   - category: "Navigation"
     shortcuts:
       - desc: "Open Settings"
-        keys: ["G", "S"]
-        linux: ["G", "S"]
-        macos: ["G", "S"]
+        keys: [G, S]
+        linux: [G, S]
+        macos: [G, S]
       - desc: "Go to My Issues"
-        keys: ["G", "I"]
+        keys: [G, I]
       - desc: "Command Palette"
-        linux: ["Ctrl", "K"]
-        macos: ["Cmd", "K"]
+        linux: [Ctrl, K]
+        macos: [Cmd, K]
   - category: "Issues"
     shortcuts:
       - desc: "New Issue"
-        keys: ["C"]
+        keys: [C]
       - desc: "Assign to Me"
-        linux: ["Ctrl", "Shift", "M"]
-        macos: ["Cmd", "Shift", "M"]
+        linux: [Ctrl, Shift, M]
+        macos: [Cmd, Shift, M]
 ```
 
 ### B. The GUI (The "Raycast" Aesthetic)

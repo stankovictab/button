@@ -14,49 +14,63 @@
         onCancel: () => void;
     } = $props();
 
+    type KeyField = "keys" | "linux" | "macos";
+    type DraftField = "keysDraft" | "linuxDraft" | "macosDraft";
+
+    type ShortcutForm = {
+        desc: string;
+        keys: string[];
+        linux: string[];
+        macos: string[];
+        keysDraft: string;
+        linuxDraft: string;
+        macosDraft: string;
+    };
+
+    type GroupForm = {
+        category: string;
+        shortcuts: ShortcutForm[];
+    };
+
+    function emptyShortcut(): ShortcutForm {
+        return {
+            desc: "",
+            keys: [],
+            linux: [],
+            macos: [],
+            keysDraft: "",
+            linuxDraft: "",
+            macosDraft: "",
+        };
+    }
+
     // --- Form state (captured once at mount — initial is intentionally read only at creation) ---
     // svelte-ignore state_referenced_locally
     const initApp = initial?.app ?? "";
     // svelte-ignore state_referenced_locally
     const initIcon = initial?.icon ?? "";
     // svelte-ignore state_referenced_locally
-    const initGroups = initial
+    const initGroups: GroupForm[] = initial
         ? initial.groups.map((g) => ({
               category: g.category,
               shortcuts: g.shortcuts.map((s) => ({
                   desc: s.desc,
-                  keys: s.keys?.join(", ") ?? "",
-                  linux: s.linux?.join(", ") ?? "",
-                  macos: s.macos?.join(", ") ?? "",
+                  keys: [...(s.keys ?? [])],
+                  linux: [...(s.linux ?? [])],
+                  macos: [...(s.macos ?? [])],
+                  keysDraft: "",
+                  linuxDraft: "",
+                  macosDraft: "",
               })),
           }))
-        : [
-              {
-                  category: "",
-                  shortcuts: [{ desc: "", keys: "", linux: "", macos: "" }],
-              },
-          ];
+        : [{ category: "", shortcuts: [emptyShortcut()] }];
 
     let appName: string = $state(initApp);
     let iconId: string = $state(initIcon);
-    let groups: {
-        category: string;
-        shortcuts: {
-            desc: string;
-            keys: string;
-            linux: string;
-            macos: string;
-        }[];
-    }[] = $state(initGroups);
+    let groups: GroupForm[] = $state(initGroups);
 
     function addGroup() {
-        groups = [
-            ...groups,
-            {
-                category: "",
-                shortcuts: [{ desc: "", keys: "", linux: "", macos: "" }],
-            },
-        ];
+        groups = [...groups, { category: "", shortcuts: [emptyShortcut()] }];
     }
 
     function removeGroup(gi: number) {
@@ -64,25 +78,67 @@
     }
 
     function addShortcut(gi: number) {
-        groups[gi].shortcuts = [
-            ...groups[gi].shortcuts,
-            { desc: "", keys: "", linux: "", macos: "" },
-        ];
+        groups[gi].shortcuts = [...groups[gi].shortcuts, emptyShortcut()];
     }
 
     function removeShortcut(gi: number, si: number) {
         groups[gi].shortcuts = groups[gi].shortcuts.filter((_, i) => i !== si);
     }
 
-    function parseKeys(raw: string): string[] {
-        if (!raw.trim()) return [];
-        return raw
-            .split(",")
-            .map((k) => k.trim())
-            .filter(Boolean);
+    function draftFieldFor(field: KeyField): DraftField {
+        return (field + "Draft") as DraftField;
+    }
+
+    function commitDraft(gi: number, si: number, field: KeyField) {
+        const draftField = draftFieldFor(field);
+        const draft = groups[gi].shortcuts[si][draftField].trim();
+        if (draft) {
+            groups[gi].shortcuts[si][field] = [
+                ...groups[gi].shortcuts[si][field],
+                draft,
+            ];
+            groups[gi].shortcuts[si][draftField] = "";
+        }
+    }
+
+    function handleChipKeydown(
+        e: KeyboardEvent,
+        gi: number,
+        si: number,
+        field: KeyField,
+    ) {
+        const draftField = draftFieldFor(field);
+        const draft = groups[gi].shortcuts[si][draftField].trim();
+
+        if ((e.key === "Enter" || e.key === "Tab") && draft) {
+            e.preventDefault();
+            commitDraft(gi, si, field);
+        } else if (
+            e.key === "Backspace" &&
+            !groups[gi].shortcuts[si][draftField]
+        ) {
+            groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][
+                field
+            ].slice(0, -1);
+        }
+    }
+
+    function removeChip(gi: number, si: number, field: KeyField, ci: number) {
+        groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][
+            field
+        ].filter((_, i) => i !== ci);
     }
 
     function handleSave() {
+        // Commit any unconfirmed draft text before saving.
+        for (let gi = 0; gi < groups.length; gi++) {
+            for (let si = 0; si < groups[gi].shortcuts.length; si++) {
+                commitDraft(gi, si, "keys");
+                commitDraft(gi, si, "linux");
+                commitDraft(gi, si, "macos");
+            }
+        }
+
         const appConfig: AppConfig = {
             app: appName.trim(),
             icon: iconId.trim(),
@@ -102,12 +158,9 @@
                                 const shortcut: Shortcut = {
                                     desc: s.desc.trim(),
                                 };
-                                const keys = parseKeys(s.keys);
-                                const linux = parseKeys(s.linux);
-                                const macos = parseKeys(s.macos);
-                                if (keys.length) shortcut.keys = keys;
-                                if (linux.length) shortcut.linux = linux;
-                                if (macos.length) shortcut.macos = macos;
+                                if (s.keys.length) shortcut.keys = s.keys;
+                                if (s.linux.length) shortcut.linux = s.linux;
+                                if (s.macos.length) shortcut.macos = s.macos;
                                 return shortcut;
                             }),
                     }),
@@ -221,38 +274,82 @@
                                     </button>
                                 </div>
                                 <div class="shortcut-row-keys">
-                                    <label class="key-field">
-                                        <span class="key-field-label">Keys</span
-                                        >
-                                        <input
-                                            type="text"
-                                            class="field-input shortcut-keys"
-                                            bind:value={shortcut.keys}
-                                            placeholder="Ctrl, s"
-                                        />
-                                    </label>
-                                    <label class="key-field">
-                                        <span class="key-field-label"
-                                            >Linux</span
-                                        >
-                                        <input
-                                            type="text"
-                                            class="field-input shortcut-keys"
-                                            bind:value={shortcut.linux}
-                                            placeholder="Override"
-                                        />
-                                    </label>
-                                    <label class="key-field">
-                                        <span class="key-field-label"
-                                            >macOS</span
-                                        >
-                                        <input
-                                            type="text"
-                                            class="field-input shortcut-keys"
-                                            bind:value={shortcut.macos}
-                                            placeholder="Override"
-                                        />
-                                    </label>
+                                    {#each (["keys", "linux", "macos"] as KeyField[]) as field}
+                                        <div class="key-field">
+                                            <span class="key-field-label">
+                                                {field === "keys"
+                                                    ? "Keys"
+                                                    : field === "linux"
+                                                      ? "Linux"
+                                                      : "macOS"}
+                                            </span>
+                                            <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_noninteractive_element_interactions -->
+                                            <div
+                                                class="chips-wrap"
+                                                onclick={(e) => {
+                                                    if (
+                                                        e.target ===
+                                                        e.currentTarget
+                                                    ) {
+                                                        (
+                                                            e.currentTarget as HTMLElement
+                                                        )
+                                                            .querySelector(
+                                                                "input",
+                                                            )
+                                                            ?.focus();
+                                                    }
+                                                }}
+                                            >
+                                                {#each shortcut[field] as key, ci}
+                                                    <span class="chip">
+                                                        {key}
+                                                        <button
+                                                            class="chip-remove"
+                                                            type="button"
+                                                            tabindex="-1"
+                                                            onclick={() =>
+                                                                removeChip(
+                                                                    gi,
+                                                                    si,
+                                                                    field,
+                                                                    ci,
+                                                                )}
+                                                        >×</button>
+                                                    </span>
+                                                {/each}
+                                                <input
+                                                    class="chips-input"
+                                                    type="text"
+                                                    bind:value={
+                                                        shortcut[
+                                                            draftFieldFor(field)
+                                                        ]
+                                                    }
+                                                    onkeydown={(e) =>
+                                                        handleChipKeydown(
+                                                            e,
+                                                            gi,
+                                                            si,
+                                                            field,
+                                                        )}
+                                                    onblur={() =>
+                                                        commitDraft(
+                                                            gi,
+                                                            si,
+                                                            field,
+                                                        )}
+                                                    placeholder={shortcut[
+                                                        field
+                                                    ].length === 0
+                                                        ? field === "keys"
+                                                            ? "Ctrl  Tab  ..."
+                                                            : "Override"
+                                                        : ""}
+                                                />
+                                            </div>
+                                        </div>
+                                    {/each}
                                 </div>
                             </div>
                         {/each}
@@ -533,10 +630,78 @@
         padding-left: 2px;
     }
 
-    .shortcut-keys {
+    /* Chip input container — styled to match .field-input */
+    .chips-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 6px;
+        min-height: 30px;
+        border-radius: 6px;
+        border: 1px solid #2a2a2a;
+        background: #1c1c1c;
+        cursor: text;
+        transition: border-color 0.1s;
+    }
+
+    .chips-wrap:focus-within {
+        border-color: #3a88ed;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 1px 5px 1px 6px;
+        background: #2a2a2a;
+        border: 1px solid #3f3f3f;
+        border-bottom: 2px solid #525252;
+        border-radius: 4px;
+        font-size: 11px;
         font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        color: #d4d4d4;
+        white-space: nowrap;
+        line-height: 1.4;
+        overflow: hidden;
+    }
+
+    .chip-remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 12px;
+        height: 12px;
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        color: #525252;
+        cursor: pointer;
+        font-size: 11px;
+        line-height: 1;
+        padding: 0;
+        margin-left: 1px;
+        overflow: hidden;
+    }
+
+    .chip-remove:hover {
+        color: #f87171;
+    }
+
+    .chips-input {
+        flex: 1;
+        min-width: 32px;
+        background: none;
+        border: none;
+        outline: none;
+        color: #d4d4d4;
         font-size: 12px;
-        width: 100%;
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        padding: 0;
+    }
+
+    .chips-input::placeholder {
+        color: #3f3f3f;
     }
 
     .add-shortcut-btn {
