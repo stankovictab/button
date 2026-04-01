@@ -34,6 +34,24 @@
     function totalGroups(a: AppConfig): number {
         return a.groups.length;
     }
+
+    function formatModTime(unixSecs: number): string {
+        const now = Date.now();
+        const diffMs = now - unixSecs * 1000;
+        const diffMins = Math.floor(diffMs / 60_000);
+        const diffHours = Math.floor(diffMs / 3_600_000);
+
+        if (diffMins < 1) return "just now";
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+
+        const d = new Date(unixSecs * 1000);
+        const day = d.getDate();
+        const month = d.toLocaleString("en", { month: "short" });
+        const hh = String(d.getHours()).padStart(2, "0");
+        const mm = String(d.getMinutes()).padStart(2, "0");
+        return `${day} ${month} ${hh}:${mm}`;
+    }
 </script>
 
 {#if app}
@@ -48,6 +66,9 @@
                 <span class="detail-header-meta">
                     {totalShortcuts(app)} shortcuts &middot; {totalGroups(app)}
                     {totalGroups(app) === 1 ? "group" : "groups"}
+                    {#if app.modTime}
+                        &middot; updated {formatModTime(app.modTime)}
+                    {/if}
                 </span>
             </div>
             {#if searchQuery && matchingDescs.size > 0}
