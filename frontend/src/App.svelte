@@ -23,6 +23,7 @@
     import ConfirmDialog from "./lib/components/ConfirmDialog.svelte";
     import AppFormModal from "./lib/components/AppFormModal.svelte";
     import NotificationBar from "./lib/components/NotificationBar.svelte";
+    import HelpPanel from "./lib/components/HelpPanel.svelte";
 
     // --- State ---
     let apps: AppConfig[] = $state([]);
@@ -44,6 +45,9 @@
     let showOverwriteConfirm: boolean = $state(false);
     let pendingOverwriteApp: AppConfig | null = $state(null);
     let pendingOverwriteOldName: string = $state("");
+    let showHelp: boolean = $state(false);
+    let searchInput: HTMLInputElement | undefined = $state();
+    let detailBody: HTMLDivElement | undefined = $state();
 
     // --- Derived: sorted base apps ---
     let sortedBaseApps = $derived.by(() => {
@@ -258,21 +262,263 @@
     }
 
     // --- Keyboard navigation ---
+    function hasBlockingOverlay(): boolean {
+        return showDeleteConfirm || showAppForm || showOverwriteConfirm || showHelp;
+    }
+
+    function isEditableTarget(target: EventTarget | null): boolean {
+        if (!(target instanceof HTMLElement)) return false;
+        return (
+            target instanceof HTMLInputElement ||
+            target instanceof HTMLTextAreaElement ||
+            target instanceof HTMLSelectElement ||
+            target.isContentEditable
+        );
+    }
+
+    function setSearchInput(element: HTMLInputElement | undefined) {
+        searchInput = element;
+    }
+
+    function setDetailBody(element: HTMLDivElement | undefined) {
+        detailBody = element;
+    }
+
+    function focusSearch(selectText = true) {
+        searchInput?.focus();
+        if (selectText) {
+            searchInput?.select();
+        }
+    }
+
+    function blurSearch() {
+        searchInput?.blur();
+    }
+
+    function selectNextApp() {
+        if (selectedIndex < displayApps.length - 1) {
+            selectedIndex++;
+        }
+    }
+
+    function selectPreviousApp() {
+        if (selectedIndex > 0) {
+            selectedIndex--;
+        }
+    }
+
+    function cycleSortMode() {
+        sortMode = sortMode === "alpha" ? "last-updated" : "alpha";
+        selectedIndex = 0;
+    }
+
+    function scrollDetailPane(direction: "up" | "down") {
+        const amount = Math.max((detailBody?.clientHeight ?? 320) * 0.75, 160);
+        detailBody?.scrollBy({
+            top: direction === "down" ? amount : -amount,
+            behavior: "smooth",
+        });
+    }
+
+    function isSearchInputTarget(target: EventTarget | null): boolean {
+        return target === searchInput;
+    }
+
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === "ArrowDown") {
+        const key = e.key.toLowerCase();
+        const editableTarget = isEditableTarget(e.target);
+        const searchTarget = isSearchInputTarget(e.target);
+
+        if (hasBlockingOverlay()) {
+            return;
+        }
+
+        if (
+            e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            !e.shiftKey &&
+            key === "f"
+        ) {
             e.preventDefault();
-            if (selectedIndex < displayApps.length - 1) {
-                selectedIndex++;
-            }
-        } else if (e.key === "ArrowUp") {
+            focusSearch();
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            e.key === "/"
+        ) {
             e.preventDefault();
-            if (selectedIndex > 0) {
-                selectedIndex--;
+            focusSearch(false);
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            e.key === "?"
+        ) {
+            e.preventDefault();
+            showHelp = true;
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            !e.shiftKey &&
+            key === "j"
+        ) {
+            e.preventDefault();
+            scrollDetailPane("down");
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            !e.shiftKey &&
+            key === "k"
+        ) {
+            e.preventDefault();
+            scrollDetailPane("up");
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "e" &&
+            selectedApp
+        ) {
+            e.preventDefault();
+            handleEditApp(selectedIndex);
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "n"
+        ) {
+            e.preventDefault();
+            handleCreateApp();
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "d" &&
+            selectedApp
+        ) {
+            e.preventDefault();
+            handleDeleteApp(selectedIndex);
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "h"
+        ) {
+            e.preventDefault();
+            if (currentOS !== "linux") {
+                toggleOS();
             }
-        } else if (e.key === "Escape") {
-            if (searchQuery) {
-                searchQuery = "";
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "l"
+        ) {
+            e.preventDefault();
+            if (currentOS !== "darwin") {
+                toggleOS();
             }
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            e.key === "Backspace" &&
+            searchQuery
+        ) {
+            e.preventDefault();
+            searchQuery = "";
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "s"
+        ) {
+            e.preventDefault();
+            cycleSortMode();
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "j"
+        ) {
+            e.preventDefault();
+            selectNextApp();
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "k"
+        ) {
+            e.preventDefault();
+            selectPreviousApp();
+            return;
+        }
+
+        if (!editableTarget && e.key === "ArrowDown") {
+            e.preventDefault();
+            selectNextApp();
+        } else if (!editableTarget && e.key === "ArrowUp") {
+            e.preventDefault();
+            selectPreviousApp();
+        } else if (searchTarget && (e.key === "Escape" || e.key === "Enter")) {
+            e.preventDefault();
+            blurSearch();
         }
     }
 
@@ -339,7 +585,13 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <main class="app-shell">
-    <Toolbar bind:searchQuery {currentOS} onToggleOS={toggleOS} />
+    <Toolbar
+        bind:searchQuery
+        bind:showHelp
+        {currentOS}
+        onToggleOS={toggleOS}
+        onSearchInput={setSearchInput}
+    />
 
     <NotificationBar {notifications} onDismiss={dismissNotification} />
 
@@ -356,8 +608,7 @@
                 selectedIndex = i;
             }}
             onToggleSort={() => {
-                sortMode = sortMode === "alpha" ? "last-updated" : "alpha";
-                selectedIndex = 0;
+                cycleSortMode();
             }}
             onCreateApp={handleCreateApp}
             onEditApp={handleEditApp}
@@ -376,6 +627,7 @@
             {currentOS}
             {searchQuery}
             matchingDescs={currentMatchingDescs}
+            onBodyMount={setDetailBody}
             onEdit={() => handleEditApp(selectedIndex)}
             onDelete={() => handleDeleteApp(selectedIndex)}
         />
@@ -406,6 +658,10 @@
                 showAppForm = false;
             }}
         />
+    {/if}
+
+    {#if showHelp}
+        <HelpPanel onClose={() => (showHelp = false)} />
     {/if}
 
     {#if showOverwriteConfirm}

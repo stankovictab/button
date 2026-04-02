@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount, tick } from "svelte";
     import { X, Plus, Trash2 } from "lucide-svelte";
     import type { AppConfig, Group, Shortcut } from "../../types";
 
@@ -68,6 +69,8 @@
     let appName: string = $state(initApp);
     let iconId: string = $state(initIcon);
     let groups: GroupForm[] = $state(initGroups);
+    let panelEl: HTMLDivElement | undefined = $state();
+    let appNameInput: HTMLInputElement | undefined = $state();
 
     function addGroup() {
         groups = [...groups, { category: "", shortcuts: [emptyShortcut()] }];
@@ -110,7 +113,7 @@
         const draftField = draftFieldFor(field);
         const draft = groups[gi].shortcuts[si][draftField].trim();
 
-        if ((e.key === "Enter" || e.key === "Tab") && draft) {
+        if (e.key === "Enter" && draft) {
             e.preventDefault();
             commitDraft(gi, si, field);
         } else if (
@@ -175,8 +178,109 @@
         if (e.target === e.currentTarget) onCancel();
     }
 
+    function isEditableTarget(target: EventTarget | null): boolean {
+        if (!(target instanceof HTMLElement)) return false;
+        return (
+            target instanceof HTMLInputElement ||
+            target instanceof HTMLTextAreaElement ||
+            target instanceof HTMLSelectElement ||
+            target.isContentEditable
+        );
+    }
+
+    function blurActiveEditable() {
+        const active = document.activeElement;
+        if (!isEditableTarget(active)) return false;
+        (active as HTMLElement).blur();
+        return true;
+    }
+
+    function getFocusableElements(): HTMLElement[] {
+        if (!panelEl) return [];
+
+        return Array.from(
+            panelEl.querySelectorAll<HTMLElement>(
+                'button:not([disabled]):not([tabindex="-1"]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+            ),
+        ).filter(
+            (el) =>
+                !el.hasAttribute("disabled") &&
+                el.tabIndex !== -1 &&
+                el.offsetParent !== null,
+        );
+    }
+
+    async function focusFirstField() {
+        await tick();
+        appNameInput?.focus();
+        appNameInput?.select();
+    }
+
+    onMount(() => {
+        void focusFirstField();
+    });
+
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === "Escape") onCancel();
+        const key = e.key.toLowerCase();
+        const editableTarget = isEditableTarget(e.target);
+
+        if (e.key === "Escape") {
+            if (blurActiveEditable()) {
+                e.preventDefault();
+                return;
+            }
+            onCancel();
+            return;
+        }
+
+        if (e.key === "Tab") {
+            const focusable = getFocusableElements();
+            if (focusable.length === 0) return;
+
+            const active = document.activeElement as HTMLElement | null;
+            const currentIndex = active ? focusable.indexOf(active) : -1;
+
+            if (currentIndex === -1) {
+                e.preventDefault();
+                focusable[0]?.focus();
+                return;
+            }
+
+            if (!e.shiftKey && currentIndex === focusable.length - 1) {
+                e.preventDefault();
+                focusable[0]?.focus();
+                return;
+            }
+
+            if (e.shiftKey && currentIndex === 0) {
+                e.preventDefault();
+                focusable[focusable.length - 1]?.focus();
+            }
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "j"
+        ) {
+            e.preventDefault();
+            panelEl?.scrollBy({ top: 180, behavior: "smooth" });
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "k"
+        ) {
+            e.preventDefault();
+            panelEl?.scrollBy({ top: -180, behavior: "smooth" });
+        }
     }
 </script>
 
@@ -190,7 +294,7 @@
     tabindex="-1"
     onclick={handleBackdropClick}
 >
-    <div class="panel">
+    <div class="panel" bind:this={panelEl}>
         <button class="close-btn" onclick={onCancel} aria-label="Close">
             <X size={18} />
         </button>
@@ -204,6 +308,7 @@
             <label class="field">
                 <span class="field-label">App Name</span>
                 <input
+                    bind:this={appNameInput}
                     type="text"
                     class="field-input"
                     bind:value={appName}

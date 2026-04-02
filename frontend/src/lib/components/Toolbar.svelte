@@ -2,18 +2,19 @@
     import { Search, X, CircleHelp, Heart } from "lucide-svelte";
     import { siGithub } from "simple-icons";
     import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
-    import HelpPanel from "./HelpPanel.svelte";
-
-    let showHelp = $state(false);
 
     let {
         searchQuery = $bindable(""),
+        showHelp = $bindable(false),
         currentOS,
         onToggleOS,
+        onSearchInput,
     }: {
         searchQuery: string;
+        showHelp: boolean;
         currentOS: "linux" | "darwin";
         onToggleOS: () => void;
+        onSearchInput?: (element: HTMLInputElement | undefined) => void;
     } = $props();
 
     let searchInput: HTMLInputElement | undefined = $state();
@@ -21,6 +22,10 @@
     $effect(() => {
         // Autofocus the search bar on mount
         searchInput?.focus();
+    });
+
+    $effect(() => {
+        onSearchInput?.(searchInput);
     });
 </script>
 
@@ -106,10 +111,6 @@
         <Heart size={16} />
     </button>
 </div>
-
-{#if showHelp}
-    <HelpPanel onClose={() => (showHelp = false)} />
-{/if}
 
 <style>
     .toolbar {

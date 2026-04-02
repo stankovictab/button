@@ -149,17 +149,22 @@
                     <EllipsisVertical size={15} />
                 </button>
                 {#if menuOpenIndex === i}
-                    <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
                     <div
                         class="context-menu"
+                        role="menu"
+                        tabindex="-1"
+                        aria-label={`Actions for ${app.app}`}
                         onclick={(e) => e.stopPropagation()}
+                        onkeydown={(e) => e.stopPropagation()}
                     >
                         <button
                             class="context-menu-item"
+                            role="menuitem"
                             onclick={(e) => handleMenuEdit(e, i)}>Edit</button
                         >
                         <button
                             class="context-menu-item context-menu-item--danger"
+                            role="menuitem"
                             onclick={(e) => handleMenuDelete(e, i)}
                             >Delete</button
                         >
@@ -278,7 +283,9 @@
         border: none;
         background: transparent;
         cursor: pointer;
-        transition: background 0.1s, padding 0.1s;
+        transition:
+            background 0.1s,
+            padding 0.1s;
         text-align: left;
     }
 
