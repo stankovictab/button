@@ -227,12 +227,44 @@
 
 <style>
     .detail-panel {
+        position: relative;
         flex: 1;
         display: flex;
         flex-direction: column;
         height: 100%;
         min-width: 0;
         background: #111111;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    .detail-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.06) 1px,
+            transparent 1.7px
+        );
+        background-size: 16px 16px;
+        background-position: 0 0;
+        opacity: 0.5;
+        -webkit-mask-image: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 0.95) 28%,
+            rgba(0, 0, 0, 0.35) 68%,
+            rgba(0, 0, 0, 0.05) 100%
+        );
+        mask-image: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 0.95) 28%,
+            rgba(0, 0, 0, 0.35) 68%,
+            rgba(0, 0, 0, 0.05) 100%
+        );
     }
 
     .detail-panel--empty {
@@ -433,6 +465,8 @@
     }
 
     .detail-footer {
+        position: relative;
+        z-index: 1;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -440,6 +474,7 @@
         padding: 8px 10px;
         border-top: 1px solid #1c1c1c;
         height: 33px;
+        background: #111111;
     }
 
     .detail-footer-shortcuts {
