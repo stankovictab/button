@@ -64,7 +64,7 @@
         <!-- Header -->
         <div class="detail-header">
             <div class="detail-header-icon">
-                <AppIcon icon={app.icon} name={app.app} size={22} />
+                <AppIcon icon={app.icon} name={app.app} size={26} />
             </div>
             <div class="detail-header-info">
                 <h2 class="detail-header-name">{app.app}</h2>
@@ -167,8 +167,8 @@
         <!-- Footer -->
         <div class="detail-footer">
             <span class="detail-footer-hint">
-                <kbd class="hint-key">&uarr;&darr;</kbd> navigate
-                <kbd class="hint-key">esc</kbd> clear / close
+                <kbd class="hint-key">&uarr;&darr;</kbd> Navigate
+                <kbd class="hint-key">Esc</kbd> Clear
             </span>
         </div>
     </div>
@@ -219,11 +219,12 @@
         gap: 10px;
         padding: 12px 16px;
         border-bottom: 1px solid #1c1c1c;
+        background: #0d0d0d;
     }
 
     .detail-header-icon {
-        width: 36px;
-        height: 36px;
+        width: 42px;
+        height: 42px;
         border-radius: 9px;
         background: #1c1c1c;
         border: 1px solid #2a2a2a;
@@ -369,10 +370,14 @@
         justify-content: space-between;
         padding: 8px 16px;
         border-top: 1px solid #1c1c1c;
+        height: 33px;
     }
 
     .detail-footer-hint {
-        font-size: 11px;
+        font-size: 12px;
+        font-weight: 500;
+        /* font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", */
+        /* Menlo, monospace; */
         color: #3f3f3f;
         display: flex;
         align-items: center;

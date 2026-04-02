@@ -288,7 +288,7 @@
     }
 
     .app-row--selected {
-        background: linear-gradient(to right, #111111, #1e3a5f) !important;
+        background: linear-gradient(to right, #111111, #13243b) !important;
         position: relative;
         overflow: hidden;
     }
@@ -451,10 +451,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 33px;
     }
 
     .app-list-version {
         font-size: 12px;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
+        font-weight: 600;
         color: #3f3f3f;
     }
 </style>

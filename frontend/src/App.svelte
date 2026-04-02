@@ -1,8 +1,21 @@
 <script lang="ts">
-    import { GetApps, GetCurrentOS, CreateApp, UpdateApp, DeleteApp, GetMigrationResult } from "../wailsjs/go/main/App.js";
+    import {
+        GetApps,
+        GetCurrentOS,
+        CreateApp,
+        UpdateApp,
+        DeleteApp,
+        GetMigrationResult,
+    } from "../wailsjs/go/main/App.js";
     import { EventsOn } from "../wailsjs/runtime/runtime.js";
     import { onMount } from "svelte";
-    import type { AppConfig, AppsResponse, SortMode, Notification, NotificationType } from "./types";
+    import type {
+        AppConfig,
+        AppsResponse,
+        SortMode,
+        Notification,
+        NotificationType,
+    } from "./types";
 
     import Toolbar from "./lib/components/Toolbar.svelte";
     import AppList from "./lib/components/AppList.svelte";
@@ -120,17 +133,20 @@
 
     // --- Notifications ---
     function addNotification(type: NotificationType, message: string) {
-        notifications = [...notifications, { id: nextNotificationId++, type, message }];
+        notifications = [
+            ...notifications,
+            { id: nextNotificationId++, type, message },
+        ];
     }
 
     // --- Utilities ---
     function escapeHtml(text: string): string {
         const map: Record<string, string> = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;",
         };
         return text.replace(/[&<>"']/g, (char) => map[char]);
     }
@@ -372,16 +388,23 @@
             confirmLabel="Delete"
             danger={true}
             onConfirm={confirmDelete}
-            onCancel={() => { showDeleteConfirm = false; deleteTargetIndex = -1; }}
+            onCancel={() => {
+                showDeleteConfirm = false;
+                deleteTargetIndex = -1;
+            }}
         />
     {/if}
 
     {#if showAppForm}
         <AppFormModal
             mode={appFormMode}
-            initial={appFormMode === "edit" ? displayApps[editTargetIndex] ?? null : null}
+            initial={appFormMode === "edit"
+                ? (displayApps[editTargetIndex] ?? null)
+                : null}
             onSave={handleFormSave}
-            onCancel={() => { showAppForm = false; }}
+            onCancel={() => {
+                showAppForm = false;
+            }}
         />
     {/if}
 
@@ -392,7 +415,10 @@
             confirmLabel="Overwrite"
             danger={true}
             onConfirm={confirmOverwrite}
-            onCancel={() => { showOverwriteConfirm = false; pendingOverwriteApp = null; }}
+            onCancel={() => {
+                showOverwriteConfirm = false;
+                pendingOverwriteApp = null;
+            }}
         />
     {/if}
 </main>
@@ -421,11 +447,12 @@
     }
 
     .resize-handle {
-        width: 4px;
+        width: 2px;
         cursor: col-resize;
         background: transparent;
         transition: background 0.15s;
         flex-shrink: 0;
+        margin: 0 -1px;
     }
 
     .resize-handle:hover,
