@@ -144,11 +144,11 @@ groups:
 - [x] Implement the `?` help panel: long logo, app version. 
 
 ### Phase 3: The Editor (Writing)
-- [ ] Create a "New Shortcut/App" UI form.
-- [ ] Implement Go logic to write/update YAML files safely without destroying comments (if possible) or using a standard clean YAML structure.
+- [x] Create a "New Shortcut/App" UI form.
+- [x] Implement Go logic to write/update YAML files safely without destroying comments (if possible) or using a standard clean YAML structure.
 
 ### Phase 4: Polish & Deployment
-- [ ] Global hotkey implementation.
+- [x] Global hotkey implementation.
 - [ ] Blur/transparency for macOS (Vibrancy) and KDE.
 - [ ] Build pipeline for `.app` (Mac) and Binary (Linux).
 
