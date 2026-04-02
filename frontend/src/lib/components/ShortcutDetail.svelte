@@ -190,7 +190,6 @@
                 <span class="detail-footer-shortcut">
                     <span class="detail-footer-keys">
                         <kbd class="hint-key">j</kbd>
-                        <span class="detail-footer-or">/</span>
                         <kbd class="hint-key">k</kbd>
                     </span>
                     <span class="detail-footer-label">Move</span>
@@ -447,7 +446,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        gap: 8px;
+        /* gap: 8px; */
         min-width: 0;
     }
 
@@ -459,28 +458,25 @@
         padding: 2px 8px;
         border-radius: 5px;
         /* background: #151515; */
-        border: 1px solid #1c1c1c;
+        /* border: 1px solid #1c1c1c; */
     }
 
     .detail-footer-keys {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
-    }
-
-    .detail-footer-or {
-        font-size: 10px;
-        color: #3f3f3f;
+        gap: 3px;
     }
 
     .detail-footer-label {
         font-size: 11px;
+        font-weight: 400;
         color: #525252;
     }
 
     .detail-footer-custom {
         margin-left: auto;
         font-size: 12px;
+        font-weight: 500;
         color: #3f3f3f;
         white-space: nowrap;
     }
