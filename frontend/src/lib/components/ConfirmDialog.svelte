@@ -87,15 +87,6 @@
         line-height: 1.5;
     }
 
-    :global(.message code) {
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
-        font-size: 12px;
-        color: #d4d4d4;
-        background: #121212;
-        padding: 2px 6px;
-        border-radius: 4px;
-    }
-
     .actions {
         display: flex;
         justify-content: flex-end;

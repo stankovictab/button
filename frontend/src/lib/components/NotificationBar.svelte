@@ -21,7 +21,7 @@
                     onclick={() => onDismiss(notif.id)}
                     aria-label="Dismiss"
                 >
-                    <X size={12} />
+                    <X size={15} />
                 </button>
             </div>
         {/each}
@@ -41,7 +41,7 @@
         gap: 8px;
         padding: 6px 12px;
         font-size: 12px;
-        border-bottom: 1px solid transparent;
+        border-bottom: 2px solid transparent;
     }
 
     .notification--error {
@@ -68,7 +68,8 @@
     }
 
     .notification-message :global(code) {
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
         font-size: 11px;
         background: rgba(255, 255, 255, 0.08);
         padding: 1px 4px;
@@ -88,7 +89,9 @@
         opacity: 0.5;
         cursor: pointer;
         flex-shrink: 0;
-        transition: opacity 0.1s, background 0.1s;
+        transition:
+            opacity 0.1s,
+            background 0.1s;
     }
 
     .notification-dismiss:hover {

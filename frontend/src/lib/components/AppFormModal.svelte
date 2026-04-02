@@ -192,7 +192,7 @@
 >
     <div class="panel">
         <button class="close-btn" onclick={onCancel} aria-label="Close">
-            <X size={14} />
+            <X size={18} />
         </button>
 
         <h3 class="panel-title">
@@ -223,13 +223,6 @@
 
         <!-- Groups -->
         <div class="groups-section">
-            <div class="section-header">
-                <span class="section-label">Groups</span>
-                <button class="icon-btn" onclick={addGroup} title="Add group">
-                    <Plus size={13} />
-                </button>
-            </div>
-
             <div class="groups-list">
                 {#each groups as group, gi}
                     <div class="group-card">
@@ -240,7 +233,7 @@
                                     type="text"
                                     class="field-input group-name-input"
                                     bind:value={group.category}
-                                    placeholder="e.g. General"
+                                    placeholder="e.g. Navigation"
                                 />
                             </div>
                             <button
@@ -249,7 +242,7 @@
                                 title="Remove group"
                                 disabled={groups.length <= 1}
                             >
-                                <Trash2 size={12} />
+                                <Trash2 size={17} />
                             </button>
                         </div>
                         <div class="shortcuts-label">Shortcuts</div>
@@ -270,11 +263,11 @@
                                         title="Remove shortcut"
                                         disabled={group.shortcuts.length <= 1}
                                     >
-                                        <Trash2 size={11} />
+                                        <Trash2 size={15} />
                                     </button>
                                 </div>
                                 <div class="shortcut-row-keys">
-                                    {#each (["keys", "linux", "macos"] as KeyField[]) as field}
+                                    {#each ["keys", "linux", "macos"] as KeyField[] as field}
                                         <div class="key-field">
                                             <span class="key-field-label">
                                                 {field === "keys"
@@ -283,24 +276,7 @@
                                                       ? "Linux"
                                                       : "macOS"}
                                             </span>
-                                            <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_noninteractive_element_interactions -->
-                                            <div
-                                                class="chips-wrap"
-                                                onclick={(e) => {
-                                                    if (
-                                                        e.target ===
-                                                        e.currentTarget
-                                                    ) {
-                                                        (
-                                                            e.currentTarget as HTMLElement
-                                                        )
-                                                            .querySelector(
-                                                                "input",
-                                                            )
-                                                            ?.focus();
-                                                    }
-                                                }}
-                                            >
+                                            <div class="chips-wrap">
                                                 {#each shortcut[field] as key, ci}
                                                     <span class="chip">
                                                         {key}
@@ -314,8 +290,8 @@
                                                                     si,
                                                                     field,
                                                                     ci,
-                                                                )}
-                                                        >×</button>
+                                                                )}>×</button
+                                                        >
                                                     </span>
                                                 {/each}
                                                 <input
@@ -339,11 +315,10 @@
                                                             si,
                                                             field,
                                                         )}
-                                                    placeholder={shortcut[
-                                                        field
-                                                    ].length === 0
+                                                    placeholder={shortcut[field]
+                                                        .length === 0
                                                         ? field === "keys"
-                                                            ? "Ctrl  Tab  ..."
+                                                            ? "Ctrl Alt j"
                                                             : "Override"
                                                         : ""}
                                                 />
@@ -363,6 +338,9 @@
                     </div>
                 {/each}
             </div>
+            <button class="add-group-btn" onclick={addGroup}>
+                <Plus size={13} /> Add Group
+            </button>
         </div>
 
         <!-- Actions -->
@@ -396,8 +374,8 @@
         border: 1px solid #2a2a2a;
         border-radius: 12px;
         padding: 24px;
-        width: 600px;
         max-height: 90vh;
+        max-width: 88vw;
         overflow-y: auto;
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
     }
@@ -481,18 +459,28 @@
         margin-bottom: 20px;
     }
 
-    .section-header {
+    .add-group-btn {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        margin-bottom: 8px;
+        justify-content: center;
+        gap: 5px;
+        width: 100%;
+        margin-top: 8px;
+        padding: 7px 0;
+        border: 1px dashed #2a2a2a;
+        border-radius: 8px;
+        background: transparent;
+        color: #3a3a3a;
+        font-size: 12px;
+        cursor: pointer;
+        transition:
+            border-color 0.1s,
+            color 0.1s;
     }
 
-    .section-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        color: #525252;
+    .add-group-btn:hover {
+        border-color: #3f3f3f;
+        color: #777777;
     }
 
     .icon-btn {
@@ -558,10 +546,9 @@
     }
 
     .group-name-label {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
-        letter-spacing: 0.06em;
-        color: #3a3a3a;
+        color: #666666;
         flex-shrink: 0;
     }
 
@@ -577,14 +564,12 @@
 
     .group-name-input:focus {
         border-color: #3a88ed;
-        background: #0e0e0e;
     }
 
     .shortcuts-label {
-        font-size: 11px;
+        font-size: 13px;
         font-weight: 600;
-        letter-spacing: 0.06em;
-        color: #2e2e2e;
+        color: #555555;
         padding: 8px 12px 2px;
     }
 
@@ -623,10 +608,9 @@
     }
 
     .key-field-label {
-        font-size: 10px;
+        font-size: 12px;
         font-weight: 600;
-        letter-spacing: 0.04em;
-        color: #3a3a3a;
+        color: #555555;
         padding-left: 2px;
     }
 
@@ -652,15 +636,16 @@
     .chip {
         display: inline-flex;
         align-items: center;
-        gap: 3px;
+        gap: 4px;
         padding: 1px 5px 1px 6px;
         background: #2a2a2a;
         border: 1px solid #3f3f3f;
         border-bottom: 2px solid #525252;
         border-radius: 4px;
-        font-size: 11px;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
-        color: #d4d4d4;
+        font-size: 12px;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
+        color: #e0e0e0;
         white-space: nowrap;
         line-height: 1.4;
         overflow: hidden;
@@ -675,9 +660,9 @@
         flex-shrink: 0;
         background: none;
         border: none;
-        color: #525252;
+        color: #707070;
         cursor: pointer;
-        font-size: 11px;
+        font-size: 15px;
         line-height: 1;
         padding: 0;
         margin-left: 1px;
@@ -685,7 +670,7 @@
     }
 
     .chip-remove:hover {
-        color: #f87171;
+        color: #ff5a5a;
     }
 
     .chips-input {
@@ -696,7 +681,9 @@
         outline: none;
         color: #d4d4d4;
         font-size: 12px;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-weight: 500;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            monospace;
         padding: 0;
     }
 

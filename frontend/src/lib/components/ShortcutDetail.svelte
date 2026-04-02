@@ -209,7 +209,8 @@
 
     .detail-empty-hint code {
         color: #525252;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
     }
 
     .detail-header {
@@ -354,8 +355,12 @@
     }
 
     .shortcut-no-keys {
-        font-size: 11px;
-        color: #3f3f3f;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
+        letter-spacing: -0.02em;
+        color: #333333;
     }
 
     .detail-footer {
@@ -381,7 +386,8 @@
         min-width: 18px;
         height: 16px;
         padding: 0 4px;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
         font-size: 10px;
         color: #525252;
         background: #1c1c1c;

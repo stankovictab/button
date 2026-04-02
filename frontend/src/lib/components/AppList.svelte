@@ -74,13 +74,13 @@
 
 <div class="app-list" style="width: {width}px">
     <div class="app-list-header">
-        <span class="app-list-header-label">Apps</span>
         <span class="app-list-header-count">{apps.length}</span>
-        <span class="app-list-header-sep">&middot;</span>
-        <span class="app-list-header-label">Shortcuts</span>
+        <span class="app-list-header-label">Apps</span>
+        <span class="app-list-header-sep">&bull;</span>
         <span class="app-list-header-count">{totalShortcutsAll}</span>
+        <span class="app-list-header-label">Shortcuts</span>
         <button class="header-icon-btn" onclick={onCreateApp} title="New app">
-            <Plus size={13} />
+            <Plus size={17} />
         </button>
         <button
             class="sort-btn"
@@ -91,9 +91,9 @@
                 : "Sorted by last updated"}
         >
             {#if sortMode === "alpha"}
-                <ArrowDownAZ size={13} />
+                <ArrowDownAZ size={15} />
             {:else}
-                <Clock size={13} />
+                <Clock size={15} />
             {/if}
         </button>
     </div>
@@ -146,7 +146,7 @@
                     onclick={(e) => toggleMenu(e, i)}
                     title="App actions"
                 >
-                    <EllipsisVertical size={14} />
+                    <EllipsisVertical size={15} />
                 </button>
                 {#if menuOpenIndex === i}
                     <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
@@ -193,7 +193,7 @@
     }
 
     .app-list-header-sep {
-        font-size: 13px;
+        font-size: 12px;
         color: #3a3a3a;
     }
 
@@ -216,7 +216,7 @@
 
     .sort-btn:hover {
         background: #1c1c1c;
-        color: #a1a1a1;
+        color: #cfcfcf;
     }
 
     .sort-btn--active {
@@ -247,19 +247,19 @@
 
     .header-icon-btn:hover {
         background: #1c1c1c;
-        color: #a1a1a1;
+        color: #cfcfcf;
     }
 
     .app-list-header-label {
-        font-size: 10px;
+        font-size: 12px;
         font-weight: 600;
-        letter-spacing: 0.05em;
         color: #525252;
     }
 
     .app-list-header-count {
-        font-size: 10px;
-        color: #3f3f3f;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4a89db;
     }
 
     .app-list-items {
