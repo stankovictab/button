@@ -2,7 +2,7 @@
     import type { AppConfig } from "../../types";
     import KeyBadge from "./KeyBadge.svelte";
     import AppIcon from "./AppIcon.svelte";
-    import { SquarePen, Trash2 } from "lucide-svelte";
+    import { SquarePen, Trash2, Ghost } from "lucide-svelte";
 
     let {
         app,
@@ -108,6 +108,15 @@
 
         <!-- Shortcut groups -->
         <div class="detail-body">
+            {#if totalShortcuts(app) === 0}
+                <div class="detail-body-empty">
+                    <Ghost size={50} />
+                    <p class="detail-body-empty-text">
+                        No shortcuts yet!<br />
+                        Click on Edit, or add some in the app YAML config file.
+                    </p>
+                </div>
+            {/if}
             {#each app.groups as group}
                 {#if !searchQuery || matchingDescs.size === 0}
                     <!-- No active shortcut filter: show all normally -->
@@ -167,8 +176,8 @@
         <!-- Footer -->
         <div class="detail-footer">
             <span class="detail-footer-hint">
-                <kbd class="hint-key">&uarr;&darr;</kbd> Navigate
-                <kbd class="hint-key">Esc</kbd> Clear
+                <kbd class="hint-key">&uarr;&darr;</kbd> navigate
+                <kbd class="hint-key">Esc</kbd> clear
             </span>
         </div>
     </div>
@@ -309,13 +318,30 @@
         padding: 8px 16px;
     }
 
+    .detail-body-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 100%;
+        color: #383838;
+    }
+
+    .detail-body-empty-text {
+        font-size: 13px;
+        font-weight: 500;
+        color: #383838;
+        text-align: center;
+    }
+
     .shortcut-group {
         margin-bottom: 16px;
     }
 
     .shortcut-group-label {
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 500;
         color: #696969;
         padding: 0px 0 6px;
     }
@@ -328,6 +354,7 @@
         border-radius: 6px;
         border-left: 2px solid transparent;
         transition: all 0.1s;
+        height: 34px;
     }
 
     .shortcut-row:hover {
@@ -335,11 +362,13 @@
     }
 
     .shortcut-group--match {
-        border-left: 2px solid #3a88ed;
+        border-left: 3px solid #3a88ed;
+        border-right: 0px;
+        border-top: 0px;
         background: #0b1424;
-        border-radius: 0 6px 6px 0;
+        border-radius: 9px 4px 4px 9px;
         padding: 4px 8px 4px 12px;
-        margin-left: -14px;
+        margin-left: -10px;
     }
 
     .shortcut-group--match .shortcut-group-label {
@@ -356,11 +385,11 @@
     }
 
     .shortcut-no-keys {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
         font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
             Menlo, monospace;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.04em;
         color: #333333;
     }
 

@@ -273,14 +273,18 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        /* right padding reserves space so shortcuts text clears the trigger */
-        padding: 5px 34px 5px 8px;
+        padding: 5px 8px;
         border-radius: 6px;
         border: none;
         background: transparent;
         cursor: pointer;
-        transition: background 0.1s;
+        transition: background 0.1s, padding 0.1s;
         text-align: left;
+    }
+
+    .app-row-wrapper:hover .app-row,
+    .app-row--selected {
+        padding-right: 34px;
     }
 
     .app-row:hover {
@@ -291,15 +295,6 @@
         background: linear-gradient(to right, #111111, #13243b) !important;
         position: relative;
         overflow: hidden;
-    }
-
-    .app-row--selected::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-        pointer-events: none;
-        border-radius: inherit;
     }
 
     .app-row--dimmed {
@@ -318,7 +313,8 @@
         height: 30px;
         border-radius: 7px;
         background: #1c1c1c;
-        border: 1px solid #2a2a2a;
+        /* border: 1px solid #2a2a2a; */
+        box-shadow: 0 0 0 2px #2a2a2a;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -342,7 +338,8 @@
     }
 
     .app-row--selected .app-icon {
-        border-color: #2a4a6f;
+        /* border-color: #2a4a6f; */
+        box-shadow: 0 0 0 2px #2a4a6f;
     }
 
     .app-row-right {
@@ -397,7 +394,8 @@
         z-index: 2;
     }
 
-    .app-row-wrapper:hover .menu-trigger {
+    .app-row-wrapper:hover .menu-trigger,
+    .app-row-wrapper:has(.app-row--selected) .menu-trigger {
         opacity: 1;
     }
 
