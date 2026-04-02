@@ -53,30 +53,30 @@
             <li class="tip">
                 <span class="tip-icon"><Search size={13} /></span>
                 <span class="tip-text"
-                    >Type anywhere to search apps and shortcuts</span
+                    >Type anywhere to search apps and shortcuts.</span
                 >
             </li>
             <li class="tip">
                 <span class="tip-icon"><ArrowUpDown size={13} /></span>
-                <span class="tip-text">Navigate apps with arrow keys</span>
+                <span class="tip-text">Navigate apps with arrow keys.</span>
             </li>
             <li class="tip">
                 <span class="tip-icon"><Keyboard size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>Esc</kbd> clears the search query</span
+                    ><kbd>Esc</kbd> clears the search query.</span
                 >
             </li>
             <li class="tip">
                 <span class="tip-icon"><Monitor size={13} /></span>
                 <span class="tip-text"
-                    >Toggle Linux / macOS to switch shortcut sets</span
+                    >Toggle Linux / macOS to switch shortcut sets.</span
                 >
             </li>
             <li class="tip">
                 <span class="tip-icon"><FolderOpen size={13} /></span>
                 <span class="tip-text">
                     Add apps by dropping YAML files into<br />
-                    <code>~/.config/button/apps/</code><br />
+                    <code>~/.config/button/apps/</code>.<br />
                     <!-- svelte-ignore a11y_invalid_attribute -->
                     <a
                         href="#"
@@ -110,8 +110,8 @@
         background: #161616;
         border: 1px solid #2a2a2a;
         border-radius: 12px;
-        padding: 24px;
-        width: 300px;
+        padding: 20px 18px;
+        /* width: 300px; */
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
     }
 
@@ -144,13 +144,12 @@
         flex-direction: column;
         align-items: center;
         gap: 6px;
-        padding-bottom: 20px;
+        padding-bottom: 16px;
     }
 
     .app-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: 14px;
+        width: 68px;
+        height: 68px;
         margin-bottom: 4px;
     }
 
@@ -162,13 +161,16 @@
     }
 
     .app-version {
-        font-size: 11px;
+        font-size: 12px;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
+        font-weight: 500;
         color: #3f3f3f;
     }
 
     .app-tagline {
-        font-size: 12px;
-        color: #525252;
+        font-size: 13px;
+        color: #555555;
         text-align: center;
         margin: 0;
         line-height: 1.5;
@@ -209,8 +211,8 @@
         gap: 2px;
         color: #525252;
         flex-shrink: 0;
-        width: 22px;
-        margin-top: 1px;
+        /* width: 22px; */
+        margin-top: 2px;
     }
 
     .tip-text {
