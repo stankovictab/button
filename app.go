@@ -10,9 +10,16 @@ import (
 	"runtime"
 )
 
+// MigrationResult holds the outcome of the .yml → .yaml migration at startup.
+type MigrationResult struct {
+	Migrated int      `json:"migrated"`
+	Warnings []string `json:"warnings"`
+}
+
 // App struct
 type App struct {
-	ctx context.Context
+	ctx             context.Context
+	migrationResult MigrationResult
 }
 
 // NewApp creates a new App application struct
@@ -28,6 +35,13 @@ func (a *App) startup(ctx context.Context) {
 	// Ensure the config directory exists before any reads
 	if err := config.EnsureConfigDir(); err != nil {
 		fmt.Println("Warning: could not create config directory:", err)
+	}
+
+	// Migrate .yml files to .yaml
+	migrated, migrationWarnings := config.MigrateYMLToYAML()
+	a.migrationResult = MigrationResult{
+		Migrated: migrated,
+		Warnings: migrationWarnings,
 	}
 
 	if runtime.GOOS == "linux" {
@@ -50,6 +64,29 @@ func (a *App) GetApps() (config.AppsResponse, error) {
 // GetCurrentOS returns the detected operating system ("linux" or "darwin").
 func (a *App) GetCurrentOS() string {
 	return runtime.GOOS
+}
+
+// GetMigrationResult returns the outcome of the .yml → .yaml migration
+// that ran at startup (migrated count + any warnings).
+func (a *App) GetMigrationResult() MigrationResult {
+	return a.migrationResult
+}
+
+// CreateApp creates a new app YAML file in the config directory.
+func (a *App) CreateApp(app config.AppConfig) error {
+	return config.CreateApp(app)
+}
+
+// UpdateApp updates an existing app YAML file. If the name changed and the
+// new filename would collide with an existing file, a warning is returned
+// (and the write is skipped). Pass force=true to overwrite.
+func (a *App) UpdateApp(oldAppName string, app config.AppConfig, force bool) (string, error) {
+	return config.UpdateApp(oldAppName, app, force)
+}
+
+// DeleteApp removes the YAML file for the given app name.
+func (a *App) DeleteApp(appName string) error {
+	return config.DeleteApp(appName)
 }
 
 // installLinuxAssets writes the app icon and .desktop file to the user's local

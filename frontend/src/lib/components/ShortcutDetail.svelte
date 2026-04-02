@@ -2,17 +2,22 @@
     import type { AppConfig } from "../../types";
     import KeyBadge from "./KeyBadge.svelte";
     import AppIcon from "./AppIcon.svelte";
+    import { SquarePen, Trash2 } from "lucide-svelte";
 
     let {
         app,
         currentOS,
         searchQuery = "",
         matchingDescs = new Set<string>(),
+        onEdit,
+        onDelete,
     }: {
         app: AppConfig | null;
         currentOS: "linux" | "darwin";
         searchQuery: string;
         matchingDescs: Set<string>;
+        onEdit?: () => void;
+        onDelete?: () => void;
     } = $props();
 
     function resolveKeys(shortcut: {
@@ -59,7 +64,7 @@
         <!-- Header -->
         <div class="detail-header">
             <div class="detail-header-icon">
-                <AppIcon icon={app.icon} name={app.app} size={22} />
+                <AppIcon icon={app.icon} name={app.app} size={26} />
             </div>
             <div class="detail-header-info">
                 <h2 class="detail-header-name">{app.app}</h2>
@@ -77,6 +82,28 @@
                     {matchingDescs.size === 1 ? "match" : "matches"} for &ldquo;{searchQuery}&rdquo;
                 </div>
             {/if}
+            <div class="detail-header-actions">
+                {#if onEdit}
+                    <button
+                        class="detail-action-btn"
+                        onclick={onEdit}
+                        title="Edit app"
+                        aria-label="Edit app"
+                    >
+                        <SquarePen size={14} />
+                    </button>
+                {/if}
+                {#if onDelete}
+                    <button
+                        class="detail-action-btn detail-action-btn--danger"
+                        onclick={onDelete}
+                        title="Delete app"
+                        aria-label="Delete app"
+                    >
+                        <Trash2 size={14} />
+                    </button>
+                {/if}
+            </div>
         </div>
 
         <!-- Shortcut groups -->
@@ -89,7 +116,9 @@
                         {#each group.shortcuts as shortcut}
                             {@const keys = resolveKeys(shortcut)}
                             <div class="shortcut-row">
-                                <span class="shortcut-desc">{shortcut.desc}</span>
+                                <span class="shortcut-desc"
+                                    >{shortcut.desc}</span
+                                >
                                 {#if keys.length > 0}
                                     <KeyBadge {keys} highlight={false} />
                                 {:else}
@@ -109,11 +138,15 @@
                     )}
                     {#if matchingShortcuts.length > 0}
                         <div class="shortcut-group shortcut-group--match">
-                            <div class="shortcut-group-label">{group.category}</div>
+                            <div class="shortcut-group-label">
+                                {group.category}
+                            </div>
                             {#each matchingShortcuts as shortcut}
                                 {@const keys = resolveKeys(shortcut)}
                                 <div class="shortcut-row">
-                                    <span class="shortcut-desc">{shortcut.desc}</span>
+                                    <span class="shortcut-desc"
+                                        >{shortcut.desc}</span
+                                    >
                                     {#if keys.length > 0}
                                         <KeyBadge {keys} highlight={true} />
                                     {:else}
@@ -134,8 +167,8 @@
         <!-- Footer -->
         <div class="detail-footer">
             <span class="detail-footer-hint">
-                <kbd class="hint-key">&uarr;&darr;</kbd> navigate
-                <kbd class="hint-key">esc</kbd> clear / close
+                <kbd class="hint-key">&uarr;&darr;</kbd> Navigate
+                <kbd class="hint-key">Esc</kbd> Clear
             </span>
         </div>
     </div>
@@ -176,7 +209,8 @@
 
     .detail-empty-hint code {
         color: #525252;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
     }
 
     .detail-header {
@@ -185,11 +219,12 @@
         gap: 10px;
         padding: 12px 16px;
         border-bottom: 1px solid #1c1c1c;
+        background: #0d0d0d;
     }
 
     .detail-header-icon {
-        width: 36px;
-        height: 36px;
+        width: 42px;
+        height: 42px;
         border-radius: 9px;
         background: #1c1c1c;
         border: 1px solid #2a2a2a;
@@ -227,6 +262,45 @@
         border-radius: 10px;
         white-space: nowrap;
         flex-shrink: 0;
+    }
+
+    .detail-header-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+
+    .detail-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        background: #1c1c1c;
+        color: #a1a1a1;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .detail-action-btn:hover {
+        background: #262626;
+        border-color: #3a3a3a;
+        color: #d4d4d4;
+    }
+
+    .detail-action-btn:active {
+        background: #1c1c1c;
+        border-color: #2a2a2a;
+    }
+
+    .detail-action-btn--danger:hover {
+        background: #3d1f1f;
+        border-color: #5a2a2a;
+        color: #ff6b6b;
     }
 
     .detail-body {
@@ -282,8 +356,12 @@
     }
 
     .shortcut-no-keys {
-        font-size: 11px;
-        color: #3f3f3f;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
+        letter-spacing: -0.02em;
+        color: #333333;
     }
 
     .detail-footer {
@@ -292,10 +370,14 @@
         justify-content: space-between;
         padding: 8px 16px;
         border-top: 1px solid #1c1c1c;
+        height: 33px;
     }
 
     .detail-footer-hint {
-        font-size: 11px;
+        font-size: 12px;
+        font-weight: 500;
+        /* font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", */
+        /* Menlo, monospace; */
         color: #3f3f3f;
         display: flex;
         align-items: center;
@@ -309,7 +391,8 @@
         min-width: 18px;
         height: 16px;
         padding: 0 4px;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
         font-size: 10px;
         color: #525252;
         background: #1c1c1c;

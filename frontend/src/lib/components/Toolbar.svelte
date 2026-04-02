@@ -175,6 +175,7 @@
 
     .os-toggle {
         display: flex;
+        /* height: 34px; */ /* Use this to fix height. */
         background: #1c1c1c;
         border: 1px solid #2a2a2a;
         border-radius: 6px;
@@ -184,8 +185,8 @@
 
     .os-toggle-btn {
         padding: 6px 12px;
-        font-size: 12px;
-        font-weight: 500;
+        font-size: 13px;
+        font-weight: 600;
         color: #525252;
         background: transparent;
         border: none;
@@ -200,18 +201,18 @@
     }
 
     .os-toggle-btn--active-linux {
-        background: #1e3a5f;
+        background: #172c47;
         color: #59a4ff;
     }
 
     .os-toggle-btn--active-linux:hover {
         background: #1e3a5f;
-        color: #93c5fd;
+        color: #9bcaff;
     }
 
     .os-toggle-btn--active-macos {
-        background: #3d2e1a;
-        color: #ff831e;
+        background: #352716;
+        color: #ff8928;
     }
 
     .os-toggle-btn--active-macos:hover {

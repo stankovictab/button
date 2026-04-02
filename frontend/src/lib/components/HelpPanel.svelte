@@ -1,5 +1,12 @@
 <script lang="ts">
-    import { X, ArrowUpDown, Search, Keyboard, FolderOpen, Monitor } from "lucide-svelte";
+    import {
+        X,
+        ArrowUpDown,
+        Search,
+        Keyboard,
+        FolderOpen,
+        Monitor,
+    } from "lucide-svelte";
     import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
 
     let { onClose }: { onClose: () => void } = $props();
@@ -16,7 +23,13 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions a11y_no_noninteractive_element_interactions -->
-<div class="backdrop" role="dialog" aria-modal="true" tabindex="-1" onclick={handleBackdropClick}>
+<div
+    class="backdrop"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    onclick={handleBackdropClick}
+>
     <div class="panel">
         <button class="close-btn" onclick={onClose} aria-label="Close help">
             <X size={14} />
@@ -27,7 +40,9 @@
             <img src="/appicon.png" alt="button logo" class="app-icon" />
             <div class="app-name">button</div>
             <div class="app-version">v0.0.0-alpha</div>
-            <p class="app-tagline">A keyboard shortcut reference<br />for your desktop apps.</p>
+            <p class="app-tagline">
+                A keyboard shortcut reference<br />for your desktop apps.
+            </p>
         </div>
 
         <div class="divider"></div>
@@ -37,7 +52,9 @@
         <ul class="tips">
             <li class="tip">
                 <span class="tip-icon"><Search size={13} /></span>
-                <span class="tip-text">Type anywhere to search apps and shortcuts</span>
+                <span class="tip-text"
+                    >Type anywhere to search apps and shortcuts</span
+                >
             </li>
             <li class="tip">
                 <span class="tip-icon"><ArrowUpDown size={13} /></span>
@@ -45,11 +62,15 @@
             </li>
             <li class="tip">
                 <span class="tip-icon"><Keyboard size={13} /></span>
-                <span class="tip-text"><kbd>Esc</kbd> clears the search query</span>
+                <span class="tip-text"
+                    ><kbd>Esc</kbd> clears the search query</span
+                >
             </li>
             <li class="tip">
                 <span class="tip-icon"><Monitor size={13} /></span>
-                <span class="tip-text">Toggle Linux / macOS to switch shortcut sets</span>
+                <span class="tip-text"
+                    >Toggle Linux / macOS to switch shortcut sets</span
+                >
             </li>
             <li class="tip">
                 <span class="tip-icon"><FolderOpen size={13} /></span>
@@ -60,8 +81,13 @@
                     <a
                         href="#"
                         class="tip-link"
-                        onclick={(e) => { e.preventDefault(); BrowserOpenURL("https://github.com/stankovictab/button/blob/main/examples/template.yaml"); }}
-                    >View example config →</a>
+                        onclick={(e) => {
+                            e.preventDefault();
+                            BrowserOpenURL(
+                                "https://github.com/stankovictab/button/blob/main/examples/template.yaml",
+                            );
+                        }}>View example config →</a
+                    >
                 </span>
             </li>
         </ul>
@@ -103,7 +129,9 @@
         border-radius: 5px;
         color: #525252;
         cursor: pointer;
-        transition: background 0.1s, color 0.1s;
+        transition:
+            background 0.1s,
+            color 0.1s;
     }
 
     .close-btn:hover {
@@ -195,7 +223,8 @@
         display: inline-flex;
         align-items: center;
         padding: 1px 5px;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
         font-size: 10px;
         color: #a1a1a1;
         background: #1c1c1c;
@@ -211,11 +240,5 @@
 
     .tip-link:hover {
         text-decoration: underline;
-    }
-
-    .tip-text code {
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
-        font-size: 11px;
-        color: #525252;
     }
 </style>

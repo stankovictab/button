@@ -22,7 +22,8 @@
         min-width: 24px;
         height: 22px;
         padding: 0 6px;
-        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
         font-size: 11px;
         line-height: 1;
         color: #a1a1a1;
