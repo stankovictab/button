@@ -295,169 +295,179 @@
     onclick={handleBackdropClick}
 >
     <div class="panel" bind:this={panelEl}>
-        <button class="close-btn" onclick={onCancel} aria-label="Close">
-            <X size={18} />
-        </button>
-
-        <h3 class="panel-title">
-            {mode === "create" ? "New App" : "Edit App"}
-        </h3>
-
-        <!-- App name & icon -->
-        <div class="field-row">
-            <label class="field">
-                <span class="field-label">App Name</span>
-                <input
-                    bind:this={appNameInput}
-                    type="text"
-                    class="field-input"
-                    bind:value={appName}
-                    placeholder="My App"
-                />
-            </label>
-            <label class="field field--icon">
-                <span class="field-label">Icon ID</span>
-                <input
-                    type="text"
-                    class="field-input"
-                    bind:value={iconId}
-                    placeholder="myapp"
-                />
-            </label>
+        <div class="panel-topbar">
+            <h3 class="panel-title">
+                {mode === "create" ? "New App" : "Edit App"}
+            </h3>
+            <div class="panel-topbar-actions">
+                <button class="btn btn--cancel" onclick={onCancel}>
+                    Cancel
+                </button>
+                <button
+                    class="btn btn--primary"
+                    onclick={handleSave}
+                    disabled={!canSave}
+                >
+                    {mode === "create" ? "Create" : "Save"}
+                </button>
+                <button class="close-btn" onclick={onCancel} aria-label="Close">
+                    <X size={18} />
+                </button>
+            </div>
         </div>
 
-        <!-- Groups -->
-        <div class="groups-section">
-            <div class="groups-list">
-                {#each groups as group, gi}
-                    <div class="group-card">
-                        <div class="group-header">
-                            <div class="group-name-wrap">
-                                <span class="group-name-label">Group</span>
-                                <input
-                                    type="text"
-                                    class="field-input group-name-input"
-                                    bind:value={group.category}
-                                    placeholder="e.g. Navigation"
-                                />
-                            </div>
-                            <button
-                                class="icon-btn icon-btn--danger"
-                                onclick={() => removeGroup(gi)}
-                                title="Remove group"
-                                disabled={groups.length <= 1}
-                            >
-                                <Trash2 size={17} />
-                            </button>
-                        </div>
-                        <div class="shortcuts-label">Shortcuts</div>
+        <div class="panel-content">
+            <!-- App name & icon -->
+            <div class="field-row">
+                <label class="field">
+                    <span class="field-label">App Name</span>
+                                    <input
+                        bind:this={appNameInput}
+                        type="text"
+                        class="field-input"
+                        bind:value={appName}
+                        placeholder="My App"
+                                    />
+                </label>
+                <label class="field field--icon">
+                    <span class="field-label">Icon ID</span>
+                    <input
+                        type="text"
+                        class="field-input"
+                        bind:value={iconId}
+                        placeholder="myapp"
+                    />
+                </label>
+            </div>
 
-                        <!-- Shortcuts in this group -->
-                        {#each group.shortcuts as shortcut, si}
-                            <div class="shortcut-entry">
-                                <div class="shortcut-row-top">
+            <!-- Groups -->
+            <div class="groups-section">
+                <div class="groups-list">
+                    {#each groups as group, gi}
+                        <div class="group-card">
+                            <div class="group-header">
+                                <div class="group-name-wrap">
+                                    <span class="group-name-label">Group</span>
                                     <input
                                         type="text"
-                                        class="field-input shortcut-desc"
-                                        bind:value={shortcut.desc}
-                                        placeholder="Shortcut description"
+                                        class="field-input group-name-input"
+                                        bind:value={group.category}
+                                        placeholder="e.g. Navigation"
                                     />
-                                    <button
-                                        class="icon-btn icon-btn--danger"
-                                        onclick={() => removeShortcut(gi, si)}
-                                        title="Remove shortcut"
-                                        disabled={group.shortcuts.length <= 1}
-                                    >
-                                        <Trash2 size={15} />
-                                    </button>
                                 </div>
-                                <div class="shortcut-row-keys">
-                                    {#each ["keys", "linux", "macos"] as KeyField[] as field}
-                                        <div class="key-field">
-                                            <span class="key-field-label">
-                                                {field === "keys"
-                                                    ? "Keys"
-                                                    : field === "linux"
-                                                      ? "Linux"
-                                                      : "macOS"}
-                                            </span>
-                                            <div class="chips-wrap">
-                                                {#each shortcut[field] as key, ci}
-                                                    <span class="chip">
-                                                        {key}
-                                                        <button
-                                                            class="chip-remove"
-                                                            type="button"
-                                                            tabindex="-1"
-                                                            onclick={() =>
-                                                                removeChip(
-                                                                    gi,
-                                                                    si,
-                                                                    field,
-                                                                    ci,
-                                                                )}>×</button
-                                                        >
-                                                    </span>
-                                                {/each}
-                                                <input
-                                                    class="chips-input"
-                                                    type="text"
-                                                    bind:value={
-                                                        shortcut[
-                                                            draftFieldFor(field)
-                                                        ]
-                                                    }
-                                                    onkeydown={(e) =>
-                                                        handleChipKeydown(
-                                                            e,
-                                                            gi,
-                                                            si,
-                                                            field,
-                                                        )}
-                                                    onblur={() =>
-                                                        commitDraft(
-                                                            gi,
-                                                            si,
-                                                            field,
-                                                        )}
-                                                    placeholder={shortcut[field]
-                                                        .length === 0
-                                                        ? field === "keys"
-                                                            ? "Ctrl Alt j"
-                                                            : "Override"
-                                                        : ""}
-                                                />
-                                            </div>
-                                        </div>
-                                    {/each}
-                                </div>
+                                <button
+                                    class="icon-btn icon-btn--danger"
+                                    onclick={() => removeGroup(gi)}
+                                    title="Remove group"
+                                    disabled={groups.length <= 1}
+                                >
+                                    <Trash2 size={17} />
+                                </button>
                             </div>
-                        {/each}
+                            <div class="shortcuts-label">Shortcuts</div>
 
-                        <button
-                            class="add-shortcut-btn"
-                            onclick={() => addShortcut(gi)}
-                        >
-                            <Plus size={12} /> Add Shortcut
-                        </button>
-                    </div>
-                {/each}
+                            <!-- Shortcuts in this group -->
+                            {#each group.shortcuts as shortcut, si}
+                                <div class="shortcut-entry">
+                                    <div class="shortcut-row-top">
+                                        <input
+                                            type="text"
+                                            class="field-input shortcut-desc"
+                                            bind:value={shortcut.desc}
+                                            placeholder="Shortcut description"
+                                        />
+                                        <button
+                                            class="icon-btn icon-btn--danger"
+                                            onclick={() =>
+                                                removeShortcut(gi, si)}
+                                            title="Remove shortcut"
+                                            disabled={group.shortcuts.length <=
+                                                1}
+                                        >
+                                            <Trash2 size={15} />
+                                        </button>
+                                    </div>
+                                    <div class="shortcut-row-keys">
+                                        {#each ["keys", "linux", "macos"] as KeyField[] as field}
+                                            <div class="key-field">
+                                                <span class="key-field-label">
+                                                    {field === "keys"
+                                                        ? "Keys"
+                                                        : field === "linux"
+                                                          ? "Linux"
+                                                          : "macOS"}
+                                                </span>
+                                                <div class="chips-wrap">
+                                                    {#each shortcut[field] as key, ci}
+                                                        <span class="chip">
+                                                            {key}
+                                                            <button
+                                                                class="chip-remove"
+                                                                type="button"
+                                                                tabindex="-1"
+                                                                onclick={() =>
+                                                                    removeChip(
+                                                                        gi,
+                                                                        si,
+                                                                        field,
+                                                                        ci,
+                                                                    )}
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </span>
+                                                    {/each}
+                                                    <input
+                                                        class="chips-input"
+                                                        type="text"
+                                                        bind:value={
+                                                            shortcut[
+                                                                draftFieldFor(
+                                                                    field,
+                                                                )
+                                                            ]
+                                                        }
+                                                        onkeydown={(e) =>
+                                                            handleChipKeydown(
+                                                                e,
+                                                                gi,
+                                                                si,
+                                                                field,
+                                                            )}
+                                                        onblur={() =>
+                                                            commitDraft(
+                                                                gi,
+                                                                si,
+                                                                field,
+                                                            )}
+                                                        placeholder={shortcut[
+                                                            field
+                                                        ].length === 0
+                                                            ? field === "keys"
+                                                                ? "Ctrl Alt j"
+                                                                : "Override"
+                                                            : ""}
+                                                    />
+                                                </div>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            {/each}
+
+                            <button
+                                class="add-shortcut-btn"
+                                onclick={() => addShortcut(gi)}
+                            >
+                                <Plus size={12} /> Add Shortcut
+                            </button>
+                        </div>
+                    {/each}
+                </div>
+                <button class="add-group-btn" onclick={addGroup}>
+                    <Plus size={13} /> Add Group
+                </button>
             </div>
-            <button class="add-group-btn" onclick={addGroup}>
-                <Plus size={13} /> Add Group
-            </button>
-        </div>
-
-        <!-- Actions -->
-        <div class="actions">
-            <button class="btn btn--cancel" onclick={onCancel}>Cancel</button>
-            <button
-                class="btn btn--primary"
-                onclick={handleSave}
-                disabled={!canSave}
-            >
-                {mode === "create" ? "Create" : "Save"}
-            </button>
         </div>
     </div>
 </div>
@@ -478,42 +488,65 @@
         background: #161616;
         border: 1px solid #2a2a2a;
         border-radius: 12px;
-        padding: 24px;
         max-height: 90vh;
         max-width: 88vw;
         overflow-y: auto;
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
     }
 
+    .panel-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 20px;
+        background: rgba(22, 22, 22, 0.96);
+        border-bottom: 1px solid #222222;
+        backdrop-filter: blur(10px);
+    }
+
+    .panel-topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
     .close-btn {
-        position: absolute;
-        top: 12px;
-        right: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 22px;
-        height: 22px;
+        width: 28px;
+        height: 28px;
         background: transparent;
-        border: none;
-        border-radius: 5px;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
         color: #525252;
         cursor: pointer;
         transition:
             background 0.1s,
-            color 0.1s;
+            color 0.1s,
+            border-color 0.1s;
     }
 
     .close-btn:hover {
         background: #1c1c1c;
         color: #a1a1a1;
+        border-color: #3a3a3a;
     }
 
     .panel-title {
         font-size: 15px;
         font-weight: 600;
         color: #ffffff;
-        margin: 0 0 16px;
+        margin: 0;
+    }
+
+    .panel-content {
+        padding: 20px;
     }
 
     .field-row {
@@ -819,12 +852,6 @@
         color: #777777;
     }
 
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-    }
-
     .btn {
         padding: 6px 14px;
         border-radius: 6px;
@@ -861,5 +888,30 @@
     .btn--primary:hover:not(:disabled) {
         background: #1e4a7f;
         color: #bfdbfe;
+    }
+
+    @media (max-width: 720px) {
+        .panel {
+            width: min(88vw, 920px);
+        }
+
+        .panel-topbar {
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .panel-topbar-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .field-row,
+        .shortcut-row-keys {
+            flex-direction: column;
+        }
+
+        .field--icon {
+            flex-basis: auto;
+        }
     }
 </style>

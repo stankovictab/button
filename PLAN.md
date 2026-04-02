@@ -149,7 +149,6 @@ groups:
 
 ### Phase 4: Polish & Deployment
 - [x] Global hotkey implementation.
-- [ ] Blur/transparency for macOS (Vibrancy) and KDE.
 - [ ] Build pipeline for `.app` (Mac) and Binary (Linux).
 
 ## 5. Agent Instructions (How to help me)
