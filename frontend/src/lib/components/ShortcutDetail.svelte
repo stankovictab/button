@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type { AppConfig } from "../../types";
+    import type { AppConfig, Group } from "../../types";
     import KeyBadge from "./KeyBadge.svelte";
     import AppIcon from "./AppIcon.svelte";
-    import { SquarePen, Trash2, Ghost } from "lucide-svelte";
+    import { SquarePen, Trash2, Ghost, Plus } from "lucide-svelte";
 
     let {
         app,
@@ -10,6 +10,9 @@
         searchQuery = "",
         matchingDescs = new Set<string>(),
         onBodyMount,
+        onCreateShortcut,
+        onEditShortcut,
+        onDeleteShortcut,
         onEdit,
         onDelete,
     }: {
@@ -18,6 +21,9 @@
         searchQuery: string;
         matchingDescs: Set<string>;
         onBodyMount?: (element: HTMLDivElement | undefined) => void;
+        onCreateShortcut?: () => void;
+        onEditShortcut?: (groupIndex: number, shortcutIndex: number) => void;
+        onDeleteShortcut?: (groupIndex: number, shortcutIndex: number) => void;
         onEdit?: () => void;
         onDelete?: () => void;
     } = $props();
@@ -65,6 +71,21 @@
         const mm = String(d.getMinutes()).padStart(2, "0");
         return `${day} ${month} ${hh}:${mm}`;
     }
+
+    function visibleShortcuts(group: Group) {
+        return group.shortcuts
+            .map((shortcut, shortcutIndex) => ({ shortcut, shortcutIndex }))
+            .filter(
+                ({ shortcut }) =>
+                    !searchQuery ||
+                    matchingDescs.size === 0 ||
+                    matchingDescs.has(shortcut.desc),
+            );
+    }
+
+    function showFilteredGroups(): boolean {
+        return Boolean(searchQuery && matchingDescs.size > 0);
+    }
 </script>
 
 {#if app}
@@ -91,6 +112,16 @@
                 </div>
             {/if}
             <div class="detail-header-actions">
+                {#if onCreateShortcut}
+                    <button
+                        class="detail-action-btn"
+                        onclick={onCreateShortcut}
+                        title="New shortcut"
+                        aria-label="New shortcut"
+                    >
+                        <Plus size={14} />
+                    </button>
+                {/if}
                 {#if onEdit}
                     <button
                         class="detail-action-btn"
@@ -121,51 +152,30 @@
                     <Ghost size={50} />
                     <p class="detail-body-empty-text">
                         No shortcuts yet!<br />
-                        Click on Edit, or add some in the app YAML config file.
+                        Add one here or edit the app YAML directly.
                     </p>
                 </div>
             {/if}
-            {#each app.groups as group}
-                {#if !searchQuery || matchingDescs.size === 0}
-                    <!-- No active shortcut filter: show all normally -->
-                    <div class="shortcut-group">
+            {#each app.groups as group, groupIndex}
+                {@const shortcuts = visibleShortcuts(group)}
+                {#if shortcuts.length > 0}
+                    <div
+                        class="shortcut-group"
+                        class:shortcut-group--match={showFilteredGroups()}
+                    >
                         <div class="shortcut-group-label">{group.category}</div>
-                        {#each group.shortcuts as shortcut}
+                        {#each shortcuts as { shortcut, shortcutIndex }}
                             {@const keys = resolveKeys(shortcut)}
                             <div class="shortcut-row">
-                                <span class="shortcut-desc"
-                                    >{shortcut.desc}</span
-                                >
-                                {#if keys.length > 0}
-                                    <KeyBadge {keys} highlight={false} />
-                                {:else}
-                                    <span class="shortcut-no-keys"
-                                        >Not set for {currentOS === "darwin"
-                                            ? "macOS"
-                                            : "Linux"}</span
-                                    >
-                                {/if}
-                            </div>
-                        {/each}
-                    </div>
-                {:else}
-                    <!-- Shortcut filter active: show only matching shortcuts, highlight group -->
-                    {@const matchingShortcuts = group.shortcuts.filter((s) =>
-                        matchingDescs.has(s.desc),
-                    )}
-                    {#if matchingShortcuts.length > 0}
-                        <div class="shortcut-group shortcut-group--match">
-                            <div class="shortcut-group-label">
-                                {group.category}
-                            </div>
-                            {#each matchingShortcuts as shortcut}
-                                {@const keys = resolveKeys(shortcut)}
-                                <div class="shortcut-row">
-                                    <span class="shortcut-desc"
-                                        >{shortcut.desc}</span
-                                    >
+                                <span class="shortcut-desc">{shortcut.desc}</span>
+                                <div class="shortcut-row-right">
                                     {#if keys.length > 0}
-                                        <KeyBadge {keys} highlight={true} />
+                                        <div class="shortcut-keys">
+                                            <KeyBadge
+                                                {keys}
+                                                highlight={showFilteredGroups()}
+                                            />
+                                        </div>
                                     {:else}
                                         <span class="shortcut-no-keys"
                                             >Not set for {currentOS === "darwin"
@@ -173,10 +183,40 @@
                                                 : "Linux"}</span
                                         >
                                     {/if}
+                                    <div class="shortcut-actions">
+                                        {#if onEditShortcut}
+                                            <button
+                                                class="shortcut-action-btn"
+                                                onclick={() =>
+                                                    onEditShortcut(
+                                                        groupIndex,
+                                                        shortcutIndex,
+                                                    )}
+                                                title="Edit shortcut"
+                                                aria-label={`Edit ${shortcut.desc}`}
+                                            >
+                                                <SquarePen size={14} />
+                                            </button>
+                                        {/if}
+                                        {#if onDeleteShortcut}
+                                            <button
+                                                class="shortcut-action-btn shortcut-action-btn--danger"
+                                                onclick={() =>
+                                                    onDeleteShortcut(
+                                                        groupIndex,
+                                                        shortcutIndex,
+                                                    )}
+                                                title="Delete shortcut"
+                                                aria-label={`Delete ${shortcut.desc}`}
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        {/if}
+                                    </div>
                                 </div>
-                            {/each}
-                        </div>
-                    {/if}
+                            </div>
+                        {/each}
+                    </div>
                 {/if}
             {/each}
         </div>
@@ -453,6 +493,77 @@
         overflow: hidden;
         text-overflow: ellipsis;
         margin-right: 12px;
+        min-width: 0;
+    }
+
+    .shortcut-row-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-width: 0;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .shortcut-keys {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .shortcut-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: 0;
+        margin-left: 0;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+            width 0.14s ease,
+            margin-left 0.14s ease,
+            opacity 0.14s ease;
+        flex-shrink: 0;
+    }
+
+    .shortcut-row:hover .shortcut-actions,
+    .shortcut-row:focus-within .shortcut-actions {
+        width: 62px;
+        margin-left: 10px;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .shortcut-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border: 1px solid #2a2a2a;
+        border-radius: 6px;
+        background: #171717;
+        color: #808080;
+        cursor: pointer;
+        transition:
+            background 0.12s,
+            border-color 0.12s,
+            color 0.12s;
+        flex-shrink: 0;
+    }
+
+    .shortcut-action-btn:hover {
+        background: #242424;
+        border-color: #3a3a3a;
+        color: #d4d4d4;
+    }
+
+    .shortcut-action-btn--danger:hover {
+        background: #3d1f1f;
+        border-color: #5a2a2a;
+        color: #ff6b6b;
     }
 
     .shortcut-no-keys {
@@ -462,6 +573,7 @@
             Menlo, monospace;
         letter-spacing: -0.04em;
         color: #333333;
+        white-space: nowrap;
     }
 
     .detail-footer {
