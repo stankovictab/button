@@ -15,6 +15,8 @@
         SortMode,
         Notification,
         NotificationType,
+        Group,
+        Shortcut,
     } from "./types";
 
     import Toolbar from "./lib/components/Toolbar.svelte";
@@ -22,6 +24,7 @@
     import ShortcutDetail from "./lib/components/ShortcutDetail.svelte";
     import ConfirmDialog from "./lib/components/ConfirmDialog.svelte";
     import AppFormModal from "./lib/components/AppFormModal.svelte";
+    import ShortcutFormModal from "./lib/components/ShortcutFormModal.svelte";
     import NotificationBar from "./lib/components/NotificationBar.svelte";
     import HelpPanel from "./lib/components/HelpPanel.svelte";
     import FlamingoEasterEgg from "./lib/components/FlamingoEasterEgg.svelte";
@@ -43,6 +46,16 @@
     let showAppForm: boolean = $state(false);
     let appFormMode: "create" | "edit" = $state("create");
     let editTargetIndex: number = $state(-1);
+    let showShortcutForm: boolean = $state(false);
+    let shortcutFormMode: "create" | "edit" = $state("create");
+    let showShortcutDeleteConfirm: boolean = $state(false);
+    let shortcutTarget:
+        | {
+              appIndex: number;
+              groupIndex: number;
+              shortcutIndex: number;
+          }
+        | null = $state(null);
     let showOverwriteConfirm: boolean = $state(false);
     let pendingOverwriteApp: AppConfig | null = $state(null);
     let pendingOverwriteOldName: string = $state("");
@@ -161,6 +174,68 @@
         notifications = notifications.filter((n) => n.id !== id);
     }
 
+    function cloneShortcut(shortcut: Shortcut): Shortcut {
+        const clone: Shortcut = {
+            desc: shortcut.desc,
+        };
+        if (shortcut.keys) clone.keys = [...shortcut.keys];
+        if (shortcut.linux) clone.linux = [...shortcut.linux];
+        if (shortcut.macos) clone.macos = [...shortcut.macos];
+        return clone;
+    }
+
+    function cloneAppConfig(app: AppConfig): AppConfig {
+        return {
+            ...app,
+            groups: app.groups.map(
+                (group): Group => ({
+                    category: group.category,
+                    shortcuts: group.shortcuts.map(cloneShortcut),
+                }),
+            ),
+        };
+    }
+
+    function closeShortcutForm() {
+        showShortcutForm = false;
+        shortcutTarget = null;
+    }
+
+    function closeShortcutDeleteConfirm() {
+        showShortcutDeleteConfirm = false;
+        shortcutTarget = null;
+    }
+
+    function persistShortcutApp(appConfig: AppConfig, onSuccess: () => void) {
+        UpdateApp(appConfig.app, appConfig as any, false)
+            .then((warning: string) => {
+                if (warning) {
+                    addNotification("warning", warning);
+                    return;
+                }
+
+                onSuccess();
+                loadApps();
+            })
+            .catch((err: any) => {
+                addNotification("error", String(err));
+            });
+    }
+
+    function uniqueCategories(app: AppConfig): string[] {
+        const seen = new Set<string>();
+        const categories: string[] = [];
+
+        for (const group of app.groups) {
+            const category = group.category.trim();
+            if (!category || seen.has(category)) continue;
+            seen.add(category);
+            categories.push(category);
+        }
+
+        return categories;
+    }
+
     // --- Data loading ---
     function applyResponse(resp: AppsResponse) {
         apps = resp.apps ?? [];
@@ -202,6 +277,38 @@
         showDeleteConfirm = true;
     }
 
+    function handleCreateShortcut() {
+        if (!selectedApp) return;
+        shortcutFormMode = "create";
+        shortcutTarget = {
+            appIndex: selectedIndex,
+            groupIndex: -1,
+            shortcutIndex: -1,
+        };
+        showShortcutForm = true;
+    }
+
+    function handleEditShortcut(groupIndex: number, shortcutIndex: number) {
+        if (!selectedApp) return;
+        shortcutFormMode = "edit";
+        shortcutTarget = {
+            appIndex: selectedIndex,
+            groupIndex,
+            shortcutIndex,
+        };
+        showShortcutForm = true;
+    }
+
+    function handleDeleteShortcut(groupIndex: number, shortcutIndex: number) {
+        if (!selectedApp) return;
+        shortcutTarget = {
+            appIndex: selectedIndex,
+            groupIndex,
+            shortcutIndex,
+        };
+        showShortcutDeleteConfirm = true;
+    }
+
     function confirmDelete() {
         const app = displayApps[deleteTargetIndex];
         if (!app) return;
@@ -215,6 +322,111 @@
                 addNotification("error", String(err));
                 showDeleteConfirm = false;
             });
+    }
+
+    function handleShortcutSave(payload: {
+        category: string;
+        shortcut: Shortcut;
+    }) {
+        const target = shortcutTarget;
+        if (!target) return;
+
+        const sourceApp = displayApps[target.appIndex];
+        if (!sourceApp) return;
+
+        const updatedApp = cloneAppConfig(sourceApp);
+        const targetCategory = payload.category.trim();
+
+        if (shortcutFormMode === "create") {
+            const existingGroup = updatedApp.groups.find(
+                (group) => group.category.trim() === targetCategory,
+            );
+
+            if (existingGroup) {
+                existingGroup.shortcuts = [
+                    ...existingGroup.shortcuts,
+                    cloneShortcut(payload.shortcut),
+                ];
+            } else {
+                updatedApp.groups = [
+                    ...updatedApp.groups,
+                    {
+                        category: targetCategory,
+                        shortcuts: [cloneShortcut(payload.shortcut)],
+                    },
+                ];
+            }
+
+            persistShortcutApp(updatedApp, closeShortcutForm);
+            return;
+        }
+
+        const sourceGroup = updatedApp.groups[target.groupIndex];
+        const sourceShortcut =
+            sourceGroup?.shortcuts[target.shortcutIndex];
+        if (!sourceGroup || !sourceShortcut) return;
+
+        const sourceCategory = sourceGroup.category.trim();
+        const nextShortcut = cloneShortcut(payload.shortcut);
+
+        if (sourceCategory === targetCategory) {
+            sourceGroup.shortcuts[target.shortcutIndex] = nextShortcut;
+            persistShortcutApp(updatedApp, closeShortcutForm);
+            return;
+        }
+
+        sourceGroup.shortcuts = sourceGroup.shortcuts.filter(
+            (_, index) => index !== target.shortcutIndex,
+        );
+        if (sourceGroup.shortcuts.length === 0) {
+            updatedApp.groups = updatedApp.groups.filter(
+                (_, index) => index !== target.groupIndex,
+            );
+        }
+
+        const destinationGroup = updatedApp.groups.find(
+            (group) => group.category.trim() === targetCategory,
+        );
+        if (destinationGroup) {
+            destinationGroup.shortcuts = [
+                ...destinationGroup.shortcuts,
+                nextShortcut,
+            ];
+        } else {
+            updatedApp.groups = [
+                ...updatedApp.groups,
+                {
+                    category: targetCategory,
+                    shortcuts: [nextShortcut],
+                },
+            ];
+        }
+
+        persistShortcutApp(updatedApp, closeShortcutForm);
+    }
+
+    function confirmShortcutDelete() {
+        const target = shortcutTarget;
+        if (!target) return;
+
+        const sourceApp = displayApps[target.appIndex];
+        if (!sourceApp) return;
+
+        const updatedApp = cloneAppConfig(sourceApp);
+        const sourceGroup = updatedApp.groups[target.groupIndex];
+        if (!sourceGroup) return;
+
+        sourceGroup.shortcuts = sourceGroup.shortcuts.filter(
+            (_, index) => index !== target.shortcutIndex,
+        );
+
+        if (sourceGroup.shortcuts.length === 0) {
+            updatedApp.groups = updatedApp.groups.filter(
+                (_, index) => index !== target.groupIndex,
+            );
+        }
+
+        persistShortcutApp(updatedApp, closeShortcutDeleteConfirm);
     }
 
     function handleFormSave(appConfig: AppConfig) {
@@ -265,7 +477,14 @@
 
     // --- Keyboard navigation ---
     function hasBlockingOverlay(): boolean {
-        return showDeleteConfirm || showAppForm || showOverwriteConfirm || showHelp;
+        return (
+            showDeleteConfirm ||
+            showShortcutDeleteConfirm ||
+            showAppForm ||
+            showShortcutForm ||
+            showOverwriteConfirm ||
+            showHelp
+        );
     }
 
     function isEditableTarget(target: EventTarget | null): boolean {
@@ -648,6 +867,9 @@
             {searchQuery}
             matchingDescs={currentMatchingDescs}
             onBodyMount={setDetailBody}
+            onCreateShortcut={handleCreateShortcut}
+            onEditShortcut={handleEditShortcut}
+            onDeleteShortcut={handleDeleteShortcut}
             onEdit={() => handleEditApp(selectedIndex)}
             onDelete={() => handleDeleteApp(selectedIndex)}
         />
@@ -680,8 +902,44 @@
         />
     {/if}
 
+    {#if showShortcutForm && shortcutTarget && displayApps[shortcutTarget.appIndex]}
+        <ShortcutFormModal
+            mode={shortcutFormMode}
+            initial={shortcutFormMode === "edit"
+                ? {
+                      category:
+                          displayApps[shortcutTarget.appIndex].groups[
+                              shortcutTarget.groupIndex
+                          ]?.category ?? "",
+                      shortcut:
+                          displayApps[shortcutTarget.appIndex].groups[
+                              shortcutTarget.groupIndex
+                          ]?.shortcuts[shortcutTarget.shortcutIndex] ?? {
+                              desc: "",
+                          },
+                  }
+                : null}
+            existingCategories={uniqueCategories(
+                displayApps[shortcutTarget.appIndex],
+            )}
+            onSave={handleShortcutSave}
+            onCancel={closeShortcutForm}
+        />
+    {/if}
+
     {#if showHelp}
         <HelpPanel onClose={() => (showHelp = false)} />
+    {/if}
+
+    {#if showShortcutDeleteConfirm && shortcutTarget && displayApps[shortcutTarget.appIndex]}
+        <ConfirmDialog
+            title="Delete Shortcut"
+            message={`Are you sure you want to delete "${escapeHtml(displayApps[shortcutTarget.appIndex].groups[shortcutTarget.groupIndex]?.shortcuts[shortcutTarget.shortcutIndex]?.desc ?? "")}" from "${escapeHtml(displayApps[shortcutTarget.appIndex].app)}"?`}
+            confirmLabel="Delete"
+            danger={true}
+            onConfirm={confirmShortcutDelete}
+            onCancel={closeShortcutDeleteConfirm}
+        />
     {/if}
 
     {#if showOverwriteConfirm}
