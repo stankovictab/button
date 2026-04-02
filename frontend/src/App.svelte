@@ -24,6 +24,7 @@
     import AppFormModal from "./lib/components/AppFormModal.svelte";
     import NotificationBar from "./lib/components/NotificationBar.svelte";
     import HelpPanel from "./lib/components/HelpPanel.svelte";
+    import FlamingoEasterEgg from "./lib/components/FlamingoEasterEgg.svelte";
 
     // --- State ---
     let apps: AppConfig[] = $state([]);
@@ -48,6 +49,7 @@
     let showHelp: boolean = $state(false);
     let searchInput: HTMLInputElement | undefined = $state();
     let detailBody: HTMLDivElement | undefined = $state();
+    let flamingoTrigger = $state(0);
 
     // --- Derived: sorted base apps ---
     let sortedBaseApps = $derived.by(() => {
@@ -320,6 +322,10 @@
         });
     }
 
+    function launchFlamingo() {
+        flamingoTrigger += 1;
+    }
+
     function isSearchInputTarget(target: EventTarget | null): boolean {
         return target === searchInput;
     }
@@ -392,6 +398,18 @@
         ) {
             e.preventDefault();
             scrollDetailPane("up");
+            return;
+        }
+
+        if (
+            !editableTarget &&
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            key === "f"
+        ) {
+            e.preventDefault();
+            launchFlamingo();
             return;
         }
 
@@ -585,6 +603,8 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <main class="app-shell">
+    <FlamingoEasterEgg trigger={flamingoTrigger} />
+
     <Toolbar
         bind:searchQuery
         bind:showHelp
@@ -681,6 +701,7 @@
 
 <style>
     .app-shell {
+        position: relative;
         display: flex;
         flex-direction: column;
         height: 100vh;
