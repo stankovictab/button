@@ -51,31 +51,9 @@
         <div class="section-label">QUICK REFERENCE</div>
         <ul class="tips">
             <li class="tip">
-                <span class="tip-icon"><Search size={13} /></span>
-                <span class="tip-text"
-                    >Type anywhere to search apps and shortcuts.</span
-                >
-            </li>
-            <li class="tip">
-                <span class="tip-icon"><ArrowUpDown size={13} /></span>
-                <span class="tip-text">Navigate apps with arrow keys.</span>
-            </li>
-            <li class="tip">
-                <span class="tip-icon"><Keyboard size={13} /></span>
-                <span class="tip-text"
-                    ><kbd>Esc</kbd> clears the search query.</span
-                >
-            </li>
-            <li class="tip">
-                <span class="tip-icon"><Monitor size={13} /></span>
-                <span class="tip-text"
-                    >Toggle Linux / macOS to switch shortcut sets.</span
-                >
-            </li>
-            <li class="tip">
                 <span class="tip-icon"><FolderOpen size={13} /></span>
                 <span class="tip-text">
-                    Add apps by dropping YAML files into<br />
+                    Add apps with <kbd>n</kbd> or by adding YAML files to<br />
                     <code>~/.config/button/apps/</code>.<br />
                     <!-- svelte-ignore a11y_invalid_attribute -->
                     <a
@@ -89,6 +67,39 @@
                         }}>View example config →</a
                     >
                 </span>
+            </li>
+            <li class="tip">
+                <span class="tip-icon"><Search size={13} /></span>
+                <span class="tip-text"
+                    ><kbd>Ctrl</kbd> + <kbd>F</kbd> or <kbd>/</kbd> focuses search.</span
+                >
+            </li>
+            <li class="tip">
+                <span class="tip-icon"><ArrowUpDown size={13} /></span>
+                <span class="tip-text"
+                    >Use <kbd>&uarr;</kbd><kbd>&darr;</kbd> or <kbd>j</kbd><kbd
+                        >k</kbd
+                    >
+                    to move through apps.<br />
+                    Use <kbd>Ctrl</kbd> + <kbd>j</kbd><kbd>k</kbd> to scroll the
+                    shortcut list.</span
+                >
+            </li>
+            <li class="tip">
+                <span class="tip-icon"><Keyboard size={13} /></span>
+                <span class="tip-text"
+                    ><kbd>n</kbd> creates a new app, <kbd>e</kbd> edits,
+                    <kbd>d</kbd>
+                    deletes, <kbd>?</kbd> opens help,<br />
+                    <kbd>s</kbd> cycles app-list sorting,
+                    <kbd>Backspace</kbd> clears search.</span
+                >
+            </li>
+            <li class="tip">
+                <span class="tip-icon"><Monitor size={13} /></span>
+                <span class="tip-text"
+                    ><kbd>h</kbd><kbd>l</kbd> toggles Linux and macOS shortcut sets.</span
+                >
             </li>
         </ul>
     </div>

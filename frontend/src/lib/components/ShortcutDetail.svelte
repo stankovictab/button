@@ -9,6 +9,7 @@
         currentOS,
         searchQuery = "",
         matchingDescs = new Set<string>(),
+        onBodyMount,
         onEdit,
         onDelete,
     }: {
@@ -16,9 +17,16 @@
         currentOS: "linux" | "darwin";
         searchQuery: string;
         matchingDescs: Set<string>;
+        onBodyMount?: (element: HTMLDivElement | undefined) => void;
         onEdit?: () => void;
         onDelete?: () => void;
     } = $props();
+
+    let detailBody: HTMLDivElement | undefined = $state();
+
+    $effect(() => {
+        onBodyMount?.(detailBody);
+    });
 
     function resolveKeys(shortcut: {
         keys?: string[];
@@ -107,7 +115,7 @@
         </div>
 
         <!-- Shortcut groups -->
-        <div class="detail-body">
+        <div class="detail-body" bind:this={detailBody}>
             {#if totalShortcuts(app) === 0}
                 <div class="detail-body-empty">
                     <Ghost size={50} />
@@ -175,10 +183,38 @@
 
         <!-- Footer -->
         <div class="detail-footer">
-            <span class="detail-footer-hint">
-                <kbd class="hint-key">&uarr;&darr;</kbd> navigate
-                <kbd class="hint-key">Esc</kbd> clear
-            </span>
+            <div
+                class="detail-footer-shortcuts"
+                aria-label="Keyboard shortcuts"
+            >
+                <span class="detail-footer-shortcut">
+                    <span class="detail-footer-keys">
+                        <kbd class="hint-key">j</kbd>
+                        <span class="detail-footer-or">/</span>
+                        <kbd class="hint-key">k</kbd>
+                    </span>
+                    <span class="detail-footer-label">Move</span>
+                </span>
+                <span class="detail-footer-shortcut">
+                    <span class="detail-footer-keys">
+                        <kbd class="hint-key">/</kbd>
+                    </span>
+                    <span class="detail-footer-label">Search</span>
+                </span>
+                <span class="detail-footer-shortcut">
+                    <span class="detail-footer-keys">
+                        <kbd class="hint-key">e</kbd>
+                    </span>
+                    <span class="detail-footer-label">Edit</span>
+                </span>
+                <span class="detail-footer-shortcut">
+                    <span class="detail-footer-keys">
+                        <kbd class="hint-key">?</kbd>
+                    </span>
+                    <span class="detail-footer-label">Help</span>
+                </span>
+            </div>
+            <span class="detail-footer-custom">Who still uses the mouse?</span>
         </div>
     </div>
 {:else}
@@ -361,6 +397,10 @@
         background: #1c1c1c;
     }
 
+    .shortcut-group--match .shortcut-row:hover {
+        background: #112645;
+    }
+
     .shortcut-group--match {
         border-left: 3px solid #3a88ed;
         border-right: 0px;
@@ -397,20 +437,52 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 8px 16px;
+        gap: 12px;
+        padding: 8px 10px;
         border-top: 1px solid #1c1c1c;
         height: 33px;
     }
 
-    .detail-footer-hint {
-        font-size: 12px;
-        font-weight: 500;
-        /* font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", */
-        /* Menlo, monospace; */
-        color: #3f3f3f;
+    .detail-footer-shortcuts {
         display: flex;
         align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        min-width: 0;
+    }
+
+    .detail-footer-shortcut {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         gap: 6px;
+        padding: 2px 8px;
+        border-radius: 5px;
+        /* background: #151515; */
+        border: 1px solid #1c1c1c;
+    }
+
+    .detail-footer-keys {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .detail-footer-or {
+        font-size: 10px;
+        color: #3f3f3f;
+    }
+
+    .detail-footer-label {
+        font-size: 11px;
+        color: #525252;
+    }
+
+    .detail-footer-custom {
+        margin-left: auto;
+        font-size: 12px;
+        color: #3f3f3f;
+        white-space: nowrap;
     }
 
     .hint-key {
