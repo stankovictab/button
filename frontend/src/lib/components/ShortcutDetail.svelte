@@ -2,7 +2,8 @@
     import type { AppConfig, Group } from "../../types";
     import KeyBadge from "./KeyBadge.svelte";
     import AppIcon from "./AppIcon.svelte";
-    import { SquarePen, Trash2, Ghost, Plus } from "lucide-svelte";
+    import { SquarePen, Trash2, Ghost, Plus, FilePenLine } from "lucide-svelte";
+    import { OpenAppFile } from "../../../wailsjs/go/main/App";
 
     let {
         app,
@@ -132,6 +133,16 @@
                         <SquarePen size={14} />
                     </button>
                 {/if}
+                {#if app}
+                    <button
+                        class="detail-action-btn"
+                        onclick={() => OpenAppFile(app.app)}
+                        title="Open YAML file"
+                        aria-label="Open YAML file"
+                    >
+                        <FilePenLine size={14} />
+                    </button>
+                {/if}
                 {#if onDelete}
                     <button
                         class="detail-action-btn detail-action-btn--danger"
@@ -167,13 +178,18 @@
                         {#each shortcuts as { shortcut, shortcutIndex }}
                             {@const binds = resolveKeys(shortcut)}
                             <div class="shortcut-row">
-                                <span class="shortcut-desc">{shortcut.desc}</span>
+                                <span class="shortcut-desc"
+                                    >{shortcut.desc}</span
+                                >
                                 <div class="shortcut-row-right">
                                     {#if binds.length > 0}
                                         <div class="shortcut-keys">
                                             {#each binds as bind, i}
                                                 {#if i > 0}
-                                                    <span class="shortcut-bind-or">or</span>
+                                                    <span
+                                                        class="shortcut-bind-or"
+                                                        >or</span
+                                                    >
                                                 {/if}
                                                 <KeyBadge
                                                     keys={bind}

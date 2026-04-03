@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount, tick } from "svelte";
-    import { X, Plus, Trash2 } from "lucide-svelte";
+    import { X, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-svelte";
     import type { AppConfig, Group, Shortcut } from "../../types";
 
     let {
@@ -98,6 +98,33 @@
 
     function removeShortcut(gi: number, si: number) {
         groups[gi].shortcuts = groups[gi].shortcuts.filter((_, i) => i !== si);
+    }
+
+    function moveShortcutUp(gi: number, si: number) {
+        if (si > 0) {
+            const s = groups[gi].shortcuts;
+            const updated = [...s];
+            [updated[si - 1], updated[si]] = [updated[si], updated[si - 1]];
+            groups[gi].shortcuts = updated;
+        } else if (gi > 0) {
+            const shortcut = groups[gi].shortcuts[0];
+            groups[gi].shortcuts = groups[gi].shortcuts.slice(1);
+            groups[gi - 1].shortcuts = [...groups[gi - 1].shortcuts, shortcut];
+        }
+    }
+
+    function moveShortcutDown(gi: number, si: number) {
+        const len = groups[gi].shortcuts.length;
+        if (si < len - 1) {
+            const s = groups[gi].shortcuts;
+            const updated = [...s];
+            [updated[si], updated[si + 1]] = [updated[si + 1], updated[si]];
+            groups[gi].shortcuts = updated;
+        } else if (gi < groups.length - 1) {
+            const shortcut = groups[gi].shortcuts[len - 1];
+            groups[gi].shortcuts = groups[gi].shortcuts.slice(0, -1);
+            groups[gi + 1].shortcuts = [shortcut, ...groups[gi + 1].shortcuts];
+        }
     }
 
     function draftFieldFor(field: KeyField): DraftField {
@@ -447,6 +474,29 @@
                                             bind:value={shortcut.desc}
                                             placeholder="Shortcut description"
                                         />
+                                        <button
+                                            class="icon-btn"
+                                            onclick={() =>
+                                                moveShortcutUp(gi, si)}
+                                            title="Move up"
+                                            disabled={gi === 0 && si === 0}
+                                            tabindex="-1"
+                                        >
+                                            <ChevronUp size={15} />
+                                        </button>
+                                        <button
+                                            class="icon-btn"
+                                            onclick={() =>
+                                                moveShortcutDown(gi, si)}
+                                            title="Move down"
+                                            disabled={gi ===
+                                                groups.length - 1 &&
+                                                si ===
+                                                    group.shortcuts.length - 1}
+                                            tabindex="-1"
+                                        >
+                                            <ChevronDown size={15} />
+                                        </button>
                                         <button
                                             class="icon-btn icon-btn--danger"
                                             onclick={() =>
