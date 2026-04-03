@@ -178,9 +178,9 @@
         const clone: Shortcut = {
             desc: shortcut.desc,
         };
-        if (shortcut.keys) clone.keys = [...shortcut.keys];
-        if (shortcut.linux) clone.linux = [...shortcut.linux];
-        if (shortcut.macos) clone.macos = [...shortcut.macos];
+        if (shortcut.keys) clone.keys = shortcut.keys.map((b) => [...b]);
+        if (shortcut.linux) clone.linux = shortcut.linux.map((b) => [...b]);
+        if (shortcut.macos) clone.macos = shortcut.macos.map((b) => [...b]);
         return clone;
     }
 

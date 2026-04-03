@@ -16,16 +16,16 @@
     } = $props();
 
     type KeyField = "keys" | "linux" | "macos";
-    type DraftField = "keysDraft" | "linuxDraft" | "macosDraft";
+    type DraftField = "keysDrafts" | "linuxDrafts" | "macosDrafts";
 
     type ShortcutForm = {
         desc: string;
-        keys: string[];
-        linux: string[];
-        macos: string[];
-        keysDraft: string;
-        linuxDraft: string;
-        macosDraft: string;
+        keys: string[][];
+        linux: string[][];
+        macos: string[][];
+        keysDrafts: string[];
+        linuxDrafts: string[];
+        macosDrafts: string[];
     };
 
     type GroupForm = {
@@ -36,12 +36,12 @@
     function emptyShortcut(): ShortcutForm {
         return {
             desc: "",
-            keys: [],
-            linux: [],
-            macos: [],
-            keysDraft: "",
-            linuxDraft: "",
-            macosDraft: "",
+            keys: [[]],
+            linux: [[]],
+            macos: [[]],
+            keysDrafts: [""],
+            linuxDrafts: [""],
+            macosDrafts: [""],
         };
     }
 
@@ -54,15 +54,20 @@
     const initGroups: GroupForm[] = initial
         ? initial.groups.map((g) => ({
               category: g.category,
-              shortcuts: g.shortcuts.map((s) => ({
-                  desc: s.desc,
-                  keys: [...(s.keys ?? [])],
-                  linux: [...(s.linux ?? [])],
-                  macos: [...(s.macos ?? [])],
-                  keysDraft: "",
-                  linuxDraft: "",
-                  macosDraft: "",
-              })),
+              shortcuts: g.shortcuts.map((s) => {
+                  const k = s.keys?.length ? s.keys.map((b) => [...b]) : [[]];
+                  const l = s.linux?.length ? s.linux.map((b) => [...b]) : [[]];
+                  const m = s.macos?.length ? s.macos.map((b) => [...b]) : [[]];
+                  return {
+                      desc: s.desc,
+                      keys: k,
+                      linux: l,
+                      macos: m,
+                      keysDrafts: k.map(() => ""),
+                      linuxDrafts: l.map(() => ""),
+                      macosDrafts: m.map(() => ""),
+                  };
+              }),
           }))
         : [{ category: "", shortcuts: [emptyShortcut()] }];
 
@@ -80,8 +85,15 @@
         groups = groups.filter((_, i) => i !== gi);
     }
 
-    function addShortcut(gi: number) {
+    async function addShortcut(gi: number) {
         groups[gi].shortcuts = [...groups[gi].shortcuts, emptyShortcut()];
+        await tick();
+        const newSi = groups[gi].shortcuts.length - 1;
+        panelEl
+            ?.querySelector<HTMLInputElement>(
+                `[data-gi="${gi}"][data-si="${newSi}"].shortcut-desc`,
+            )
+            ?.focus();
     }
 
     function removeShortcut(gi: number, si: number) {
@@ -89,19 +101,25 @@
     }
 
     function draftFieldFor(field: KeyField): DraftField {
-        return (field + "Draft") as DraftField;
+        return (field + "Drafts") as DraftField;
     }
 
-    function commitDraft(gi: number, si: number, field: KeyField) {
+    function commitDraft(
+        gi: number,
+        si: number,
+        field: KeyField,
+        bindIndex: number,
+    ) {
         const draftField = draftFieldFor(field);
-        const draft = groups[gi].shortcuts[si][draftField].trim();
-        if (draft) {
-            groups[gi].shortcuts[si][field] = [
-                ...groups[gi].shortcuts[si][field],
-                draft,
-            ];
-            groups[gi].shortcuts[si][draftField] = "";
-        }
+        const drafts = groups[gi].shortcuts[si][draftField] as string[];
+        const draft = drafts[bindIndex].trim();
+        if (!draft) return;
+        groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][field].map(
+            (b, i) => (i === bindIndex ? [...b, draft] : b),
+        );
+        const newDrafts = [...drafts];
+        newDrafts[bindIndex] = "";
+        groups[gi].shortcuts[si][draftField] = newDrafts as never;
     }
 
     function handleChipKeydown(
@@ -109,36 +127,84 @@
         gi: number,
         si: number,
         field: KeyField,
+        bindIndex: number,
     ) {
         const draftField = draftFieldFor(field);
-        const draft = groups[gi].shortcuts[si][draftField].trim();
+        const drafts = groups[gi].shortcuts[si][draftField] as string[];
+        const draft = drafts[bindIndex].trim();
 
         if (e.key === "Enter" && draft) {
             e.preventDefault();
-            commitDraft(gi, si, field);
-        } else if (
-            e.key === "Backspace" &&
-            !groups[gi].shortcuts[si][draftField]
-        ) {
+            commitDraft(gi, si, field, bindIndex);
+        } else if (e.key === "Backspace" && !drafts[bindIndex]) {
             groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][
                 field
-            ].slice(0, -1);
+            ].map((b, i) => (i === bindIndex ? b.slice(0, -1) : b));
         }
     }
 
-    function removeChip(gi: number, si: number, field: KeyField, ci: number) {
-        groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][
-            field
-        ].filter((_, i) => i !== ci);
+    function removeChip(
+        gi: number,
+        si: number,
+        field: KeyField,
+        bindIndex: number,
+        ci: number,
+    ) {
+        groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][field].map(
+            (b, i) => (i === bindIndex ? b.filter((_, j) => j !== ci) : b),
+        );
+    }
+
+    async function addBind(gi: number, si: number, field: KeyField) {
+        const newBindIndex = groups[gi].shortcuts[si][field].length;
+        groups[gi].shortcuts[si][field] = [
+            ...groups[gi].shortcuts[si][field],
+            [],
+        ];
+        const draftField = draftFieldFor(field);
+        groups[gi].shortcuts[si][draftField] = [
+            ...(groups[gi].shortcuts[si][draftField] as string[]),
+            "",
+        ] as never;
+        await tick();
+        panelEl
+            ?.querySelector<HTMLInputElement>(
+                `[data-gi="${gi}"][data-si="${si}"][data-field="${field}"][data-bind-index="${newBindIndex}"]`,
+            )
+            ?.focus();
+    }
+
+    function removeBind(
+        gi: number,
+        si: number,
+        field: KeyField,
+        bindIndex: number,
+    ) {
+        const binds = groups[gi].shortcuts[si][field];
+        const draftField = draftFieldFor(field);
+        const drafts = groups[gi].shortcuts[si][draftField] as string[];
+        if (binds.length <= 1) {
+            groups[gi].shortcuts[si][field] = [[]];
+            groups[gi].shortcuts[si][draftField] = [""] as never;
+            return;
+        }
+        groups[gi].shortcuts[si][field] = binds.filter(
+            (_, i) => i !== bindIndex,
+        );
+        groups[gi].shortcuts[si][draftField] = drafts.filter(
+            (_, i) => i !== bindIndex,
+        ) as never;
     }
 
     function handleSave() {
         // Commit any unconfirmed draft text before saving.
         for (let gi = 0; gi < groups.length; gi++) {
             for (let si = 0; si < groups[gi].shortcuts.length; si++) {
-                commitDraft(gi, si, "keys");
-                commitDraft(gi, si, "linux");
-                commitDraft(gi, si, "macos");
+                for (const field of ["keys", "linux", "macos"] as KeyField[]) {
+                    groups[gi].shortcuts[si][field].forEach((_, bindIndex) => {
+                        commitDraft(gi, si, field, bindIndex);
+                    });
+                }
             }
         }
 
@@ -161,9 +227,12 @@
                                 const shortcut: Shortcut = {
                                     desc: s.desc.trim(),
                                 };
-                                if (s.keys.length) shortcut.keys = s.keys;
-                                if (s.linux.length) shortcut.linux = s.linux;
-                                if (s.macos.length) shortcut.macos = s.macos;
+                                const k = s.keys.filter((b) => b.length > 0);
+                                const l = s.linux.filter((b) => b.length > 0);
+                                const m = s.macos.filter((b) => b.length > 0);
+                                if (k.length) shortcut.keys = k;
+                                if (l.length) shortcut.linux = l;
+                                if (m.length) shortcut.macos = m;
                                 return shortcut;
                             }),
                     }),
@@ -321,13 +390,13 @@
             <div class="field-row">
                 <label class="field">
                     <span class="field-label">App Name</span>
-                                    <input
+                    <input
                         bind:this={appNameInput}
                         type="text"
                         class="field-input"
                         bind:value={appName}
                         placeholder="My App"
-                                    />
+                    />
                 </label>
                 <label class="field field--icon">
                     <span class="field-label">Icon ID</span>
@@ -373,6 +442,8 @@
                                         <input
                                             type="text"
                                             class="field-input shortcut-desc"
+                                            data-gi={gi}
+                                            data-si={si}
                                             bind:value={shortcut.desc}
                                             placeholder="Shortcut description"
                                         />
@@ -397,57 +468,147 @@
                                                           ? "Linux"
                                                           : "macOS"}
                                                 </span>
-                                                <div class="chips-wrap">
-                                                    {#each shortcut[field] as key, ci}
-                                                        <span class="chip">
-                                                            {key}
-                                                            <button
-                                                                class="chip-remove"
-                                                                type="button"
-                                                                tabindex="-1"
-                                                                onclick={() =>
-                                                                    removeChip(
-                                                                        gi,
-                                                                        si,
-                                                                        field,
-                                                                        ci,
-                                                                    )}
+                                                <div class="key-binds">
+                                                    {#each shortcut[field] as bind, bindIndex}
+                                                        {#if bindIndex > 0}
+                                                            <div
+                                                                class="bind-or-label"
                                                             >
-                                                                ×
-                                                            </button>
-                                                        </span>
+                                                                or
+                                                            </div>
+                                                        {/if}
+                                                        <div class="bind-row">
+                                                            <div
+                                                                class="chips-wrap"
+                                                            >
+                                                                {#each bind as key, ci}
+                                                                    <span
+                                                                        class="chip"
+                                                                    >
+                                                                        {key}
+                                                                        <button
+                                                                            class="chip-remove"
+                                                                            type="button"
+                                                                            tabindex="-1"
+                                                                            onclick={() =>
+                                                                                removeChip(
+                                                                                    gi,
+                                                                                    si,
+                                                                                    field,
+                                                                                    bindIndex,
+                                                                                    ci,
+                                                                                )}
+                                                                        >
+                                                                            ×
+                                                                        </button>
+                                                                    </span>
+                                                                {/each}
+                                                                <input
+                                                                    class="chips-input"
+                                                                    type="text"
+                                                                    data-gi={gi}
+                                                                    data-si={si}
+                                                                    data-field={field}
+                                                                    data-bind-index={bindIndex}
+                                                                    value={(
+                                                                        shortcut[
+                                                                            draftFieldFor(
+                                                                                field,
+                                                                            )
+                                                                        ] as string[]
+                                                                    )[
+                                                                        bindIndex
+                                                                    ]}
+                                                                    oninput={(
+                                                                        e,
+                                                                    ) => {
+                                                                        const newDrafts =
+                                                                            [
+                                                                                ...(groups[
+                                                                                    gi
+                                                                                ]
+                                                                                    .shortcuts[
+                                                                                    si
+                                                                                ][
+                                                                                    draftFieldFor(
+                                                                                        field,
+                                                                                    )
+                                                                                ] as string[]),
+                                                                            ];
+                                                                        newDrafts[
+                                                                            bindIndex
+                                                                        ] = (
+                                                                            e.currentTarget as HTMLInputElement
+                                                                        ).value;
+                                                                        groups[
+                                                                            gi
+                                                                        ].shortcuts[
+                                                                            si
+                                                                        ][
+                                                                            draftFieldFor(
+                                                                                field,
+                                                                            )
+                                                                        ] =
+                                                                            newDrafts as never;
+                                                                    }}
+                                                                    onkeydown={(
+                                                                        e,
+                                                                    ) =>
+                                                                        handleChipKeydown(
+                                                                            e,
+                                                                            gi,
+                                                                            si,
+                                                                            field,
+                                                                            bindIndex,
+                                                                        )}
+                                                                    onblur={() =>
+                                                                        commitDraft(
+                                                                            gi,
+                                                                            si,
+                                                                            field,
+                                                                            bindIndex,
+                                                                        )}
+                                                                    placeholder={bind.length ===
+                                                                    0
+                                                                        ? field ===
+                                                                          "keys"
+                                                                            ? "Ctrl Alt j"
+                                                                            : "Override"
+                                                                        : ""}
+                                                                />
+                                                            </div>
+                                                            {#if shortcut[field].length > 1 || bind.length > 0}
+                                                                <button
+                                                                    class="bind-remove"
+                                                                    type="button"
+                                                                    tabindex="-1"
+                                                                    onclick={() =>
+                                                                        removeBind(
+                                                                            gi,
+                                                                            si,
+                                                                            field,
+                                                                            bindIndex,
+                                                                        )}
+                                                                    title="Remove this bind"
+                                                                >
+                                                                    ×
+                                                                </button>
+                                                            {/if}
+                                                        </div>
                                                     {/each}
-                                                    <input
-                                                        class="chips-input"
-                                                        type="text"
-                                                        bind:value={
-                                                            shortcut[
-                                                                draftFieldFor(
-                                                                    field,
-                                                                )
-                                                            ]
-                                                        }
-                                                        onkeydown={(e) =>
-                                                            handleChipKeydown(
-                                                                e,
+                                                    <button
+                                                        class="bind-add"
+                                                        type="button"
+                                                        tabindex="-1"
+                                                        onclick={() =>
+                                                            addBind(
                                                                 gi,
                                                                 si,
                                                                 field,
                                                             )}
-                                                        onblur={() =>
-                                                            commitDraft(
-                                                                gi,
-                                                                si,
-                                                                field,
-                                                            )}
-                                                        placeholder={shortcut[
-                                                            field
-                                                        ].length === 0
-                                                            ? field === "keys"
-                                                                ? "Ctrl Alt j"
-                                                                : "Override"
-                                                            : ""}
-                                                    />
+                                                    >
+                                                        + Add Bind
+                                                    </button>
                                                 </div>
                                             </div>
                                         {/each}
@@ -743,6 +904,67 @@
         flex-direction: column;
         gap: 3px;
         flex: 1;
+    }
+
+    .key-binds {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .bind-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .bind-or-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: #525252;
+        padding-left: 2px;
+    }
+
+    .bind-remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        color: #525252;
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+        padding: 0;
+        border-radius: 3px;
+        transition: color 0.1s;
+    }
+
+    .bind-remove:hover {
+        color: #ff5a5a;
+    }
+
+    .bind-add {
+        align-self: flex-start;
+        background: none;
+        border: 1px dashed #2a2a2a;
+        border-radius: 5px;
+        color: #525252;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 2px 8px;
+        transition:
+            color 0.1s,
+            border-color 0.1s;
+    }
+
+    .bind-add:hover {
+        color: #a1a1a1;
+        border-color: #3a3a3a;
     }
 
     .key-field-label {

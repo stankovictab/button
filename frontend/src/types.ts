@@ -1,8 +1,8 @@
 export type Shortcut = {
   desc: string
-  keys?: string[]
-  linux?: string[]
-  macos?: string[]
+  keys?: string[][]
+  linux?: string[][]
+  macos?: string[][]
 }
 
 export type Group = {

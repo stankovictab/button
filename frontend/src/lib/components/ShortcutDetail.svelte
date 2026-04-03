@@ -35,10 +35,10 @@
     });
 
     function resolveKeys(shortcut: {
-        keys?: string[];
-        linux?: string[];
-        macos?: string[];
-    }): string[] {
+        keys?: string[][];
+        linux?: string[][];
+        macos?: string[][];
+    }): string[][] {
         if (currentOS === "linux" && shortcut.linux?.length)
             return shortcut.linux;
         if (currentOS === "darwin" && shortcut.macos?.length)
@@ -165,16 +165,21 @@
                     >
                         <div class="shortcut-group-label">{group.category}</div>
                         {#each shortcuts as { shortcut, shortcutIndex }}
-                            {@const keys = resolveKeys(shortcut)}
+                            {@const binds = resolveKeys(shortcut)}
                             <div class="shortcut-row">
                                 <span class="shortcut-desc">{shortcut.desc}</span>
                                 <div class="shortcut-row-right">
-                                    {#if keys.length > 0}
+                                    {#if binds.length > 0}
                                         <div class="shortcut-keys">
-                                            <KeyBadge
-                                                {keys}
-                                                highlight={showFilteredGroups()}
-                                            />
+                                            {#each binds as bind, i}
+                                                {#if i > 0}
+                                                    <span class="shortcut-bind-or">or</span>
+                                                {/if}
+                                                <KeyBadge
+                                                    keys={bind}
+                                                    highlight={showFilteredGroups()}
+                                                />
+                                            {/each}
                                         </div>
                                     {:else}
                                         <span class="shortcut-no-keys"
@@ -461,7 +466,7 @@
         border-radius: 6px;
         border-left: 2px solid transparent;
         transition: all 0.1s;
-        height: 34px;
+        min-height: 34px;
     }
 
     .shortcut-row:hover {
@@ -508,7 +513,16 @@
     .shortcut-keys {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
         min-width: 0;
+    }
+
+    .shortcut-bind-or {
+        font-size: 11px;
+        color: #525252;
+        padding: 0 2px;
+        white-space: nowrap;
     }
 
     .shortcut-actions {

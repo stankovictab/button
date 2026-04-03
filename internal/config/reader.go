@@ -119,6 +119,7 @@ func resolveKeys(app *AppConfig) {
 				}
 			}
 			// If neither override was set, Keys keeps its original value (the fallback).
+			// s.Keys is MultiBindKeys ([][]string) — each element is one bind group.
 		}
 	}
 }

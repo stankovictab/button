@@ -18,7 +18,7 @@ func appNameToFilename(name string) string {
 }
 
 // flowStrings is a []string that serialises as a YAML flow sequence,
-// e.g. ["Ctrl", ","] instead of a multi-line block sequence.
+// e.g. [Ctrl, ","] instead of a multi-line block sequence.
 type flowStrings []string
 
 func (f flowStrings) MarshalYAML() (interface{}, error) {
@@ -37,13 +37,50 @@ func (f flowStrings) MarshalYAML() (interface{}, error) {
 	return node, nil
 }
 
-// yamlShortcut mirrors Shortcut but uses flowStrings so key slices are
-// written as inline arrays.
+// multiBindYAML serialises [][]string:
+//   - 0 binds → omitted via omitempty
+//   - 1 bind  → flat flow sequence: [j, k]
+//   - 2+ binds → block sequence of flow sequences:
+//     - [j, k]
+//     - [ArrowUp, ArrowDown]
+type multiBindYAML [][]string
+
+func (m multiBindYAML) MarshalYAML() (interface{}, error) {
+	if len(m) == 0 {
+		return nil, nil
+	}
+	if len(m) == 1 {
+		return flowStrings(m[0]).MarshalYAML()
+	}
+	outer := &yaml.Node{
+		Kind: yaml.SequenceNode,
+		Tag:  "!!seq",
+	}
+	for _, bind := range m {
+		inner := &yaml.Node{
+			Kind:  yaml.SequenceNode,
+			Style: yaml.FlowStyle,
+			Tag:   "!!seq",
+		}
+		for _, s := range bind {
+			inner.Content = append(inner.Content, &yaml.Node{
+				Kind:  yaml.ScalarNode,
+				Tag:   "!!str",
+				Value: s,
+			})
+		}
+		outer.Content = append(outer.Content, inner)
+	}
+	return outer, nil
+}
+
+// yamlShortcut mirrors Shortcut but uses multiBindYAML so key slices are
+// written as inline flow arrays (single bind) or block+flow (multiple binds).
 type yamlShortcut struct {
-	Desc  string      `yaml:"desc"`
-	Keys  flowStrings `yaml:"keys,omitempty"`
-	Linux flowStrings `yaml:"linux,omitempty"`
-	MacOS flowStrings `yaml:"macos,omitempty"`
+	Desc  string        `yaml:"desc"`
+	Keys  multiBindYAML `yaml:"keys,omitempty"`
+	Linux multiBindYAML `yaml:"linux,omitempty"`
+	MacOS multiBindYAML `yaml:"macos,omitempty"`
 }
 
 // yamlGroup mirrors Group but uses yamlShortcut.
@@ -69,9 +106,9 @@ func marshalApp(app AppConfig) ([]byte, error) {
 		for j, s := range g.Shortcuts {
 			shortcuts[j] = yamlShortcut{
 				Desc:  s.Desc,
-				Keys:  flowStrings(s.Keys),
-				Linux: flowStrings(s.Linux),
-				MacOS: flowStrings(s.MacOS),
+				Keys:  multiBindYAML(s.Keys),
+				Linux: multiBindYAML(s.Linux),
+				MacOS: multiBindYAML(s.MacOS),
 			}
 		}
 		groups[i] = yamlGroup{

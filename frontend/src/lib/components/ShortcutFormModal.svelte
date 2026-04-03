@@ -18,7 +18,6 @@
     } = $props();
 
     type KeyField = "keys" | "linux" | "macos";
-    type DraftField = "keysDraft" | "linuxDraft" | "macosDraft";
 
     // --- Form state (captured once at mount — initial is intentionally read only at creation) ---
     // svelte-ignore state_referenced_locally
@@ -26,113 +25,149 @@
     // svelte-ignore state_referenced_locally
     const initDesc = initial?.shortcut.desc ?? "";
     // svelte-ignore state_referenced_locally
-    const initKeys = [...(initial?.shortcut.keys ?? [])];
+    const initKeys = initial?.shortcut.keys?.map((b) => [...b]) ?? [];
     // svelte-ignore state_referenced_locally
-    const initLinux = [...(initial?.shortcut.linux ?? [])];
+    const initLinux = initial?.shortcut.linux?.map((b) => [...b]) ?? [];
     // svelte-ignore state_referenced_locally
-    const initMacos = [...(initial?.shortcut.macos ?? [])];
+    const initMacos = initial?.shortcut.macos?.map((b) => [...b]) ?? [];
 
     let category: string = $state(initCategory);
     let desc: string = $state(initDesc);
-    let keys: string[] = $state(initKeys);
-    let linux: string[] = $state(initLinux);
-    let macos: string[] = $state(initMacos);
-    let keysDraft: string = $state("");
-    let linuxDraft: string = $state("");
-    let macosDraft: string = $state("");
+    // Each field holds an array of binds (string[][]); always at least one slot.
+    let keys: string[][] = $state(initKeys.length > 0 ? initKeys : [[]]);
+    let linux: string[][] = $state(initLinux.length > 0 ? initLinux : [[]]);
+    let macos: string[][] = $state(initMacos.length > 0 ? initMacos : [[]]);
+    // Draft text per bind slot (parallel to the bind arrays above).
+    let keysDrafts: string[] = $state(
+        initKeys.length > 0 ? initKeys.map(() => "") : [""],
+    );
+    let linuxDrafts: string[] = $state(
+        initLinux.length > 0 ? initLinux.map(() => "") : [""],
+    );
+    let macosDrafts: string[] = $state(
+        initMacos.length > 0 ? initMacos.map(() => "") : [""],
+    );
     let panelEl: HTMLDivElement | undefined = $state();
     let descInput: HTMLInputElement | undefined = $state();
     let categoryInput: HTMLInputElement | undefined = $state();
     let categoryMenuOpen: boolean = $state(false);
 
-    function draftFieldFor(field: KeyField): DraftField {
-        return (field + "Draft") as DraftField;
-    }
-
-    function valuesFor(field: KeyField): string[] {
+    function bindsFor(field: KeyField): string[][] {
         if (field === "keys") return keys;
         if (field === "linux") return linux;
         return macos;
     }
 
-    function setValues(field: KeyField, value: string[]) {
-        if (field === "keys") {
-            keys = value;
-            return;
-        }
-        if (field === "linux") {
-            linux = value;
-            return;
-        }
-        macos = value;
+    function draftsFor(field: KeyField): string[] {
+        if (field === "keys") return keysDrafts;
+        if (field === "linux") return linuxDrafts;
+        return macosDrafts;
     }
 
-    function draftValueFor(field: KeyField): string {
-        if (field === "keys") return keysDraft;
-        if (field === "linux") return linuxDraft;
-        return macosDraft;
+    function setBinds(field: KeyField, value: string[][]) {
+        if (field === "keys") keys = value;
+        else if (field === "linux") linux = value;
+        else macos = value;
     }
 
-    function setDraftValue(field: KeyField, value: string) {
-        if (field === "keys") {
-            keysDraft = value;
-            return;
-        }
-        if (field === "linux") {
-            linuxDraft = value;
-            return;
-        }
-        macosDraft = value;
+    function setDrafts(field: KeyField, value: string[]) {
+        if (field === "keys") keysDrafts = value;
+        else if (field === "linux") linuxDrafts = value;
+        else macosDrafts = value;
     }
 
-    function commitDraft(field: KeyField) {
-        const draft = draftValueFor(field).trim();
+    function commitDraftForBind(field: KeyField, bindIndex: number) {
+        const draft = draftsFor(field)[bindIndex].trim();
         if (!draft) return;
-
-        setValues(field, [...valuesFor(field), draft]);
-        setDraftValue(field, "");
+        const newBinds = bindsFor(field).map((b, i) =>
+            i === bindIndex ? [...b, draft] : b,
+        );
+        setBinds(field, newBinds);
+        const newDrafts = draftsFor(field).map((d, i) =>
+            i === bindIndex ? "" : d,
+        );
+        setDrafts(field, newDrafts);
     }
 
-    function handleChipKeydown(e: KeyboardEvent, field: KeyField) {
-        const draft = draftValueFor(field).trim();
+    function handleChipKeydown(
+        e: KeyboardEvent,
+        field: KeyField,
+        bindIndex: number,
+    ) {
+        const draft = draftsFor(field)[bindIndex].trim();
 
         if (e.key === "Enter" && draft) {
             e.preventDefault();
-            commitDraft(field);
+            commitDraftForBind(field, bindIndex);
             return;
         }
 
-        if (e.key === "Backspace" && !draftValueFor(field)) {
-            setValues(field, valuesFor(field).slice(0, -1));
+        if (e.key === "Backspace" && !draftsFor(field)[bindIndex]) {
+            const newBinds = bindsFor(field).map((b, i) =>
+                i === bindIndex ? b.slice(0, -1) : b,
+            );
+            setBinds(field, newBinds);
         }
     }
 
-    function removeChip(field: KeyField, chipIndex: number) {
-        setValues(
+    function removeChip(field: KeyField, bindIndex: number, chipIndex: number) {
+        const newBinds = bindsFor(field).map((b, i) =>
+            i === bindIndex ? b.filter((_, ci) => ci !== chipIndex) : b,
+        );
+        setBinds(field, newBinds);
+    }
+
+    async function addBind(field: KeyField) {
+        const newBindIndex = bindsFor(field).length;
+        setBinds(field, [...bindsFor(field), []]);
+        setDrafts(field, [...draftsFor(field), ""]);
+        await tick();
+        panelEl
+            ?.querySelector<HTMLInputElement>(
+                `[data-field="${field}"][data-bind-index="${newBindIndex}"]`,
+            )
+            ?.focus();
+    }
+
+    function removeBind(field: KeyField, bindIndex: number) {
+        const binds = bindsFor(field);
+        if (binds.length <= 1) {
+            setBinds(field, [[]]);
+            setDrafts(field, [""]);
+            return;
+        }
+        setBinds(
             field,
-            valuesFor(field).filter((_, i) => i !== chipIndex),
+            binds.filter((_, i) => i !== bindIndex),
+        );
+        setDrafts(
+            field,
+            draftsFor(field).filter((_, i) => i !== bindIndex),
         );
     }
 
     function handleSave() {
-        commitDraft("keys");
-        commitDraft("linux");
-        commitDraft("macos");
+        for (const field of ["keys", "linux", "macos"] as KeyField[]) {
+            bindsFor(field).forEach((_, bindIndex) => {
+                commitDraftForBind(field, bindIndex);
+            });
+        }
 
-        const shortcut: Shortcut = {
-            desc: desc.trim(),
-        };
-        if (keys.length) shortcut.keys = keys;
-        if (linux.length) shortcut.linux = linux;
-        if (macos.length) shortcut.macos = macos;
+        const resolvedKeys = keys.filter((b) => b.length > 0);
+        const resolvedLinux = linux.filter((b) => b.length > 0);
+        const resolvedMacos = macos.filter((b) => b.length > 0);
 
-        onSave({
-            category: category.trim(),
-            shortcut,
-        });
+        const shortcut: Shortcut = { desc: desc.trim() };
+        if (resolvedKeys.length) shortcut.keys = resolvedKeys;
+        if (resolvedLinux.length) shortcut.linux = resolvedLinux;
+        if (resolvedMacos.length) shortcut.macos = resolvedMacos;
+
+        onSave({ category: category.trim(), shortcut });
     }
 
-    let canSave = $derived(category.trim().length > 0 && desc.trim().length > 0);
+    let canSave = $derived(
+        category.trim().length > 0 && desc.trim().length > 0,
+    );
     let filteredCategories = $derived.by(() => {
         const query = category.trim().toLowerCase();
         if (!query) return existingCategories;
@@ -396,40 +431,91 @@
                                       ? "Linux"
                                       : "macOS"}
                             </span>
-                            <div class="chips-wrap">
-                                {#each valuesFor(field) as key, chipIndex}
-                                    <span class="chip">
-                                        {key}
-                                        <button
-                                            class="chip-remove"
-                                            type="button"
-                                            tabindex="-1"
-                                            onclick={() =>
-                                                removeChip(field, chipIndex)}
-                                        >
-                                            ×
-                                        </button>
-                                    </span>
+                            <div class="key-binds">
+                                {#each bindsFor(field) as bind, bindIndex}
+                                    {#if bindIndex > 0}
+                                        <div class="bind-or-label">or</div>
+                                    {/if}
+                                    <div class="bind-row">
+                                        <div class="chips-wrap">
+                                            {#each bind as key, chipIndex}
+                                                <span class="chip">
+                                                    {key}
+                                                    <button
+                                                        class="chip-remove"
+                                                        type="button"
+                                                        tabindex="-1"
+                                                        onclick={() =>
+                                                            removeChip(
+                                                                field,
+                                                                bindIndex,
+                                                                chipIndex,
+                                                            )}
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            {/each}
+                                            <input
+                                                class="chips-input"
+                                                type="text"
+                                                data-field={field}
+                                                data-bind-index={bindIndex}
+                                                value={draftsFor(field)[
+                                                    bindIndex
+                                                ]}
+                                                oninput={(e) => {
+                                                    const newDrafts = [
+                                                        ...draftsFor(field),
+                                                    ];
+                                                    newDrafts[bindIndex] = (
+                                                        e.currentTarget as HTMLInputElement
+                                                    ).value;
+                                                    setDrafts(field, newDrafts);
+                                                }}
+                                                onkeydown={(e) =>
+                                                    handleChipKeydown(
+                                                        e,
+                                                        field,
+                                                        bindIndex,
+                                                    )}
+                                                onblur={() =>
+                                                    commitDraftForBind(
+                                                        field,
+                                                        bindIndex,
+                                                    )}
+                                                placeholder={bind.length === 0
+                                                    ? field === "keys"
+                                                        ? "Ctrl Alt j"
+                                                        : "Override"
+                                                    : ""}
+                                            />
+                                        </div>
+                                        {#if bindsFor(field).length > 1 || bind.length > 0}
+                                            <button
+                                                class="bind-remove"
+                                                type="button"
+                                                tabindex="-1"
+                                                onclick={() =>
+                                                    removeBind(
+                                                        field,
+                                                        bindIndex,
+                                                    )}
+                                                title="Remove this bind"
+                                            >
+                                                ×
+                                            </button>
+                                        {/if}
+                                    </div>
                                 {/each}
-                                <input
-                                    class="chips-input"
-                                    type="text"
-                                    value={draftValueFor(field)}
-                                    oninput={(e) =>
-                                        setDraftValue(
-                                            field,
-                                            (e.currentTarget as HTMLInputElement)
-                                                .value,
-                                        )}
-                                    onkeydown={(e) =>
-                                        handleChipKeydown(e, field)}
-                                    onblur={() => commitDraft(field)}
-                                    placeholder={valuesFor(field).length === 0
-                                        ? field === "keys"
-                                            ? "Ctrl Alt j"
-                                            : "Override"
-                                        : ""}
-                                />
+                                <button
+                                    class="bind-add"
+                                    type="button"
+                                    tabindex="-1"
+                                    onclick={() => addBind(field)}
+                                >
+                                    + Add Bind
+                                </button>
                             </div>
                         </div>
                     {/each}
@@ -660,6 +746,67 @@
         flex-direction: column;
         gap: 3px;
         flex: 1;
+    }
+
+    .key-binds {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .bind-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .bind-or-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: #525252;
+        padding-left: 2px;
+    }
+
+    .bind-remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        color: #525252;
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+        padding: 0;
+        border-radius: 3px;
+        transition: color 0.1s;
+    }
+
+    .bind-remove:hover {
+        color: #ff5a5a;
+    }
+
+    .bind-add {
+        align-self: flex-start;
+        background: none;
+        border: 1px dashed #2a2a2a;
+        border-radius: 5px;
+        color: #525252;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 2px 8px;
+        transition:
+            color 0.1s,
+            border-color 0.1s;
+    }
+
+    .bind-add:hover {
+        color: #a1a1a1;
+        border-color: #3a3a3a;
     }
 
     .key-field-label {
