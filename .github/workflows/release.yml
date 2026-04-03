@@ -159,16 +159,16 @@ jobs:
       TAG: ${{ needs.prepare.outputs.tag }}
 
     steps:
-      - name: Download packaged artifacts
-        uses: actions/download-artifact@v6
-        with:
-          path: dist
-          merge-multiple: true
-
       - name: Check out repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Download packaged artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: dist
+          merge-multiple: true
 
       - name: Generate checksums
         run: |
