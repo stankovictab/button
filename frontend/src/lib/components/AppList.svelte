@@ -11,6 +11,7 @@
         nameMatches = {},
         width = 310,
         sortMode = "alpha",
+        versionLabel = "dev",
         onSelect,
         onToggleSort,
         onCreateApp,
@@ -24,6 +25,7 @@
         nameMatches: Record<number, boolean>;
         width: number;
         sortMode: SortMode;
+        versionLabel?: string;
         onSelect: (index: number) => void;
         onToggleSort: () => void;
         onCreateApp: () => void;
@@ -175,7 +177,7 @@
     </div>
 
     <div class="app-list-footer">
-        <span class="app-list-version">v0.0.0-alpha</span>
+        <span class="app-list-version">{versionLabel}</span>
     </div>
 </div>
 

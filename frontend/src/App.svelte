@@ -1,6 +1,7 @@
 <script lang="ts">
     import {
         GetApps,
+        GetAppInfo,
         GetCurrentOS,
         CreateApp,
         UpdateApp,
@@ -12,6 +13,7 @@
     import type {
         AppConfig,
         AppsResponse,
+        AppInfo,
         SortMode,
         Notification,
         NotificationType,
@@ -39,6 +41,10 @@
     let listWidth: number = $state(310);
     let isResizing: boolean = $state(false);
     let sortMode: SortMode = $state("alpha");
+    let appInfo: AppInfo = $state({
+        name: "Button",
+        version: "",
+    });
 
     // --- CRUD modal state ---
     let showDeleteConfirm: boolean = $state(false);
@@ -142,6 +148,13 @@
     let currentMatchingDescs = $derived(
         searchResults.matchingSets[selectedIndex] ?? new Set<string>(),
     );
+    let appVersionLabel = $derived.by(() => {
+        const version = appInfo.version.trim();
+        if (!version) {
+            return "dev";
+        }
+        return version.startsWith("v") ? version : `v${version}`;
+    });
 
     // --- Auto-select first app when search changes ---
     $effect(() => {
@@ -760,6 +773,12 @@
     }
 
     onMount(() => {
+        GetAppInfo()
+            .then((info: AppInfo) => {
+                appInfo = info;
+            })
+            .catch(() => {});
+
         // Detect OS
         GetCurrentOS()
             .then((os: string) => {
@@ -843,6 +862,7 @@
             nameMatches={searchResults.nameMatches}
             width={listWidth}
             {sortMode}
+            versionLabel={appVersionLabel}
             onSelect={(i) => {
                 selectedIndex = i;
             }}
@@ -928,7 +948,11 @@
     {/if}
 
     {#if showHelp}
-        <HelpPanel onClose={() => (showHelp = false)} />
+        <HelpPanel
+            appName={appInfo.name}
+            versionLabel={appVersionLabel}
+            onClose={() => (showHelp = false)}
+        />
     {/if}
 
     {#if showShortcutDeleteConfirm && shortcutTarget && displayApps[shortcutTarget.appIndex]}

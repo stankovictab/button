@@ -39,10 +39,13 @@ go build ./...
 Compiles the Svelte/TypeScript frontend via Vite into `frontend/dist/`. Does **not** produce a runnable application — the Go binary is not included. Useful for checking frontend compilation errors in isolation.
 
 ```bash
+wails generate module
 cd frontend
 npm install
 npm run build
 ```
+
+> **Note:** On a fresh clone, run `wails generate module` first so `frontend/wailsjs/` exists before frontend-only checks/builds.
 
 ### 3. Full app — `wails build`
 
@@ -68,6 +71,23 @@ This starts:
 - A Go recompiler (changes to `.go` files trigger an automatic rebuild and restart)
 
 > **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.
+
+---
+
+## CI/CD
+
+- PRs targeting `main` run validation only: bindings generation, frontend checks/build, `go build ./...`, and a Linux `wails build` smoke test.
+- Releases are created manually from `main` with the GitHub Actions `Release` workflow.
+- The release version comes from `wails.json` `info.productVersion`.
+- Re-running the release workflow for the same version replaces the existing GitHub Release/tag and publishes fresh artifacts from the current `main` commit.
+
+### Release Flow
+
+1. Open a PR and iterate until the branch works locally.
+2. Merge to `main`.
+3. Update `wails.json` `info.productVersion` on `main` whenever you want the next shipped version to change.
+4. Run the `Release` workflow from `main`.
+5. Download the generated Linux/macOS artifacts from the resulting GitHub Release.
 
 ---
 

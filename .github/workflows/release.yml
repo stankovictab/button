@@ -1,0 +1,176 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      asset_version: ${{ steps.version.outputs.asset_version }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate branch
+        run: |
+          if [ "${GITHUB_REF_NAME}" != "main" ]; then
+            echo "Release workflow must be run from main."
+            exit 1
+          fi
+
+      - name: Read release version
+        id: version
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+
+          const config = JSON.parse(fs.readFileSync("wails.json", "utf8"));
+          const rawVersion = String(config?.info?.productVersion ?? "").trim();
+          const normalizedVersion = rawVersion.startsWith("v")
+            ? rawVersion.slice(1)
+            : rawVersion;
+          const semverPattern =
+            /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+
+          if (!semverPattern.test(normalizedVersion)) {
+            console.error(
+              `Invalid wails.json info.productVersion: "${rawVersion}"`,
+            );
+            process.exit(1);
+          }
+
+          fs.appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `version=${normalizedVersion}\n`,
+          );
+          fs.appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `tag=v${normalizedVersion}\n`,
+          );
+          fs.appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `asset_version=v${normalizedVersion}\n`,
+          );
+          EOF
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            platform: linux/amd64
+            artifact_name: linux-amd64
+            build_tags: webkit2_41
+          - runner: macos-14
+            platform: darwin/arm64
+            artifact_name: macos-arm64
+            build_tags: ""
+
+    runs-on: ${{ matrix.runner }}
+    env:
+      ASSET_VERSION: ${{ needs.prepare.outputs.asset_version }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      - name: Install Wails CLI
+        run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Build release app
+        if: matrix.build_tags == ''
+        run: wails build -clean -platform ${{ matrix.platform }}
+
+      - name: Build release app with tags
+        if: matrix.build_tags != ''
+        run: wails build -clean -platform ${{ matrix.platform }} -tags ${{ matrix.build_tags }}
+
+      - name: Package Linux artifact
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p "dist/button-${ASSET_VERSION}-linux-amd64"
+          cp build/bin/button "dist/button-${ASSET_VERSION}-linux-amd64/"
+          cp README.md LICENSE "dist/button-${ASSET_VERSION}-linux-amd64/"
+          tar -C dist -czf "dist/button-${ASSET_VERSION}-linux-amd64.tar.gz" "button-${ASSET_VERSION}-linux-amd64"
+          rm -rf "dist/button-${ASSET_VERSION}-linux-amd64"
+
+      - name: Package macOS artifact
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p dist
+          ditto -c -k --sequesterRsrc --keepParent "build/bin/Button.app" "dist/button-${ASSET_VERSION}-macos-arm64.zip"
+
+      - name: Upload packaged artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    needs:
+      - prepare
+      - build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ needs.prepare.outputs.tag }}
+
+    steps:
+      - name: Download packaged artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          sha256sum dist/* > dist/SHA256SUMS.txt
+
+      - name: Replace existing release if present
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release delete "$TAG" --yes --cleanup-tag
+          fi
+
+          gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/tags/${TAG}" >/dev/null 2>&1 || true
+
+      - name: Create GitHub release
+        run: |
+          gh release create "$TAG" dist/* \
+            --target "${GITHUB_SHA}" \
+            --title "$TAG" \
+            --generate-notes

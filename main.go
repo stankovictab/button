@@ -15,6 +15,9 @@ var assets embed.FS
 //go:embed build/appicon.png
 var appIcon []byte
 
+//go:embed wails.json
+var projectConfig []byte
+
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()

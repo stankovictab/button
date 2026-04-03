@@ -31,3 +31,8 @@ export type AppsResponse = {
   apps: AppConfig[]
   warnings: string[]
 }
+
+export type AppInfo = {
+  name: string
+  version: string
+}
