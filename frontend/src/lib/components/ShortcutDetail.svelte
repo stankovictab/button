@@ -250,8 +250,7 @@
             >
                 <span class="detail-footer-shortcut">
                     <span class="detail-footer-keys">
-                        <kbd class="hint-key">j</kbd>
-                        <kbd class="hint-key">k</kbd>
+                        <kbd class="hint-key">j/k</kbd>
                     </span>
                     <span class="detail-footer-label">Move</span>
                 </span>
@@ -260,6 +259,12 @@
                         <kbd class="hint-key">/</kbd>
                     </span>
                     <span class="detail-footer-label">Search</span>
+                </span>
+                <span class="detail-footer-shortcut">
+                    <span class="detail-footer-keys">
+                        <kbd class="hint-key">n</kbd>
+                    </span>
+                    <span class="detail-footer-label">New</span>
                 </span>
                 <span class="detail-footer-shortcut">
                     <span class="detail-footer-keys">
@@ -388,6 +393,7 @@
 
     .detail-header-meta {
         font-size: 11px;
+        font-weight: 500;
         color: #525252;
     }
 
@@ -613,7 +619,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding: 8px 10px;
+        padding: 8px 8px 8px 6px;
         border-top: 1px solid #1c1c1c;
         height: 33px;
         background: #111111;
@@ -623,7 +629,6 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        /* gap: 8px; */
         min-width: 0;
     }
 
@@ -632,7 +637,7 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: 2px 8px;
+        padding: 2px 4px;
         border-radius: 5px;
         /* background: #151515; */
         /* border: 1px solid #1c1c1c; */

@@ -29,6 +29,22 @@ groups:
         keys: [Ctrl, n]
         macos: [Cmd, n]
 
+        # Multiple alternative binds for one action.
+        # Use an array of arrays — each inner array is one alternative.
+      - desc: "Move up"
+        keys:
+          - [k]
+          - [ArrowUp]
+
+        # Multiple alternatives also work with platform overrides.
+      - desc: "Search"
+        keys:
+          - [/]
+          - [Ctrl, f]
+        macos:
+          - [/]
+          - [Cmd, f]
+
   - category: "Editing"
     shortcuts:
 

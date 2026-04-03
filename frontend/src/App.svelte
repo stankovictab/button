@@ -29,6 +29,7 @@
     import ShortcutFormModal from "./lib/components/ShortcutFormModal.svelte";
     import NotificationBar from "./lib/components/NotificationBar.svelte";
     import HelpPanel from "./lib/components/HelpPanel.svelte";
+    import DonatePanel from "./lib/components/DonatePanel.svelte";
     import FlamingoEasterEgg from "./lib/components/FlamingoEasterEgg.svelte";
 
     // --- State ---
@@ -66,6 +67,7 @@
     let pendingOverwriteApp: AppConfig | null = $state(null);
     let pendingOverwriteOldName: string = $state("");
     let showHelp: boolean = $state(false);
+    let showDonate: boolean = $state(false);
     let searchInput: HTMLInputElement | undefined = $state();
     let detailBody: HTMLDivElement | undefined = $state();
     let flamingoTrigger = $state(0);
@@ -496,7 +498,8 @@
             showAppForm ||
             showShortcutForm ||
             showOverwriteConfirm ||
-            showHelp
+            showHelp ||
+            showDonate
         );
     }
 
@@ -846,6 +849,7 @@
     <Toolbar
         bind:searchQuery
         bind:showHelp
+        bind:showDonate
         {currentOS}
         onToggleOS={toggleOS}
         onSearchInput={setSearchInput}
@@ -953,6 +957,10 @@
             versionLabel={appVersionLabel}
             onClose={() => (showHelp = false)}
         />
+    {/if}
+
+    {#if showDonate}
+        <DonatePanel onClose={() => (showDonate = false)} />
     {/if}
 
     {#if showShortcutDeleteConfirm && shortcutTarget && displayApps[shortcutTarget.appIndex]}
