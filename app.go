@@ -89,6 +89,22 @@ func (a *App) DeleteApp(appName string) error {
 	return config.DeleteApp(appName)
 }
 
+// OpenAppFile opens the YAML file for the given app in the system's default text editor.
+func (a *App) OpenAppFile(appName string) error {
+	path, err := config.AppFilePath(appName)
+	if err != nil {
+		return err
+	}
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", path)
+	default:
+		cmd = exec.Command("xdg-open", path)
+	}
+	return cmd.Start()
+}
+
 // installLinuxAssets writes the app icon and .desktop file to the user's local
 // XDG directories so Wayland compositors can resolve the correct taskbar icon.
 func installLinuxAssets() {

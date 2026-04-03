@@ -191,6 +191,15 @@ func UpdateApp(oldAppName string, app AppConfig, force bool) (warning string, er
 	return "", nil
 }
 
+// AppFilePath returns the absolute path to the YAML file for the given app name.
+func AppFilePath(appName string) (string, error) {
+	dir, err := ConfigDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, appNameToFilename(appName)), nil
+}
+
 // DeleteApp removes the YAML file for the given app name.
 func DeleteApp(appName string) error {
 	dir, err := ConfigDir()

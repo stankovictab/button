@@ -33,6 +33,7 @@ import {
 import yaziSvg from './custom/yazi.svg?raw';
 import vscodeSvg from './custom/vscode.svg?raw';
 import terminalSvg from './custom/terminal.svg?raw';
+import buttonSvg from './custom/button.svg?raw';
 
 interface IconEntry {
     svg: string;
@@ -66,4 +67,5 @@ export const iconMap: Record<string, IconEntry> = {
     yazi: { svg: yaziSvg, hex: '6CB644' },
     vscode: { svg: vscodeSvg, hex: '007ACC' },
     terminal: { svg: terminalSvg, hex: 'a1a1a1' },
+    button: { svg: buttonSvg, hex: 'cccccc' },
 };
