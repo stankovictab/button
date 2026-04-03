@@ -3,17 +3,25 @@ package main
 import (
 	"button/internal/config"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 // MigrationResult holds the outcome of the .yml → .yaml migration at startup.
 type MigrationResult struct {
 	Migrated int      `json:"migrated"`
 	Warnings []string `json:"warnings"`
+}
+
+// AppInfo holds the user-facing app metadata surfaced to the frontend.
+type AppInfo struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
 }
 
 // App struct
@@ -64,6 +72,36 @@ func (a *App) GetApps() (config.AppsResponse, error) {
 // GetCurrentOS returns the detected operating system ("linux" or "darwin").
 func (a *App) GetCurrentOS() string {
 	return runtime.GOOS
+}
+
+// GetAppInfo returns the app name and version from the embedded Wails config.
+func (a *App) GetAppInfo() AppInfo {
+	type projectInfo struct {
+		Name string `json:"name"`
+		Info struct {
+			ProductName    string `json:"productName"`
+			ProductVersion string `json:"productVersion"`
+		} `json:"info"`
+	}
+
+	result := AppInfo{
+		Name: "Button",
+	}
+
+	var project projectInfo
+	if err := json.Unmarshal(projectConfig, &project); err != nil {
+		return result
+	}
+
+	if productName := strings.TrimSpace(project.Info.ProductName); productName != "" {
+		result.Name = productName
+	} else if projectName := strings.TrimSpace(project.Name); projectName != "" {
+		result.Name = projectName
+	}
+
+	result.Version = strings.TrimSpace(project.Info.ProductVersion)
+
+	return result
 }
 
 // GetMigrationResult returns the outcome of the .yml → .yaml migration

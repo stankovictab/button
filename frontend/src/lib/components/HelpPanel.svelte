@@ -9,7 +9,15 @@
     } from "lucide-svelte";
     import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
 
-    let { onClose }: { onClose: () => void } = $props();
+    let {
+        appName = "Button",
+        versionLabel = "dev",
+        onClose,
+    }: {
+        appName?: string;
+        versionLabel?: string;
+        onClose: () => void;
+    } = $props();
 
     function handleBackdropClick(e: MouseEvent) {
         if (e.target === e.currentTarget) onClose();
@@ -37,9 +45,9 @@
 
         <!-- Identity -->
         <div class="identity">
-            <img src="/appicon.png" alt="button logo" class="app-icon" />
-            <div class="app-name">button</div>
-            <div class="app-version">v0.0.0-alpha</div>
+            <img src="/appicon.png" alt={`${appName} logo`} class="app-icon" />
+            <div class="app-name">{appName}</div>
+            <div class="app-version">{versionLabel}</div>
             <p class="app-tagline">
                 A keyboard shortcut reference<br />for your desktop apps.
             </p>
