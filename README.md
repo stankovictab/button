@@ -12,13 +12,28 @@ A cross-platform (Linux and macOS) quick-reference GUI for personal keyboard sho
 
 See `PLAN.md` for full project details and roadmap.
 
+> **macOS note:** If a downloaded `Button.app` will not open, run `xattr -cr ~/Downloads/Button.app` or allow it in **System Settings** so macOS removes the quarantine flag.
+
 ---
 
-## Prerequisites
+## Config
 
-- [Go](https://go.dev/) 1.21+
-- [Wails v2](https://wails.io/docs/gettingstarted/installation) (`go install github.com/wailsapp/wails/v2/cmd/wails@latest`)
-- [Node.js](https://nodejs.org/) (for the frontend)
+App shortcuts are defined as YAML files in `~/.config/button/apps/`.\
+See [this example](examples/template.yaml) for an app configuration.
+
+### YAML fields
+
+| Field | Description |
+| --- | --- |
+| `app` | Display name shown in the app list. **Required.** |
+| `icon` | Lowercase icon key used to look up the app icon in `frontend/src/lib/icons/iconMap.ts`. |
+| `groups` | Array of shortcut groups. Each group contains a `category` and `shortcuts`. |
+| `category` | Group name shown in the app detail panel. |
+| `shortcuts` | Array of shortcut entries inside a group. |
+| `desc` | Shortcut description shown next to the key binds. |
+| `keys` | Default binds for the shortcut. A single bind: `[Ctrl, K]`. Multiple alternatives (array of arrays): `[[Ctrl, K], [Ctrl, Shift, K]]` or in block style (each alternative on its own `- [...]` line). |
+| `linux` | Linux-specific binds that override `keys` on Linux. Accepts the same single or multi-alternative format as `keys`. |
+| `macos` | macOS-specific binds that override `keys` on macOS. Accepts the same single or multi-alternative format as `keys`. |
 
 ---
 
@@ -58,22 +73,6 @@ wails build
 
 ---
 
-## Development
-
-Run the app in dev mode with hot-reload:
-
-```bash
-wails dev
-```
-
-This starts:
-- A Vite watcher for the frontend (changes to `.svelte`/`.ts`/`.css` files reflect immediately via HMR)
-- A Go recompiler (changes to `.go` files trigger an automatic rebuild and restart)
-
-> **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.
-
----
-
 ## CI/CD
 
 - PRs targeting `main` run validation only: bindings generation, frontend checks/build, `go build ./...`, and a Linux `wails build` smoke test.
@@ -91,6 +90,24 @@ This starts:
 
 ---
 
-## Config
+## Prerequisites
 
-App shortcuts are defined as YAML files in `~/.config/button/apps/`. See `PLAN.md` Section 3A for the schema.
+- [Go](https://go.dev/) 1.21+
+- [Wails v2](https://wails.io/docs/gettingstarted/installation) (`go install github.com/wailsapp/wails/v2/cmd/wails@latest`)
+- [Node.js](https://nodejs.org/) (for the frontend)
+
+---
+
+## Development
+
+Run the app in dev mode with hot-reload:
+
+```bash
+wails dev
+```
+
+This starts:
+- A Vite watcher for the frontend (changes to `.svelte`/`.ts`/`.css` files reflect immediately via HMR)
+- A Go recompiler (changes to `.go` files trigger an automatic rebuild and restart)
+
+> **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.

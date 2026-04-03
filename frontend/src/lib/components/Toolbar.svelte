@@ -6,12 +6,14 @@
     let {
         searchQuery = $bindable(""),
         showHelp = $bindable(false),
+        showDonate = $bindable(false),
         currentOS,
         onToggleOS,
         onSearchInput,
     }: {
         searchQuery: string;
         showHelp: boolean;
+        showDonate: boolean;
         currentOS: "linux" | "darwin";
         onToggleOS: () => void;
         onSearchInput?: (element: HTMLInputElement | undefined) => void;
@@ -105,8 +107,10 @@
     <!-- Donate button -->
     <button
         class="icon-btn icon-btn--donate"
+        class:icon-btn--active={showDonate}
+        onclick={() => (showDonate = !showDonate)}
         aria-label="Donate"
-        title="Support on Ko-fi"
+        title="Support Button"
     >
         <Heart size={16} />
     </button>
@@ -237,12 +241,12 @@
     }
 
     .icon-btn:hover {
-        color: #a1a1a1;
+        color: #d8d8d8;
         border-color: #3f3f3f;
     }
 
     .icon-btn--active {
-        color: #a1a1a1;
+        color: #d8d8d8;
         border-color: #3f3f3f;
     }
 
@@ -251,7 +255,7 @@
     }
 
     .icon-btn--donate:hover {
-        color: #f59e0b;
+        color: #ffa200;
         border-color: #92400e;
     }
 

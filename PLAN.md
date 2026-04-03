@@ -13,8 +13,8 @@ For the time being it also won't be automatically updated from the app's configu
 - **Frontend:** Svelte + Tailwind CSS
 - **Data Format:** YAML (stored in `~/.config/button/`)
 - **Target Systems:**
-    - **Linux:** CachyOS (Arch-based) + KDE Plasma (Wayland/X11)
-    - **macOS:** Latest versions, supporting native vibrancy/blur.
+    - **Linux:** Primarily Arch and KDE Plasma (Wayland/X11)
+    - **macOS:** Latest versions.
 
 ## 3. Core Requirements & Architecture
 

@@ -29,6 +29,64 @@ func EnsureConfigDir() error {
 	return os.MkdirAll(dir, 0755)
 }
 
+// EnsureDefaultApp creates button.yaml in the config directory if the directory
+// is empty (no .yaml files present). This runs on every startup so the user
+// can always restore the default by deleting all files from the apps directory.
+func EnsureDefaultApp() error {
+	dir, err := ConfigDir()
+	if err != nil {
+		return err
+	}
+
+	files, err := filepath.Glob(filepath.Join(dir, "*.yaml"))
+	if err != nil {
+		return fmt.Errorf("failed to check config directory: %w", err)
+	}
+
+	if len(files) > 0 {
+		return nil
+	}
+
+	defaultApp := `app: Button
+icon: button
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: Move through apps
+          keys:
+            - [j/k]
+            - [ArrowUp/ArrowDown]
+        - desc: Move through shortcuts
+          keys: [Ctrl, j/k]
+          macos: [Cmd, j/k]
+        - desc: Search
+          keys:
+            - [/]
+            - [Ctrl, f]
+          macos:
+            - [/]
+            - [Cmd, f]
+        - desc: Clear search
+          keys: [Backspace]
+        - desc: Switch sorting
+          keys: [s]
+        - desc: Switch platforms
+          keys: [h/l]
+        - desc: Help
+          keys: ['?']
+    - category: Editing
+      shortcuts:
+        - desc: Add new app
+          keys: [n]
+        - desc: Edit selected app
+          keys: [e]
+        - desc: Delete app
+          keys: [d]
+`
+
+	return os.WriteFile(filepath.Join(dir, "button.yaml"), []byte(defaultApp), 0644)
+}
+
 // ReadApps scans the config directory for *.yaml/*.yml files, parses each one,
 // and resolves platform-specific shortcut keys based on the current OS.
 // Files that are empty or missing the required "app" field are skipped and
