@@ -34,7 +34,9 @@ jobs:
         run: npm ci
 
       - name: Prepare frontend embed directory
-        run: mkdir -p frontend/dist
+        run: |
+          mkdir -p frontend/dist
+          printf '<!doctype html>\n' > frontend/dist/index.html
 
       - name: Install Linux build dependencies
         run: |
