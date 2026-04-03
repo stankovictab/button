@@ -346,6 +346,7 @@
     .detail-empty-hint {
         font-size: 12px;
         color: #3f3f3f;
+        font-weight: 600;
         margin-top: 4px;
     }
 

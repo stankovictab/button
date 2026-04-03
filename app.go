@@ -45,6 +45,11 @@ func (a *App) startup(ctx context.Context) {
 		fmt.Println("Warning: could not create config directory:", err)
 	}
 
+	// Seed button.yaml if the apps directory is empty
+	if err := config.EnsureDefaultApp(); err != nil {
+		fmt.Println("Warning: could not create default app file:", err)
+	}
+
 	// Migrate .yml files to .yaml
 	migrated, migrationWarnings := config.MigrateYMLToYAML()
 	a.migrationResult = MigrationResult{
