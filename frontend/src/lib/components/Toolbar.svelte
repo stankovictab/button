@@ -8,6 +8,7 @@
         showHelp = $bindable(false),
         showDonate = $bindable(false),
         currentOS,
+        matchingDescs = new Set<string>(),
         onToggleOS,
         onSearchInput,
     }: {
@@ -15,6 +16,7 @@
         showHelp: boolean;
         showDonate: boolean;
         currentOS: "linux" | "darwin";
+        matchingDescs: Set<string>;
         onToggleOS: () => void;
         onSearchInput?: (element: HTMLInputElement | undefined) => void;
     } = $props();
@@ -44,6 +46,12 @@
             placeholder="Search apps and shortcuts..."
             class="search-input"
         />
+        {#if searchQuery && matchingDescs.size > 0}
+            <div class="search-match-badge">
+                {matchingDescs.size}
+                {matchingDescs.size === 1 ? "match" : "matches"}
+            </div>
+        {/if}
         {#if searchQuery}
             <button
                 class="search-clear"
@@ -159,6 +167,16 @@
 
     .search-input::placeholder {
         color: #525252;
+    }
+
+    .search-match-badge {
+        font-size: 11px;
+        color: #93c5fd;
+        background: #172554;
+        padding: 3px 8px;
+        border-radius: 10px;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .search-clear {

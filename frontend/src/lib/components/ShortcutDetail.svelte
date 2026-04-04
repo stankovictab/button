@@ -2,7 +2,14 @@
     import type { AppConfig, Group } from "../../types";
     import KeyBadge from "./KeyBadge.svelte";
     import AppIcon from "./AppIcon.svelte";
-    import { SquarePen, Trash2, Ghost, Plus, FilePenLine } from "lucide-svelte";
+    import {
+        SquarePen,
+        Trash2,
+        Ghost,
+        Plus,
+        FilePenLine,
+        FolderOpen,
+    } from "lucide-svelte";
     import { OpenAppFile } from "../../../wailsjs/go/main/App";
 
     let {
@@ -106,12 +113,6 @@
                     {/if}
                 </span>
             </div>
-            {#if searchQuery && matchingDescs.size > 0}
-                <div class="detail-match-badge">
-                    {matchingDescs.size}
-                    {matchingDescs.size === 1 ? "match" : "matches"} for &ldquo;{searchQuery}&rdquo;
-                </div>
-            {/if}
             <div class="detail-header-actions">
                 {#if onCreateShortcut}
                     <button
@@ -284,10 +285,15 @@
     </div>
 {:else}
     <div class="detail-panel detail-panel--empty">
-        <p class="detail-empty-text">No apps loaded</p>
-        <p class="detail-empty-hint">
-            Add YAML files to <code>~/.config/button/apps/</code>
-        </p>
+        <div class="detail-body-empty">
+            <FolderOpen size={50} />
+            <p class="detail-body-empty-text">
+                No apps loaded!<br />
+                Press + in the app list, or press <code>n</code> to add an app,<br
+                />
+                or add YAML files to <code>~/.config/button/apps/</code>
+            </p>
+        </div>
     </div>
 {/if}
 
@@ -338,24 +344,6 @@
         justify-content: center;
     }
 
-    .detail-empty-text {
-        font-size: 14px;
-        color: #525252;
-    }
-
-    .detail-empty-hint {
-        font-size: 12px;
-        color: #3f3f3f;
-        font-weight: 600;
-        margin-top: 4px;
-    }
-
-    .detail-empty-hint code {
-        color: #525252;
-        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
-            Menlo, monospace;
-    }
-
     .detail-header {
         display: flex;
         align-items: center;
@@ -396,16 +384,6 @@
         font-size: 11px;
         font-weight: 500;
         color: #525252;
-    }
-
-    .detail-match-badge {
-        font-size: 11px;
-        color: #93c5fd;
-        background: #172554;
-        padding: 3px 8px;
-        border-radius: 10px;
-        white-space: nowrap;
-        flex-shrink: 0;
     }
 
     .detail-header-actions {
@@ -464,10 +442,16 @@
     }
 
     .detail-body-empty-text {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 500;
         color: #383838;
         text-align: center;
+    }
+
+    .detail-body-empty-text code {
+        color: #4a4a4a;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+            Menlo, monospace;
     }
 
     .shortcut-group {
@@ -485,7 +469,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 6px 8px;
+        padding: 4px 8px;
         border-radius: 6px;
         border-left: 2px solid transparent;
         transition: all 0.1s;
