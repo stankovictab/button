@@ -20,9 +20,10 @@ groups:
 
         # Platform-specific overrides.
         # Use "linux" and/or "macos" to override "keys" per platform.
+        # "linux" applies to both Linux and Windows (they share the same binds).
         # If a platform key is omitted, "keys" is used as the fallback.
       - desc: "Quit"
-        keys: [Ctrl, q] # fallback (Linux)
+        keys: [Ctrl, q] # fallback (Linux/Windows)
         macos: [Cmd, q] # override for macOS
 
         # Multiple alternative binds for one action.
@@ -52,5 +53,5 @@ groups:
         macos: [Cmd, Shift, z]
 
         # A shortcut with no keys defined will show "Not set for <platform>".
-      - desc: "Something Linux-only"
+      - desc: "Something Linux/Windows-only"
         linux: [Ctrl, Alt, t]

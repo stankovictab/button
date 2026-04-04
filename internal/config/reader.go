@@ -11,8 +11,20 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// ConfigDir returns the absolute path to ~/.config/button/apps/.
+// ConfigDir returns the absolute path to the button apps config directory.
+// On Windows this is %LOCALAPPDATA%\button\apps\, elsewhere ~/.config/button/apps/.
 func ConfigDir() (string, error) {
+	if runtime.GOOS == "windows" {
+		local := os.Getenv("LOCALAPPDATA")
+		if local == "" {
+			home, err := os.UserHomeDir()
+			if err != nil {
+				return "", fmt.Errorf("could not determine home directory: %w", err)
+			}
+			local = filepath.Join(home, "AppData", "Local")
+		}
+		return filepath.Join(local, "button", "apps"), nil
+	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("could not determine home directory: %w", err)
@@ -167,7 +179,7 @@ func resolveKeys(app *AppConfig) {
 			s := &app.Groups[i].Shortcuts[j]
 
 			switch runtime.GOOS {
-			case "linux":
+			case "linux", "windows":
 				if len(s.Linux) > 0 {
 					s.Keys = s.Linux
 				}

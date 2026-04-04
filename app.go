@@ -142,6 +142,8 @@ func (a *App) OpenAppFile(appName string) error {
 	switch runtime.GOOS {
 	case "darwin":
 		cmd = exec.Command("open", path)
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", "", path)
 	default:
 		cmd = exec.Command("xdg-open", path)
 	}

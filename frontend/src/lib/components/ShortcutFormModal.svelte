@@ -428,7 +428,7 @@
                                 {field === "keys"
                                     ? "Keys"
                                     : field === "linux"
-                                      ? "Linux"
+                                      ? "Linux / Windows"
                                       : "macOS"}
                             </span>
                             <div class="key-binds">

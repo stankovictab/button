@@ -12,16 +12,21 @@
     let {
         appName = "Button",
         versionLabel = "dev",
-        currentOS = "linux",
+        currentOS = "linux" as "linux" | "darwin" | "windows",
         onClose,
     }: {
         appName?: string;
         versionLabel?: string;
-        currentOS?: "linux" | "darwin";
+        currentOS?: "linux" | "darwin" | "windows";
         onClose: () => void;
     } = $props();
 
     const ctrlKey = $derived(currentOS === "darwin" ? "Cmd" : "Ctrl");
+    const configPath = $derived(
+        currentOS === "windows"
+            ? "%LOCALAPPDATA%\\button\\apps\\"
+            : "~/.config/button/apps/",
+    );
 
     function handleBackdropClick(e: MouseEvent) {
         if (e.target === e.currentTarget) onClose();
@@ -53,7 +58,7 @@
             <div class="app-name">{appName}</div>
             <div class="app-version">{versionLabel}</div>
             <p class="app-tagline">
-                A keyboard shortcut reference<br />for your desktop apps.
+                A cross-platform keyboard shortcut<br />reference for your desktop apps.
             </p>
         </div>
 
@@ -66,7 +71,7 @@
                 <span class="tip-icon"><FolderOpen size={13} /></span>
                 <span class="tip-text">
                     Add apps with <kbd>n</kbd> or by adding YAML files to<br />
-                    <code>~/.config/button/apps/</code>.<br />
+                    <code>{configPath}</code>.<br />
                     <!-- svelte-ignore a11y_invalid_attribute -->
                     <a
                         href="#"
@@ -107,7 +112,7 @@
             <li class="tip">
                 <span class="tip-icon"><Monitor size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>h/l</kbd> toggles Linux and macOS shortcut sets.</span
+                    ><kbd>h/l</kbd> cycles through Linux, Windows, and macOS shortcut sets.</span
                 >
             </li>
         </ul>

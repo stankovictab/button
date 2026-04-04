@@ -25,7 +25,7 @@
         onDelete,
     }: {
         app: AppConfig | null;
-        currentOS: "linux" | "darwin";
+        currentOS: "linux" | "darwin" | "windows";
         searchQuery: string;
         matchingDescs: Set<string>;
         onBodyMount?: (element: HTMLDivElement | undefined) => void;
@@ -47,11 +47,20 @@
         linux?: string[][];
         macos?: string[][];
     }): string[][] {
-        if (currentOS === "linux" && shortcut.linux?.length)
+        if (
+            (currentOS === "linux" || currentOS === "windows") &&
+            shortcut.linux?.length
+        )
             return shortcut.linux;
         if (currentOS === "darwin" && shortcut.macos?.length)
             return shortcut.macos;
         return shortcut.keys ?? [];
+    }
+
+    function osDisplayName(os: "linux" | "darwin" | "windows"): string {
+        if (os === "darwin") return "macOS";
+        if (os === "windows") return "Windows";
+        return "Linux";
     }
 
     function totalShortcuts(a: AppConfig): number {
@@ -200,9 +209,9 @@
                                         </div>
                                     {:else}
                                         <span class="shortcut-no-keys"
-                                            >Not set for {currentOS === "darwin"
-                                                ? "macOS"
-                                                : "Linux"}</span
+                                            >Not set for {osDisplayName(
+                                                currentOS,
+                                            )}</span
                                         >
                                     {/if}
                                     <div class="shortcut-actions">
@@ -291,7 +300,7 @@
                 No apps loaded!<br />
                 Press + in the app list, or press <code>n</code> to add an app,<br
                 />
-                or add YAML files to <code>~/.config/button/apps/</code>
+                or add YAML files to the config directory.
             </p>
         </div>
     </div>
