@@ -148,8 +148,10 @@ groups:
 - [x] Implement Go logic to write/update YAML files safely without destroying comments (if possible) or using a standard clean YAML structure.
 
 ### Phase 4: Polish & Deployment
-- [x] Global hotkey implementation.
-- [ ] Build pipeline for `.app` (Mac) and Binary (Linux).
+- [x] Hotkey implementation.
+- [x] Build pipeline for `.app` (Mac) and Binary (Linux).
+
+> The rest is in Linear.
 
 ## 5. Agent Instructions (How to help me)
 When working on this project:

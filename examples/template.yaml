@@ -5,16 +5,16 @@
 # Supported extensions: .yaml / .yml
 # ------------------------------------------------------------------------------
 
-app: "My App"      # Display name shown in the app list
-icon: "myapp"      # Lowercase key used to look up the icon (see iconMap.ts)
-                   # If no icon is found, initials are shown as a fallback.
+app: "My App" # Display name shown in the app list
+icon:
+  "myapp" # Lowercase key used to look up the icon (see iconMap.ts)
+  # If no icon is found, initials are shown as a fallback.
 
 groups:
-    # A group is a named category of related shortcuts.
+  # A group is a named category of related shortcuts.
   - category: "General"
     shortcuts:
-
-        # Basic shortcut — same keys on every platform.
+      # Basic shortcut — same keys on every platform.
       - desc: "Open settings"
         keys: [Ctrl, ","]
 
@@ -22,12 +22,8 @@ groups:
         # Use "linux" and/or "macos" to override "keys" per platform.
         # If a platform key is omitted, "keys" is used as the fallback.
       - desc: "Quit"
-        keys: [Ctrl, q]       # fallback (Linux)
-        macos: [Cmd, q]       # override for macOS
-
-      - desc: "New window"
-        keys: [Ctrl, n]
-        macos: [Cmd, n]
+        keys: [Ctrl, q] # fallback (Linux)
+        macos: [Cmd, q] # override for macOS
 
         # Multiple alternative binds for one action.
         # Use an array of arrays — each inner array is one alternative.
@@ -47,7 +43,6 @@ groups:
 
   - category: "Editing"
     shortcuts:
-
       - desc: "Undo"
         keys: [Ctrl, z]
         macos: [Cmd, z]
@@ -55,10 +50,6 @@ groups:
       - desc: "Redo"
         keys: [Ctrl, Shift, z]
         macos: [Cmd, Shift, z]
-
-      - desc: "Find"
-        keys: [Ctrl, f]
-        macos: [Cmd, f]
 
         # A shortcut with no keys defined will show "Not set for <platform>".
       - desc: "Something Linux-only"
