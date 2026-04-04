@@ -10,11 +10,24 @@ A cross-platform (Linux and macOS) quick-reference GUI for personal keyboard sho
   <img src="assets/images/button-ui.png" alt="Button UI" width="900" />
 </p>
 
-See `PLAN.md` for full project details and roadmap.
-
-> **macOS note:** If a downloaded `Button.app` will not open, run `xattr -cr ~/Downloads/Button.app` or allow it in **System Settings** so macOS removes the quarantine flag.
-
 ---
+
+## Installation
+
+### Linux
+
+Download the latest `linux-amd64.tar.gz` from the [Releases](https://github.com/stankovictab/button/releases) page.\
+Extract the binary and run the executable.
+
+> **Note:** AUR support is planned for the future.
+
+### macOS
+
+Download the latest `macos-arm64.zip` from the [Releases](https://github.com/stankovictab/button/releases) page.\
+After extracting `Button.app`, run `xattr -cr ~/Downloads/Button.app`,\
+or allow it in **System Settings** so macOS removes the quarantine flag.
+
+> **Note:** Button is still not signed, so macOS will not allow it to run unless you disable Gatekeeper.
 
 ## Config
 
@@ -31,17 +44,42 @@ See [this example](examples/template.yaml) for an app configuration.
 | `category` | Group name shown in the app detail panel. |
 | `shortcuts` | Array of shortcut entries inside a group. |
 | `desc` | Shortcut description shown next to the key binds. |
-| `keys` | Default binds for the shortcut. A single bind: `[Ctrl, K]`. Multiple alternatives (array of arrays): `[[Ctrl, K], [Ctrl, Shift, K]]` or in block style (each alternative on its own `- [...]` line). |
-| `linux` | Linux-specific binds that override `keys` on Linux. Accepts the same single or multi-alternative format as `keys`. |
-| `macos` | macOS-specific binds that override `keys` on macOS. Accepts the same single or multi-alternative format as `keys`. |
+| `keys` | Default binds for the shortcut. A single bind: `[Ctrl, K]`. <br>Multiple alternatives (array of arrays): `[[Ctrl, K], [Ctrl, Shift, K]]` <br>or in block style (each alternative on its own `- [...]` line). |
+| `linux` | Linux-specific binds that override `keys` on Linux. <br>Accepts the same single or multi-alternative format as `keys`. |
+| `macos` | macOS-specific binds that override `keys` on macOS. <br>Accepts the same single or multi-alternative format as `keys`. |
 
 ---
 
-## Build Types
+## CI/CD
+
+- PRs targeting `main` run validation only: <br>bindings generation, frontend checks/build, `go build ./...`, and a Linux `wails build` smoke test.
+- Releases are created manually from `main` with the GitHub Actions `Release` workflow.
+- The release version comes from `wails.json` `info.productVersion`.
+- Re-running the release workflow for the same version replaces the existing GitHub Release/tag <br>and publishes fresh artifacts from the current `main` commit.
+
+### Release Flow
+
+1. Open a PR and iterate until the branch works locally.
+2. Merge to `main`.
+3. Update `wails.json` `info.productVersion` on `main` whenever you want the next shipped version to change.
+4. Run the `Release` workflow from `main`.
+5. Download the generated Linux/macOS artifacts from the resulting GitHub Release.
+
+---
+
+## Development
+
+### Prerequisites
+
+- [Go](https://go.dev/) 1.21+
+- [Wails v2](https://wails.io/docs/gettingstarted/installation) (`go install github.com/wailsapp/wails/v2/cmd/wails@latest`)
+- [Node.js](https://nodejs.org/) (for the frontend)
+
+### Build Types
 
 There are three distinct build targets in this project, each serving a different purpose:
 
-### 1. Go only — `go build ./...`
+#### 1. Go only — `go build ./...`
 
 Compiles the Go source code only. Does **not** produce a runnable application — the frontend is not included. Useful for quickly checking that Go code compiles without errors (e.g. after editing backend logic).
 
@@ -49,7 +87,7 @@ Compiles the Go source code only. Does **not** produce a runnable application �
 go build ./...
 ```
 
-### 2. Frontend only — `npm run build`
+#### 2. Frontend only — `npm run build`
 
 Compiles the Svelte/TypeScript frontend via Vite into `frontend/dist/`. Does **not** produce a runnable application — the Go binary is not included. Useful for checking frontend compilation errors in isolation.
 
@@ -62,7 +100,7 @@ npm run build
 
 > **Note:** On a fresh clone, run `wails generate module` first so `frontend/wailsjs/` exists before frontend-only checks/builds.
 
-### 3. Full app — `wails build`
+#### 3. Full app — `wails build`
 
 Compiles everything into a single self-contained binary: builds the frontend, embeds it into the Go binary, and outputs the result to `build/bin/`. This is the distributable artifact.
 
@@ -71,34 +109,7 @@ wails build
 # Output: build/bin/button (Linux) or build/bin/button.app (macOS)
 ```
 
----
-
-## CI/CD
-
-- PRs targeting `main` run validation only: bindings generation, frontend checks/build, `go build ./...`, and a Linux `wails build` smoke test.
-- Releases are created manually from `main` with the GitHub Actions `Release` workflow.
-- The release version comes from `wails.json` `info.productVersion`.
-- Re-running the release workflow for the same version replaces the existing GitHub Release/tag and publishes fresh artifacts from the current `main` commit.
-
-### Release Flow
-
-1. Open a PR and iterate until the branch works locally.
-2. Merge to `main`.
-3. Update `wails.json` `info.productVersion` on `main` whenever you want the next shipped version to change.
-4. Run the `Release` workflow from `main`.
-5. Download the generated Linux/macOS artifacts from the resulting GitHub Release.
-
----
-
-## Prerequisites
-
-- [Go](https://go.dev/) 1.21+
-- [Wails v2](https://wails.io/docs/gettingstarted/installation) (`go install github.com/wailsapp/wails/v2/cmd/wails@latest`)
-- [Node.js](https://nodejs.org/) (for the frontend)
-
----
-
-## Development
+### Running
 
 Run the app in dev mode with hot-reload:
 

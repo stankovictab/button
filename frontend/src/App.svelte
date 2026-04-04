@@ -956,6 +956,7 @@
         <HelpPanel
             appName={appInfo.name}
             versionLabel={appVersionLabel}
+            {currentOS}
             onClose={() => (showHelp = false)}
         />
     {/if}

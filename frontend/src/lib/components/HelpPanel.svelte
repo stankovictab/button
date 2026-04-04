@@ -12,12 +12,16 @@
     let {
         appName = "Button",
         versionLabel = "dev",
+        currentOS = "linux",
         onClose,
     }: {
         appName?: string;
         versionLabel?: string;
+        currentOS?: "linux" | "darwin";
         onClose: () => void;
     } = $props();
+
+    const ctrlKey = $derived(currentOS === "darwin" ? "Cmd" : "Ctrl");
 
     function handleBackdropClick(e: MouseEvent) {
         if (e.target === e.currentTarget) onClose();
@@ -79,34 +83,31 @@
             <li class="tip">
                 <span class="tip-icon"><Search size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>Ctrl</kbd> + <kbd>F</kbd> or <kbd>/</kbd> focuses search.</span
+                    ><kbd>{ctrlKey}</kbd> + <kbd>F</kbd> or <kbd>/</kbd> focuses search.</span
                 >
             </li>
             <li class="tip">
                 <span class="tip-icon"><ArrowUpDown size={13} /></span>
                 <span class="tip-text"
-                    >Use <kbd>&uarr;</kbd><kbd>&darr;</kbd> or <kbd>j</kbd><kbd
-                        >k</kbd
-                    >
+                    >Use <kbd>&uarr;/&darr;</kbd> or <kbd>j/k</kbd>
                     to move through apps.<br />
-                    Use <kbd>Ctrl</kbd> + <kbd>j</kbd><kbd>k</kbd> to scroll the
-                    shortcut list.</span
+                    Use <kbd>{ctrlKey}</kbd> + <kbd>j/k</kbd> to scroll the shortcut list.</span
                 >
             </li>
             <li class="tip">
                 <span class="tip-icon"><Keyboard size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>n</kbd> creates a new app, <kbd>e</kbd> edits,
+                    ><kbd>n</kbd> creates a new app, <kbd>e</kbd> edits,<br />
                     <kbd>d</kbd>
                     deletes, <kbd>?</kbd> opens help,<br />
-                    <kbd>s</kbd> cycles app-list sorting,
+                    <kbd>s</kbd> changes sorting,
                     <kbd>Backspace</kbd> clears search.</span
                 >
             </li>
             <li class="tip">
                 <span class="tip-icon"><Monitor size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>h</kbd><kbd>l</kbd> toggles Linux and macOS shortcut sets.</span
+                    ><kbd>h/l</kbd> toggles Linux and macOS shortcut sets.</span
                 >
             </li>
         </ul>
@@ -192,7 +193,8 @@
         color: #555555;
         text-align: center;
         margin: 0;
-        line-height: 1.5;
+        line-height: 1.3;
+        font-weight: 400;
     }
 
     .divider {
