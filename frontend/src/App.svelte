@@ -851,6 +851,7 @@
         bind:showHelp
         bind:showDonate
         {currentOS}
+        matchingDescs={currentMatchingDescs}
         onToggleOS={toggleOS}
         onSearchInput={setSearchInput}
     />
