@@ -10,7 +10,7 @@ A cross-platform (Linux, macOS, and Windows) quick-reference GUI for personal ke
   <img src="assets/images/button-ui.png" alt="Button UI" width="900" />
 </p>
 
----
+--- 
 
 ## Installation
 
