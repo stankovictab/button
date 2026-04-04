@@ -78,6 +78,10 @@ jobs:
                       platform: darwin/arm64
                       artifact_name: macos-arm64
                       build_tags: ""
+                    - runner: windows-latest
+                      platform: windows/amd64
+                      artifact_name: windows-amd64
+                      build_tags: ""
 
         runs-on: ${{ matrix.runner }}
         env:
@@ -141,6 +145,13 @@ jobs:
               run: |
                   mkdir -p dist
                   ditto -c -k --sequesterRsrc --keepParent "build/bin/Button.app" "dist/button-${ASSET_VERSION}-macos-arm64.zip"
+
+            - name: Package Windows artifact
+              if: runner.os == 'Windows'
+              shell: bash
+              run: |
+                  mkdir -p dist
+                  7z a "dist/button-${ASSET_VERSION}-windows-amd64.zip" "./build/bin/button.exe"
 
             - name: Upload packaged artifact
               uses: actions/upload-artifact@v6

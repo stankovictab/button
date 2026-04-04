@@ -3,14 +3,14 @@
 </p>
 
 <p align="center">
-A cross-platform (Linux and macOS) quick-reference GUI for personal keyboard shortcuts.
+A cross-platform (Linux, macOS, and Windows) quick-reference GUI for personal keyboard shortcuts.
 </p>
 
 <p align="center">
   <img src="assets/images/button-ui.png" alt="Button UI" width="900" />
 </p>
 
----
+--- 
 
 ## Installation
 
@@ -29,9 +29,17 @@ or allow it in **System Settings** so macOS removes the quarantine flag.
 
 > **Note:** Button is still not signed, so macOS will not allow it to run unless you disable Gatekeeper.
 
+### Windows
+
+Download the latest `windows-amd64.zip` from the [Releases](https://github.com/stankovictab/button/releases) page.\
+Extract the archive and run `button.exe`.
+
 ## Config
 
-App shortcuts are defined as YAML files in `~/.config/button/apps/`.\
+App shortcuts are defined as YAML files in the config directory:
+- **Linux / macOS:** `~/.config/button/apps/`
+- **Windows:** `%LOCALAPPDATA%\button\apps\`
+
 See [this example](examples/template.yaml) for an app configuration.
 
 ### YAML fields
@@ -45,7 +53,7 @@ See [this example](examples/template.yaml) for an app configuration.
 | `shortcuts` | Array of shortcut entries inside a group. |
 | `desc` | Shortcut description shown next to the key binds. |
 | `keys` | Default binds for the shortcut. A single bind: `[Ctrl, K]`. <br>Multiple alternatives (array of arrays): `[[Ctrl, K], [Ctrl, Shift, K]]` <br>or in block style (each alternative on its own `- [...]` line). |
-| `linux` | Linux-specific binds that override `keys` on Linux. <br>Accepts the same single or multi-alternative format as `keys`. |
+| `linux` | Linux/Windows-specific binds that override `keys` on Linux and Windows. <br>Accepts the same single or multi-alternative format as `keys`. |
 | `macos` | macOS-specific binds that override `keys` on macOS. <br>Accepts the same single or multi-alternative format as `keys`. |
 
 ---
@@ -63,7 +71,7 @@ See [this example](examples/template.yaml) for an app configuration.
 2. Merge to `main`.
 3. Update `wails.json` `info.productVersion` on `main` whenever you want the next shipped version to change.
 4. Run the `Release` workflow from `main`.
-5. Download the generated Linux/macOS artifacts from the resulting GitHub Release.
+5. Download the generated Linux/macOS/Windows artifacts from the resulting GitHub Release.
 
 ---
 
@@ -106,7 +114,7 @@ Compiles everything into a single self-contained binary: builds the frontend, em
 
 ```bash
 wails build
-# Output: build/bin/button (Linux) or build/bin/button.app (macOS)
+# Output: build/bin/button (Linux), build/bin/button.app (macOS), or build/bin/button.exe (Windows)
 ```
 
 ### Running

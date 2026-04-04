@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Search, X, CircleHelp, Heart } from "lucide-svelte";
+    import { Search, X, CircleHelp, Heart, ChevronDown } from "lucide-svelte";
     import { siGithub } from "simple-icons";
     import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
 
@@ -9,19 +9,44 @@
         showDonate = $bindable(false),
         currentOS,
         matchingDescs = new Set<string>(),
-        onToggleOS,
+        onSetOS,
         onSearchInput,
     }: {
         searchQuery: string;
         showHelp: boolean;
         showDonate: boolean;
-        currentOS: "linux" | "darwin";
+        currentOS: "linux" | "darwin" | "windows";
         matchingDescs: Set<string>;
-        onToggleOS: () => void;
+        onSetOS: (os: "linux" | "darwin" | "windows") => void;
         onSearchInput?: (element: HTMLInputElement | undefined) => void;
     } = $props();
 
     let searchInput: HTMLInputElement | undefined = $state();
+    let osDropdownOpen: boolean = $state(false);
+    let dropdownRef: HTMLDivElement | undefined = $state();
+
+    const osOptions: {
+        value: "linux" | "darwin" | "windows";
+        label: string;
+    }[] = [
+        { value: "linux", label: "Linux" },
+        { value: "windows", label: "Windows" },
+        { value: "darwin", label: "macOS" },
+    ];
+
+    let currentLabel = $derived(
+        osOptions.find((o) => o.value === currentOS)?.label ?? "Linux",
+    );
+
+    function handleClickOutside(e: MouseEvent) {
+        if (
+            dropdownRef &&
+            !dropdownRef.contains(e.target as Node) &&
+            osDropdownOpen
+        ) {
+            osDropdownOpen = false;
+        }
+    }
 
     $effect(() => {
         // Autofocus the search bar on mount
@@ -32,6 +57,8 @@
         onSearchInput?.(searchInput);
     });
 </script>
+
+<svelte:window onclick={handleClickOutside} />
 
 <div class="toolbar">
     <!-- Search bar -->
@@ -67,28 +94,40 @@
         {/if}
     </div>
 
-    <!-- OS toggle -->
-    <div class="os-toggle">
+    <!-- OS selector -->
+    <div class="os-dropdown" bind:this={dropdownRef}>
         <button
-            class="os-toggle-btn"
-            class:os-toggle-btn--active-linux={currentOS === "linux"}
-            onclick={() => {
-                if (currentOS !== "linux") onToggleOS();
+            class="os-dropdown-btn"
+            class:os-dropdown-btn--linux={currentOS === "linux"}
+            class:os-dropdown-btn--windows={currentOS === "windows"}
+            class:os-dropdown-btn--macos={currentOS === "darwin"}
+            onclick={(e) => {
+                e.stopPropagation();
+                osDropdownOpen = !osDropdownOpen;
             }}
-            title="Switch to Linux shortcuts"
+            title="Switch platform"
         >
-            Linux
+            <span class="os-dropdown-label">{currentLabel}</span>
+            <ChevronDown size={13} />
         </button>
-        <button
-            class="os-toggle-btn"
-            class:os-toggle-btn--active-macos={currentOS === "darwin"}
-            onclick={() => {
-                if (currentOS !== "darwin") onToggleOS();
-            }}
-            title="Switch to macOS shortcuts"
-        >
-            macOS
-        </button>
+        {#if osDropdownOpen}
+            <div class="os-dropdown-menu">
+                {#each osOptions as opt}
+                    <button
+                        class="os-dropdown-option"
+                        class:os-dropdown-option--active={currentOS ===
+                            opt.value}
+                        onclick={(e) => {
+                            e.stopPropagation();
+                            onSetOS(opt.value);
+                            osDropdownOpen = false;
+                        }}
+                    >
+                        {opt.label}
+                    </button>
+                {/each}
+            </div>
+        {/if}
     </div>
 
     <!-- Help button -->
@@ -196,51 +235,114 @@
         color: #a1a1a1;
     }
 
-    .os-toggle {
-        display: flex;
-        /* height: 34px; */ /* Use this to fix height. */
-        background: #1c1c1c;
-        border: 1px solid #2a2a2a;
-        border-radius: 6px;
-        overflow: hidden;
+    .os-dropdown {
+        position: relative;
         flex-shrink: 0;
     }
 
-    .os-toggle-btn {
-        padding: 6px 12px;
+    .os-dropdown-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 10px;
         font-size: 13px;
-        font-weight: 600;
+        font-weight: 500;
         color: #525252;
-        background: transparent;
-        border: none;
+        background: #1c1c1c;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.15s;
         line-height: 1;
+        height: 34px;
+        white-space: nowrap;
     }
 
-    .os-toggle-btn:hover {
-        background: #252525;
+    .os-dropdown-btn:hover {
+        /* border-color: #3f3f3f; */
         color: #a1a1a1;
     }
 
-    .os-toggle-btn--active-linux {
+    .os-dropdown-btn--linux {
         background: #172c47;
         color: #59a4ff;
+        border-color: #1e3a5f;
     }
 
-    .os-toggle-btn--active-linux:hover {
+    .os-dropdown-btn--linux:hover {
         background: #1e3a5f;
         color: #9bcaff;
     }
 
-    .os-toggle-btn--active-macos {
-        background: #352716;
-        color: #ff8928;
+    .os-dropdown-btn--windows {
+        background: #172c47;
+        color: #59a4ff;
+        border-color: #1e3a5f;
     }
 
-    .os-toggle-btn--active-macos:hover {
+    .os-dropdown-btn--windows:hover {
+        background: #1e3a5f;
+        color: #9bcaff;
+    }
+
+    .os-dropdown-btn--macos {
+        background: #352716;
+        color: #ff8928;
+        border-color: #3d2e1a;
+    }
+
+    .os-dropdown-btn--macos:hover {
         background: #3d2e1a;
         color: #f3a620;
+    }
+
+    .os-dropdown-label {
+        display: inline-block;
+        width: 60px;
+        text-align: left;
+    }
+
+    .os-dropdown-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        padding: 4px;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        background: #161616;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+        min-width: 120px;
+    }
+
+    .os-dropdown-option {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 7px 10px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: #a1a1a1;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: left;
+        cursor: pointer;
+        transition:
+            background 0.1s,
+            color 0.1s;
+    }
+
+    .os-dropdown-option:hover {
+        background: #1c1c1c;
+        color: #ffffff;
+    }
+
+    .os-dropdown-option--active {
+        color: #ffffff;
+        background: #1c1c1c;
     }
 
     .icon-btn {
@@ -252,7 +354,7 @@
         background: #1c1c1c;
         border: 1px solid #2a2a2a;
         border-radius: 8px;
-        color: #525252;
+        color: #777777;
         cursor: pointer;
         flex-shrink: 0;
         transition: all 0.15s;

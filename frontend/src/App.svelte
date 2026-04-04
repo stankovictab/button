@@ -38,7 +38,7 @@
     let nextNotificationId = 0;
     let selectedIndex: number = $state(0);
     let searchQuery: string = $state("");
-    let currentOS: "linux" | "darwin" = $state("linux");
+    let currentOS: "linux" | "darwin" | "windows" = $state("linux");
     let listWidth: number = $state(310);
     let isResizing: boolean = $state(false);
     let sortMode: SortMode = $state("alpha");
@@ -56,13 +56,11 @@
     let showShortcutForm: boolean = $state(false);
     let shortcutFormMode: "create" | "edit" = $state("create");
     let showShortcutDeleteConfirm: boolean = $state(false);
-    let shortcutTarget:
-        | {
-              appIndex: number;
-              groupIndex: number;
-              shortcutIndex: number;
-          }
-        | null = $state(null);
+    let shortcutTarget: {
+        appIndex: number;
+        groupIndex: number;
+        shortcutIndex: number;
+    } | null = $state(null);
     let showOverwriteConfirm: boolean = $state(false);
     let pendingOverwriteApp: AppConfig | null = $state(null);
     let pendingOverwriteOldName: string = $state("");
@@ -150,6 +148,12 @@
     let currentMatchingDescs = $derived(
         searchResults.matchingSets[selectedIndex] ?? new Set<string>(),
     );
+    let configPathDisplay = $derived.by(() => {
+        const os: string = currentOS;
+        return os === "windows"
+            ? "%LOCALAPPDATA%\\button\\apps\\"
+            : "~/.config/button/apps/";
+    });
     let appVersionLabel = $derived.by(() => {
         const version = appInfo.version.trim();
         if (!version) {
@@ -377,8 +381,7 @@
         }
 
         const sourceGroup = updatedApp.groups[target.groupIndex];
-        const sourceShortcut =
-            sourceGroup?.shortcuts[target.shortcutIndex];
+        const sourceShortcut = sourceGroup?.shortcuts[target.shortcutIndex];
         if (!sourceGroup || !sourceShortcut) return;
 
         const sourceCategory = sourceGroup.category.trim();
@@ -691,26 +694,10 @@
             !e.ctrlKey &&
             !e.metaKey &&
             !e.altKey &&
-            key === "h"
+            (key === "h" || key === "l")
         ) {
             e.preventDefault();
-            if (currentOS !== "linux") {
-                toggleOS();
-            }
-            return;
-        }
-
-        if (
-            !editableTarget &&
-            !e.ctrlKey &&
-            !e.metaKey &&
-            !e.altKey &&
-            key === "l"
-        ) {
-            e.preventDefault();
-            if (currentOS !== "darwin") {
-                toggleOS();
-            }
+            cycleOS();
             return;
         }
 
@@ -785,7 +772,7 @@
         // Detect OS
         GetCurrentOS()
             .then((os: string) => {
-                if (os === "darwin" || os === "linux") {
+                if (os === "darwin" || os === "linux" || os === "windows") {
                     currentOS = os;
                 }
             })
@@ -818,8 +805,18 @@
         return cleanup;
     });
 
-    function toggleOS() {
-        currentOS = currentOS === "linux" ? "darwin" : "linux";
+    function setOS(os: "linux" | "darwin" | "windows") {
+        currentOS = os;
+    }
+
+    function cycleOS() {
+        const order: ("linux" | "darwin" | "windows")[] = [
+            "linux",
+            "windows",
+            "darwin",
+        ];
+        const idx = order.indexOf(currentOS);
+        currentOS = order[(idx + 1) % order.length];
     }
 
     // --- Resize handle ---
@@ -852,7 +849,7 @@
         bind:showDonate
         {currentOS}
         matchingDescs={currentMatchingDescs}
-        onToggleOS={toggleOS}
+        onSetOS={setOS}
         onSearchInput={setSearchInput}
     />
 
@@ -903,7 +900,7 @@
     {#if showDeleteConfirm && displayApps[deleteTargetIndex]}
         <ConfirmDialog
             title="Delete App"
-            message={`Are you sure you want to delete "${escapeHtml(displayApps[deleteTargetIndex].app)}"?<br>This will remove its config file from <code>~/.config/button/apps/</code>.`}
+            message={`Are you sure you want to delete app "${escapeHtml(displayApps[deleteTargetIndex].app)}"?<br>This will remove its config file from <code>${configPathDisplay}</code>.`}
             confirmLabel="Delete"
             danger={true}
             onConfirm={confirmDelete}
@@ -936,12 +933,11 @@
                           displayApps[shortcutTarget.appIndex].groups[
                               shortcutTarget.groupIndex
                           ]?.category ?? "",
-                      shortcut:
-                          displayApps[shortcutTarget.appIndex].groups[
-                              shortcutTarget.groupIndex
-                          ]?.shortcuts[shortcutTarget.shortcutIndex] ?? {
-                              desc: "",
-                          },
+                      shortcut: displayApps[shortcutTarget.appIndex].groups[
+                          shortcutTarget.groupIndex
+                      ]?.shortcuts[shortcutTarget.shortcutIndex] ?? {
+                          desc: "",
+                      },
                   }
                 : null}
             existingCategories={uniqueCategories(
@@ -968,7 +964,7 @@
     {#if showShortcutDeleteConfirm && shortcutTarget && displayApps[shortcutTarget.appIndex]}
         <ConfirmDialog
             title="Delete Shortcut"
-            message={`Are you sure you want to delete "${escapeHtml(displayApps[shortcutTarget.appIndex].groups[shortcutTarget.groupIndex]?.shortcuts[shortcutTarget.shortcutIndex]?.desc ?? "")}" from "${escapeHtml(displayApps[shortcutTarget.appIndex].app)}"?`}
+            message={`Are you sure you want to delete "${escapeHtml(displayApps[shortcutTarget.appIndex].groups[shortcutTarget.groupIndex]?.shortcuts[shortcutTarget.shortcutIndex]?.desc ?? "")}" from app "${escapeHtml(displayApps[shortcutTarget.appIndex].app)}"?`}
             confirmLabel="Delete"
             danger={true}
             onConfirm={confirmShortcutDelete}

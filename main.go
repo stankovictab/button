@@ -7,6 +7,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/linux"
+	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed all:frontend/dist
@@ -33,6 +34,10 @@ func main() {
 		Linux: &linux.Options{
 			Icon:        appIcon,
 			ProgramName: "button",
+		},
+		Windows: &windows.Options{
+			WebviewIsTransparent: false,
+			WindowIsTranslucent:  false,
 		},
 		BackgroundColour: &options.RGBA{R: 17, G: 17, B: 17, A: 1},
 		OnStartup:        app.startup,
