@@ -26,9 +26,7 @@
         const groups: Record<string, RegistryEntry[]> = {};
         for (const entry of entries) {
             const tag =
-                entry.tags && entry.tags.length > 0
-                    ? entry.tags[0]
-                    : "Other";
+                entry.tags && entry.tags.length > 0 ? entry.tags[0] : "Other";
             if (!groups[tag]) groups[tag] = [];
             groups[tag].push(entry);
         }
@@ -62,9 +60,7 @@
     }
 
     function toggleGroup(groupEntries: RegistryEntry[]) {
-        const allSelected = groupEntries.every((e) =>
-            selected.has(e.filename),
-        );
+        const allSelected = groupEntries.every((e) => selected.has(e.filename));
         const next = new Set(selected);
         for (const entry of groupEntries) {
             if (allSelected) {
@@ -187,14 +183,18 @@
                         >
                             <span class="group-tag">{tag}</span>
                             <span class="group-count"
-                                >{groupEntries.filter((e) => selected.has(e.filename)).length}/{groupEntries.length}</span
+                                >{groupEntries.filter((e) =>
+                                    selected.has(e.filename),
+                                ).length}/{groupEntries.length}</span
                             >
                         </button>
                         <div class="group-items">
                             {#each groupEntries as entry}
                                 <label
                                     class="entry-row"
-                                    class:entry-row--exists={existingFiles.has(entry.filename)}
+                                    class:entry-row--exists={existingFiles.has(
+                                        entry.filename,
+                                    )}
                                 >
                                     <input
                                         type="checkbox"

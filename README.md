@@ -58,6 +58,8 @@ See [this example](examples/template.yaml) for an app configuration.
 | `linux` | Linux/Windows-specific binds that override `keys` on Linux and Windows. <br>Accepts the same single or multi-alternative format as `keys`. |
 | `macos` | macOS-specific binds that override `keys` on macOS. <br>Accepts the same single or multi-alternative format as `keys`. |
 
+> **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.
+
 ---
 
 ## CI/CD
@@ -130,5 +132,3 @@ wails dev
 This starts:
 - A Vite watcher for the frontend (changes to `.svelte`/`.ts`/`.css` files reflect immediately via HMR)
 - A Go recompiler (changes to `.go` files trigger an automatic rebuild and restart)
-
-> **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.
