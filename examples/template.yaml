@@ -10,6 +10,13 @@ icon:
   "myapp" # Lowercase key used to look up the icon (see iconMap.ts)
   # If no icon is found, initials are shown as a fallback.
 
+# Optional category tags — shown as pills in the detail view.
+# tags: [Productivity, Communication]
+
+# Set to true for apps imported from the built-in registry.
+# Automatically removed when the app is edited via the UI.
+# default: true
+
 groups:
   # A group is a named category of related shortcuts.
   - category: "General"

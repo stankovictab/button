@@ -13,8 +13,21 @@ export type Group = {
 export type AppConfig = {
   app: string
   icon: string
+  tags?: string[]
+  default?: boolean
   groups: Group[]
   modTime: number
+}
+
+export type RegistryEntry = {
+  filename: string
+  app: string
+  icon: string
+  tags: string[]
+}
+
+export type UserConfig = {
+  hasSeenWelcome: boolean
 }
 
 export type SortMode = "alpha" | "last-updated"

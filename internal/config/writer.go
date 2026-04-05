@@ -91,9 +91,11 @@ type yamlGroup struct {
 
 // yamlAppConfig is the subset of AppConfig that gets persisted to YAML
 // (excludes runtime-only fields like ModTime).
+// Default is intentionally omitted — any user save strips the registry flag.
 type yamlAppConfig struct {
 	App    string      `yaml:"app"`
 	Icon   string      `yaml:"icon"`
+	Tags   []string    `yaml:"tags,omitempty"`
 	Groups []yamlGroup `yaml:"groups"`
 }
 
@@ -119,6 +121,7 @@ func marshalApp(app AppConfig) ([]byte, error) {
 	out := yamlAppConfig{
 		App:    app.App,
 		Icon:   app.Icon,
+		Tags:   app.Tags,
 		Groups: groups,
 	}
 	return yaml.Marshal(out)

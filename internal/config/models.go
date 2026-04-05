@@ -65,10 +65,12 @@ type Group struct {
 
 // AppConfig is the top-level structure parsed from a single YAML file.
 type AppConfig struct {
-	App     string  `yaml:"app" json:"app"`
-	Icon    string  `yaml:"icon" json:"icon"`
-	Groups  []Group `yaml:"groups" json:"groups"`
-	ModTime int64   `yaml:"-" json:"modTime"`
+	App     string   `yaml:"app" json:"app"`
+	Icon    string   `yaml:"icon" json:"icon"`
+	Tags    []string `yaml:"tags,omitempty" json:"tags,omitempty"`
+	Default bool     `yaml:"default,omitempty" json:"default,omitempty"`
+	Groups  []Group  `yaml:"groups" json:"groups"`
+	ModTime int64    `yaml:"-" json:"modTime"`
 }
 
 // AppsResponse is the payload returned to the frontend, containing

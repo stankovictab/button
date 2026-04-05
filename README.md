@@ -48,6 +48,8 @@ See [this example](examples/template.yaml) for an app configuration.
 | --- | --- |
 | `app` | Display name shown in the app list. **Required.** |
 | `icon` | Lowercase icon key used to look up the app icon in `frontend/src/lib/icons/iconMap.ts`. |
+| `tags` | Optional list of category tags (e.g. `[Communication, Productivity]`). Shown as pills in the detail view. |
+| `default` | Set to `true` for apps imported from the built-in registry. Automatically removed when the app is edited. |
 | `groups` | Array of shortcut groups. Each group contains a `category` and `shortcuts`. |
 | `category` | Group name shown in the app detail panel. |
 | `shortcuts` | Array of shortcut entries inside a group. |
