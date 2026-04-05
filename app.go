@@ -2,6 +2,7 @@ package main
 
 import (
 	"button/internal/config"
+	"button/internal/registry"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -28,11 +29,12 @@ type AppInfo struct {
 type App struct {
 	ctx             context.Context
 	migrationResult MigrationResult
+	registry        *registry.Registry
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
+func NewApp(reg *registry.Registry) *App {
+	return &App{registry: reg}
 }
 
 // startup is called when the app starts. The context is saved
@@ -148,6 +150,68 @@ func (a *App) OpenAppFile(appName string) error {
 		cmd = exec.Command("xdg-open", path)
 	}
 	return cmd.Start()
+}
+
+// GetUserConfig returns the persistent user configuration.
+func (a *App) GetUserConfig() config.UserConfig {
+	cfg, _ := config.ReadUserConfig()
+	return cfg
+}
+
+// SetHasSeenWelcome marks the welcome panel as seen in the persistent config.
+func (a *App) SetHasSeenWelcome() error {
+	cfg, _ := config.ReadUserConfig()
+	cfg.HasSeenWelcome = true
+	return config.WriteUserConfig(cfg)
+}
+
+// GetRegistryApps returns the list of apps available in the built-in registry.
+func (a *App) GetRegistryApps() ([]registry.RegistryEntry, error) {
+	return a.registry.ListApps()
+}
+
+// GetExistingAppFiles returns the list of YAML filenames in the user's config directory.
+func (a *App) GetExistingAppFiles() ([]string, error) {
+	dir, err := config.ConfigDir()
+	if err != nil {
+		return nil, err
+	}
+
+	files, err := filepath.Glob(filepath.Join(dir, "*.yaml"))
+	if err != nil {
+		return nil, err
+	}
+
+	names := make([]string, len(files))
+	for i, f := range files {
+		names[i] = filepath.Base(f)
+	}
+	return names, nil
+}
+
+// ImportRegistryApps copies selected registry apps to the user's config directory.
+// Overwrites existing files if present. Returns the number of apps imported.
+func (a *App) ImportRegistryApps(filenames []string) (int, error) {
+	dir, err := config.ConfigDir()
+	if err != nil {
+		return 0, err
+	}
+
+	imported := 0
+	for _, filename := range filenames {
+		destPath := filepath.Join(dir, filename)
+
+		data, err := a.registry.GetAppYAML(filename)
+		if err != nil {
+			return imported, fmt.Errorf("failed to read registry app %s: %w", filename, err)
+		}
+
+		if err := os.WriteFile(destPath, data, 0644); err != nil {
+			return imported, fmt.Errorf("failed to write %s: %w", filename, err)
+		}
+		imported++
+	}
+	return imported, nil
 }
 
 // installLinuxAssets writes the app icon and .desktop file to the user's local

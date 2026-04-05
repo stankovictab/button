@@ -1,0 +1,66 @@
+app: Slack
+icon: slack
+tags: [Communication]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: Move to next channel/DM
+          keys: [Alt, ArrowDown]
+          macos: [Alt, ArrowDown]
+        - desc: Move to previous channel/DM
+          keys: [Alt, ArrowUp]
+          macos: [Alt, ArrowUp]
+        - desc: Move to next unread channel/DM
+          keys: [Alt, Shift, ArrowDown]
+          macos: [Alt, Shift, ArrowDown]
+        - desc: Move to previous unread channel/DM
+          keys: [Alt, Shift, ArrowUp]
+          macos: [Alt, Shift, ArrowUp]
+        - desc: Open channel browser
+          keys: [Ctrl, Shift, l]
+          macos: [Cmd, Shift, l]
+        - desc: Go to a specific channel/DM
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Toggle right sidebar
+          keys: [Ctrl, '.']
+          macos: [Cmd, '.']
+        - desc: Open threads
+          keys: [Ctrl, Shift, t]
+          macos: [Cmd, Shift, t]
+    - category: Messaging
+      shortcuts:
+        - desc: Edit last message
+          keys: [ArrowUp]
+        - desc: Add new line in message
+          keys: [Shift, Enter]
+        - desc: Bold text
+          keys: [Ctrl, b]
+          macos: [Cmd, b]
+        - desc: Italic text
+          keys: [Ctrl, i]
+          macos: [Cmd, i]
+        - desc: Strikethrough text
+          keys: [Ctrl, Shift, x]
+          macos: [Cmd, Shift, x]
+        - desc: Create snippet
+          keys: [Ctrl, Shift, Enter]
+          macos: [Cmd, Shift, Enter]
+        - desc: Upload a file
+          keys: [Ctrl, u]
+          macos: [Cmd, u]
+    - category: General
+      shortcuts:
+        - desc: Quick switcher
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Search
+          keys: [Ctrl, g]
+          macos: [Cmd, g]
+        - desc: Open preferences
+          keys: [Ctrl, ',']
+          macos: [Cmd, ',']
+        - desc: Close window
+          keys: [Ctrl, w]
+          macos: [Cmd, w]

@@ -58,7 +58,8 @@
             <div class="app-name">{appName}</div>
             <div class="app-version">{versionLabel}</div>
             <p class="app-tagline">
-                A cross-platform keyboard shortcut<br />reference for your desktop apps.
+                A cross-platform keyboard shortcut<br />reference for your
+                desktop apps.
             </p>
         </div>
 
@@ -88,7 +89,8 @@
             <li class="tip">
                 <span class="tip-icon"><Search size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>{ctrlKey}</kbd> + <kbd>F</kbd> or <kbd>/</kbd> focuses search.</span
+                    ><kbd>{ctrlKey}</kbd> + <kbd>F</kbd> or <kbd>/</kbd> focuses
+                    search.</span
                 >
             </li>
             <li class="tip">
@@ -96,7 +98,8 @@
                 <span class="tip-text"
                     >Use <kbd>&uarr;/&darr;</kbd> or <kbd>j/k</kbd>
                     to move through apps.<br />
-                    Use <kbd>{ctrlKey}</kbd> + <kbd>j/k</kbd> to scroll the shortcut list.</span
+                    Use <kbd>{ctrlKey}</kbd> + <kbd>j/k</kbd> to scroll the shortcut
+                    list.</span
                 >
             </li>
             <li class="tip">
@@ -112,7 +115,8 @@
             <li class="tip">
                 <span class="tip-icon"><Monitor size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>h/l</kbd> cycles through Linux, Windows, and macOS shortcut sets.</span
+                    ><kbd>h/l</kbd> cycles through Linux, Windows, and macOS shortcut
+                    sets.</span
                 >
             </li>
         </ul>

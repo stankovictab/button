@@ -583,11 +583,9 @@
                                 <span class="info-hint">
                                     <Info size={12} />
                                     <span class="info-tooltip"
-                                        >Type each key name and press
-                                        Enter to add it, or click the
-                                        record button to capture a
-                                        shortcut from your
-                                        keyboard.</span
+                                        >Type each key name and press Enter to
+                                        add it, or click the record button to
+                                        capture a shortcut from your keyboard.</span
                                     >
                                 </span>
                             </div>
@@ -776,7 +774,7 @@
                                                                         ? "Press shortcut..."
                                                                         : bind.length ===
                                                                             0
-                                                                          ? "Type key name..."
+                                                                          ? "Type key and Enter"
                                                                           : ""}
                                                                 />
                                                             </div>

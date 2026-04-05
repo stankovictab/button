@@ -1,7 +1,10 @@
 package main
 
 import (
+	"button/internal/registry"
 	"embed"
+	"io/fs"
+	"log"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -19,12 +22,23 @@ var appIcon []byte
 //go:embed wails.json
 var projectConfig []byte
 
+//go:embed registry/*.yaml
+var registryFS embed.FS
+
 func main() {
+	// The registry/ embed includes the "registry" prefix in paths.
+	// Sub into it so the Registry sees flat filenames.
+	regFS, err := fs.Sub(registryFS, "registry")
+	if err != nil {
+		log.Fatal("failed to load registry:", err)
+	}
+	reg := registry.New(regFS)
+
 	// Create an instance of the app structure
-	app := NewApp()
+	app := NewApp(reg)
 
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:  "Button",
 		Width:  900,
 		Height: 600,

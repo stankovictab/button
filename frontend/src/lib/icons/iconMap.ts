@@ -30,10 +30,11 @@ import {
 } from 'simple-icons';
 
 // Custom SVGs (apps not in Simple Icons)
+import buttonSvg from './custom/button.svg?raw';
 import yaziSvg from './custom/yazi.svg?raw';
 import vscodeSvg from './custom/vscode.svg?raw';
 import terminalSvg from './custom/terminal.svg?raw';
-import buttonSvg from './custom/button.svg?raw';
+import slackSvg from './custom/slack.svg?raw';
 
 interface IconEntry {
     svg: string;
@@ -64,8 +65,9 @@ export const iconMap: Record<string, IconEntry> = {
     gnubash: { svg: siGnubash.svg, hex: 'ff8400' },
 
     // Custom SVGs
+    button: { svg: buttonSvg, hex: 'cccccc' },
     yazi: { svg: yaziSvg, hex: '6CB644' },
     vscode: { svg: vscodeSvg, hex: '007ACC' },
     terminal: { svg: terminalSvg, hex: 'a1a1a1' },
-    button: { svg: buttonSvg, hex: 'cccccc' },
+    slack: { svg: slackSvg, hex: 'ffffff' },
 };

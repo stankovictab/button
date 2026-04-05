@@ -159,9 +159,7 @@
             ) {
                 setBinds(
                     field,
-                    bindsFor(field).map((b, i) =>
-                        i === bindIndex ? [] : b,
-                    ),
+                    bindsFor(field).map((b, i) => (i === bindIndex ? [] : b)),
                 );
                 return;
             }
@@ -175,9 +173,7 @@
 
             setBinds(
                 field,
-                bindsFor(field).map((b, i) =>
-                    i === bindIndex ? combo : b,
-                ),
+                bindsFor(field).map((b, i) => (i === bindIndex ? combo : b)),
             );
             return;
         }
@@ -525,9 +521,9 @@
                     <span class="info-hint">
                         <Info size={12} />
                         <span class="info-tooltip"
-                            >Type each key name and press Enter to
-                            add it, or click the record button to
-                            capture a shortcut from your keyboard.</span
+                            >Type each key name and press Enter to add it, or
+                            click the record button to capture a shortcut from
+                            your keyboard.</span
                         >
                     </span>
                 </div>
@@ -596,10 +592,7 @@
                                                     newDrafts[bindIndex] = (
                                                         e.currentTarget as HTMLInputElement
                                                     ).value;
-                                                    setDrafts(
-                                                        field,
-                                                        newDrafts,
-                                                    );
+                                                    setDrafts(field, newDrafts);
                                                 }}
                                                 onkeydown={(e) =>
                                                     handleChipKeydown(
@@ -618,7 +611,7 @@
                                                 )
                                                     ? "Press shortcut..."
                                                     : bind.length === 0
-                                                      ? "Type key name..."
+                                                      ? "Type key and Enter"
                                                       : ""}
                                             />
                                         </div>
@@ -630,10 +623,7 @@
                                             )}
                                             type="button"
                                             tabindex="-1"
-                                            title={isRecording(
-                                                field,
-                                                bindIndex,
-                                            )
+                                            title={isRecording(field, bindIndex)
                                                 ? "Stop recording"
                                                 : "Record shortcut"}
                                             onmousedown={(e) =>

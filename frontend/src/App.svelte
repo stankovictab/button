@@ -7,6 +7,9 @@
         UpdateApp,
         DeleteApp,
         GetMigrationResult,
+        GetUserConfig,
+        SetHasSeenWelcome,
+        ImportRegistryApps,
     } from "../wailsjs/go/main/App.js";
     import { EventsOn } from "../wailsjs/runtime/runtime.js";
     import { onMount } from "svelte";
@@ -30,6 +33,8 @@
     import NotificationBar from "./lib/components/NotificationBar.svelte";
     import HelpPanel from "./lib/components/HelpPanel.svelte";
     import DonatePanel from "./lib/components/DonatePanel.svelte";
+    import WelcomePanel from "./lib/components/WelcomePanel.svelte";
+    import ImportPanel from "./lib/components/ImportPanel.svelte";
     import FlamingoEasterEgg from "./lib/components/FlamingoEasterEgg.svelte";
 
     // --- State ---
@@ -66,6 +71,9 @@
     let pendingOverwriteOldName: string = $state("");
     let showHelp: boolean = $state(false);
     let showDonate: boolean = $state(false);
+    let showWelcome: boolean = $state(false);
+    let showImport: boolean = $state(false);
+    let cameFromWelcome: boolean = $state(false);
     let searchInput: HTMLInputElement | undefined = $state();
     let detailBody: HTMLDivElement | undefined = $state();
     let flamingoTrigger = $state(0);
@@ -502,7 +510,9 @@
             showShortcutForm ||
             showOverwriteConfirm ||
             showHelp ||
-            showDonate
+            showDonate ||
+            showWelcome ||
+            showImport
         );
     }
 
@@ -762,6 +772,47 @@
         }
     }
 
+    // --- Welcome / Import handlers ---
+    function handleWelcomeContinue() {
+        showWelcome = false;
+        cameFromWelcome = true;
+        showImport = true;
+    }
+
+    function handleWelcomeSkip() {
+        showWelcome = false;
+        SetHasSeenWelcome().catch(() => {});
+    }
+
+    function handleImport(filenames: string[]) {
+        ImportRegistryApps(filenames)
+            .then((count: number) => {
+                showImport = false;
+                if (cameFromWelcome) {
+                    SetHasSeenWelcome().catch(() => {});
+                    cameFromWelcome = false;
+                }
+                if (count > 0) {
+                    addNotification(
+                        "info",
+                        `Imported ${count} ${count === 1 ? "app" : "apps"} from the registry.`,
+                    );
+                }
+                loadApps();
+            })
+            .catch((err: any) => {
+                addNotification("error", String(err));
+            });
+    }
+
+    function handleImportClose() {
+        showImport = false;
+        if (cameFromWelcome) {
+            SetHasSeenWelcome().catch(() => {});
+            cameFromWelcome = false;
+        }
+    }
+
     onMount(() => {
         GetAppInfo()
             .then((info: AppInfo) => {
@@ -795,6 +846,15 @@
                 }
             })
             .catch(() => {}); // non-critical
+
+        // Check if welcome panel should be shown
+        GetUserConfig()
+            .then((cfg: any) => {
+                if (!cfg.hasSeenWelcome) {
+                    showWelcome = true;
+                }
+            })
+            .catch(() => {});
 
         loadApps();
 
@@ -847,6 +907,7 @@
         bind:searchQuery
         bind:showHelp
         bind:showDonate
+        bind:showImport
         {currentOS}
         matchingDescs={currentMatchingDescs}
         onSetOS={setOS}
@@ -959,6 +1020,17 @@
 
     {#if showDonate}
         <DonatePanel onClose={() => (showDonate = false)} />
+    {/if}
+
+    {#if showWelcome}
+        <WelcomePanel
+            onContinue={handleWelcomeContinue}
+            onSkip={handleWelcomeSkip}
+        />
+    {/if}
+
+    {#if showImport}
+        <ImportPanel onImport={handleImport} onClose={handleImportClose} />
     {/if}
 
     {#if showShortcutDeleteConfirm && shortcutTarget && displayApps[shortcutTarget.appIndex]}

@@ -118,8 +118,8 @@
         line-height: 1;
         transform: translate3d(0, 120%, 0);
         transform-origin: center;
-        animation: flamingo-flight var(--duration) cubic-bezier(0.18, 0.8, 0.22, 1)
-            forwards;
+        animation: flamingo-flight var(--duration)
+            cubic-bezier(0.18, 0.8, 0.22, 1) forwards;
         will-change: transform, opacity;
         opacity: 0;
     }
@@ -132,10 +132,7 @@
     }
 
     .flamingo--golden {
-        filter:
-            saturate(1.25)
-            hue-rotate(-24deg)
-            brightness(1.12)
+        filter: saturate(1.25) hue-rotate(-24deg) brightness(1.12)
             drop-shadow(0 0 8px rgba(255, 208, 92, 0.55))
             drop-shadow(0 0 18px rgba(255, 186, 48, 0.32))
             drop-shadow(0 10px 14px rgba(0, 0, 0, 0.3));
@@ -149,13 +146,12 @@
         height: 1.9em;
         transform: translate(-50%, -50%);
         border-radius: 999px;
-        background:
-            radial-gradient(
-                circle,
-                rgba(255, 221, 128, 0.55) 0%,
-                rgba(255, 202, 64, 0.26) 40%,
-                rgba(255, 202, 64, 0) 72%
-            );
+        background: radial-gradient(
+            circle,
+            rgba(255, 221, 128, 0.55) 0%,
+            rgba(255, 202, 64, 0.26) 40%,
+            rgba(255, 202, 64, 0) 72%
+        );
         filter: blur(4px);
         animation: flamingo-aura-pulse 700ms ease-in-out infinite alternate;
     }

@@ -48,6 +48,8 @@ See [this example](examples/template.yaml) for an app configuration.
 | --- | --- |
 | `app` | Display name shown in the app list. **Required.** |
 | `icon` | Lowercase icon key used to look up the app icon in `frontend/src/lib/icons/iconMap.ts`. |
+| `tags` | Optional list of category tags (e.g. `[Communication, Productivity]`). Shown as pills in the detail view. |
+| `default` | Set to `true` for apps imported from the built-in registry. Automatically removed when the app is edited. |
 | `groups` | Array of shortcut groups. Each group contains a `category` and `shortcuts`. |
 | `category` | Group name shown in the app detail panel. |
 | `shortcuts` | Array of shortcut entries inside a group. |
@@ -55,6 +57,8 @@ See [this example](examples/template.yaml) for an app configuration.
 | `keys` | Default binds for the shortcut. A single bind: `[Ctrl, K]`. <br>Multiple alternatives (array of arrays): `[[Ctrl, K], [Ctrl, Shift, K]]` <br>or in block style (each alternative on its own `- [...]` line). |
 | `linux` | Linux/Windows-specific binds that override `keys` on Linux and Windows. <br>Accepts the same single or multi-alternative format as `keys`. |
 | `macos` | macOS-specific binds that override `keys` on macOS. <br>Accepts the same single or multi-alternative format as `keys`. |
+
+> **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.
 
 ---
 
@@ -128,5 +132,3 @@ wails dev
 This starts:
 - A Vite watcher for the frontend (changes to `.svelte`/`.ts`/`.css` files reflect immediately via HMR)
 - A Go recompiler (changes to `.go` files trigger an automatic rebuild and restart)
-
-> **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.

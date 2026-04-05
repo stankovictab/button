@@ -1,5 +1,12 @@
 <script lang="ts">
-    import { Search, X, CircleHelp, Heart, ChevronDown } from "lucide-svelte";
+    import {
+        Search,
+        X,
+        CircleHelp,
+        Heart,
+        ChevronDown,
+        Download,
+    } from "lucide-svelte";
     import { siGithub } from "simple-icons";
     import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
 
@@ -7,6 +14,7 @@
         searchQuery = $bindable(""),
         showHelp = $bindable(false),
         showDonate = $bindable(false),
+        showImport = $bindable(false),
         currentOS,
         matchingDescs = new Set<string>(),
         onSetOS,
@@ -15,6 +23,7 @@
         searchQuery: string;
         showHelp: boolean;
         showDonate: boolean;
+        showImport: boolean;
         currentOS: "linux" | "darwin" | "windows";
         matchingDescs: Set<string>;
         onSetOS: (os: "linux" | "darwin" | "windows") => void;
@@ -129,6 +138,17 @@
             </div>
         {/if}
     </div>
+
+    <!-- Import button -->
+    <button
+        class="icon-btn"
+        class:icon-btn--active={showImport}
+        aria-label="Import apps from registry"
+        title="Import apps"
+        onclick={() => (showImport = !showImport)}
+    >
+        <Download size={16} />
+    </button>
 
     <!-- Help button -->
     <button

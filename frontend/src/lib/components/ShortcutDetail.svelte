@@ -113,7 +113,12 @@
                 <AppIcon icon={app.icon} name={app.app} size={26} />
             </div>
             <div class="detail-header-info">
-                <h2 class="detail-header-name">{app.app}</h2>
+                <div class="detail-header-name-row">
+                    <h2 class="detail-header-name">{app.app}</h2>
+                    {#if app.default}
+                        <span class="registry-badge">Registry</span>
+                    {/if}
+                </div>
                 <span class="detail-header-meta">
                     {totalShortcuts(app)} shortcuts &middot; {totalGroups(app)}
                     {totalGroups(app) === 1 ? "group" : "groups"}
@@ -165,6 +170,14 @@
                 {/if}
             </div>
         </div>
+
+        {#if app.tags && app.tags.length > 0}
+            <div class="detail-tags-row">
+                {#each app.tags as tag}
+                    <span class="tag-pill">{tag}</span>
+                {/each}
+            </div>
+        {/if}
 
         <!-- Shortcut groups -->
         <div class="detail-body" bind:this={detailBody}>
@@ -382,11 +395,44 @@
         min-width: 0;
     }
 
+    .detail-header-name-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
     .detail-header-name {
         font-size: 15px;
         font-weight: 600;
         color: #ffffff;
         margin: 0;
+    }
+
+    .registry-badge {
+        font-size: 10px;
+        font-weight: 600;
+        color: #93c5fd;
+        background: #172554;
+        padding: 2px 8px;
+        border-radius: 10px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .detail-tags-row {
+        display: flex;
+        gap: 4px;
+        padding: 8px 16px 0;
+    }
+
+    .tag-pill {
+        font-size: 10px;
+        font-weight: 500;
+        color: #777777;
+        background: #1c1c1c;
+        border: 1px solid #2a2a2a;
+        padding: 1px 8px;
+        border-radius: 10px;
     }
 
     .detail-header-meta {
