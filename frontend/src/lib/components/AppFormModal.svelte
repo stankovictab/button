@@ -1,6 +1,13 @@
 <script lang="ts">
     import { onMount, tick } from "svelte";
-    import { X, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-svelte";
+    import {
+        X,
+        Plus,
+        Trash2,
+        ChevronUp,
+        ChevronDown,
+        Info,
+    } from "lucide-svelte";
     import type { AppConfig, Group, Shortcut } from "../../types";
 
     let {
@@ -16,8 +23,6 @@
     } = $props();
 
     type KeyField = "keys" | "linux" | "macos";
-    type DraftField = "keysDrafts" | "linuxDrafts" | "macosDrafts";
-
     type ShortcutForm = {
         desc: string;
         keys: string[][];
@@ -27,6 +32,7 @@
         linuxDrafts: string[];
         macosDrafts: string[];
     };
+    type DraftField = "keysDrafts" | "linuxDrafts" | "macosDrafts";
 
     type GroupForm = {
         category: string;
@@ -74,6 +80,7 @@
     let appName: string = $state(initApp);
     let iconId: string = $state(initIcon);
     let groups: GroupForm[] = $state(initGroups);
+    let recordingSlot: string | null = $state(null);
     let panelEl: HTMLDivElement | undefined = $state();
     let appNameInput: HTMLInputElement | undefined = $state();
 
@@ -131,6 +138,57 @@
         return (field + "Drafts") as DraftField;
     }
 
+    // --- Recording mode helpers ---
+
+    function slotKey(
+        gi: number,
+        si: number,
+        field: KeyField,
+        bindIndex: number,
+    ): string {
+        return `${gi}-${si}-${field}-${bindIndex}`;
+    }
+
+    function isRecording(
+        gi: number,
+        si: number,
+        field: KeyField,
+        bindIndex: number,
+    ): boolean {
+        return recordingSlot === slotKey(gi, si, field, bindIndex);
+    }
+
+    async function toggleRecording(
+        gi: number,
+        si: number,
+        field: KeyField,
+        bindIndex: number,
+    ) {
+        const key = slotKey(gi, si, field, bindIndex);
+        if (recordingSlot === key) {
+            recordingSlot = null;
+        } else {
+            recordingSlot = key;
+            await tick();
+            panelEl
+                ?.querySelector<HTMLInputElement>(
+                    `[data-gi="${gi}"][data-si="${si}"][data-field="${field}"][data-bind-index="${bindIndex}"]`,
+                )
+                ?.focus();
+        }
+    }
+
+    // --- Key handling (dual mode) ---
+
+    const MODIFIER_KEYS = new Set(["Control", "Shift", "Alt", "Meta"]);
+
+    function normalizeKeyName(e: KeyboardEvent): string {
+        const key = e.key;
+        if (key === " ") return "Space";
+        if (key.length === 1) return key.toLowerCase();
+        return key;
+    }
+
     function commitDraft(
         gi: number,
         si: number,
@@ -156,6 +214,53 @@
         field: KeyField,
         bindIndex: number,
     ) {
+        if (isRecording(gi, si, field, bindIndex)) {
+            // --- Record mode ---
+            if (e.key === "Tab") return;
+
+            if (
+                e.key === "Escape" &&
+                !e.ctrlKey &&
+                !e.altKey &&
+                !e.shiftKey &&
+                !e.metaKey
+            ) {
+                recordingSlot = null;
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+
+            e.preventDefault();
+            if (MODIFIER_KEYS.has(e.key)) return;
+
+            if (
+                e.key === "Backspace" &&
+                !e.ctrlKey &&
+                !e.altKey &&
+                !e.shiftKey &&
+                !e.metaKey
+            ) {
+                groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][
+                    field
+                ].map((b, i) => (i === bindIndex ? [] : b));
+                return;
+            }
+
+            const combo: string[] = [];
+            if (e.ctrlKey) combo.push("Ctrl");
+            if (e.altKey) combo.push("Alt");
+            if (e.shiftKey) combo.push("Shift");
+            if (e.metaKey) combo.push("Cmd");
+            combo.push(normalizeKeyName(e));
+
+            groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][
+                field
+            ].map((b, i) => (i === bindIndex ? combo : b));
+            return;
+        }
+
+        // --- Text mode ---
         const draftField = draftFieldFor(field);
         const drafts = groups[gi].shortcuts[si][draftField] as string[];
         const draft = drafts[bindIndex].trim();
@@ -167,6 +272,19 @@
             groups[gi].shortcuts[si][field] = groups[gi].shortcuts[si][
                 field
             ].map((b, i) => (i === bindIndex ? b.slice(0, -1) : b));
+        }
+    }
+
+    function handleChipBlur(
+        gi: number,
+        si: number,
+        field: KeyField,
+        bindIndex: number,
+    ) {
+        if (isRecording(gi, si, field, bindIndex)) {
+            recordingSlot = null;
+        } else {
+            commitDraft(gi, si, field, bindIndex);
         }
     }
 
@@ -207,6 +325,7 @@
         field: KeyField,
         bindIndex: number,
     ) {
+        recordingSlot = null;
         const binds = groups[gi].shortcuts[si][field];
         const draftField = draftFieldFor(field);
         const drafts = groups[gi].shortcuts[si][draftField] as string[];
@@ -224,7 +343,6 @@
     }
 
     function handleSave() {
-        // Commit any unconfirmed draft text before saving.
         for (let gi = 0; gi < groups.length; gi++) {
             for (let si = 0; si < groups[gi].shortcuts.length; si++) {
                 for (const field of ["keys", "linux", "macos"] as KeyField[]) {
@@ -460,7 +578,19 @@
                                     <Trash2 size={17} />
                                 </button>
                             </div>
-                            <div class="shortcuts-label">Shortcuts</div>
+                            <div class="shortcuts-label">
+                                Shortcuts
+                                <span class="info-hint">
+                                    <Info size={12} />
+                                    <span class="info-tooltip"
+                                        >Type each key name and press
+                                        Enter to add it, or click the
+                                        record button to capture a
+                                        shortcut from your
+                                        keyboard.</span
+                                    >
+                                </span>
+                            </div>
 
                             <!-- Shortcuts in this group -->
                             {#each group.shortcuts as shortcut, si}
@@ -530,6 +660,12 @@
                                                         <div class="bind-row">
                                                             <div
                                                                 class="chips-wrap"
+                                                                class:recording={isRecording(
+                                                                    gi,
+                                                                    si,
+                                                                    field,
+                                                                    bindIndex,
+                                                                )}
                                                             >
                                                                 {#each bind as key, ci}
                                                                     <span
@@ -556,19 +692,32 @@
                                                                 <input
                                                                     class="chips-input"
                                                                     type="text"
+                                                                    readonly={isRecording(
+                                                                        gi,
+                                                                        si,
+                                                                        field,
+                                                                        bindIndex,
+                                                                    )}
                                                                     data-gi={gi}
                                                                     data-si={si}
                                                                     data-field={field}
                                                                     data-bind-index={bindIndex}
-                                                                    value={(
-                                                                        shortcut[
-                                                                            draftFieldFor(
-                                                                                field,
-                                                                            )
-                                                                        ] as string[]
-                                                                    )[
-                                                                        bindIndex
-                                                                    ]}
+                                                                    value={isRecording(
+                                                                        gi,
+                                                                        si,
+                                                                        field,
+                                                                        bindIndex,
+                                                                    )
+                                                                        ? ""
+                                                                        : (
+                                                                              shortcut[
+                                                                                  draftFieldFor(
+                                                                                      field,
+                                                                                  )
+                                                                              ] as string[]
+                                                                          )[
+                                                                              bindIndex
+                                                                          ]}
                                                                     oninput={(
                                                                         e,
                                                                     ) => {
@@ -612,21 +761,59 @@
                                                                             bindIndex,
                                                                         )}
                                                                     onblur={() =>
-                                                                        commitDraft(
+                                                                        handleChipBlur(
                                                                             gi,
                                                                             si,
                                                                             field,
                                                                             bindIndex,
                                                                         )}
-                                                                    placeholder={bind.length ===
-                                                                    0
-                                                                        ? field ===
-                                                                          "keys"
-                                                                            ? "Ctrl Alt j"
-                                                                            : "Override"
-                                                                        : ""}
+                                                                    placeholder={isRecording(
+                                                                        gi,
+                                                                        si,
+                                                                        field,
+                                                                        bindIndex,
+                                                                    )
+                                                                        ? "Press shortcut..."
+                                                                        : bind.length ===
+                                                                            0
+                                                                          ? "Type key name..."
+                                                                          : ""}
                                                                 />
                                                             </div>
+                                                            <button
+                                                                class="bind-record"
+                                                                class:active={isRecording(
+                                                                    gi,
+                                                                    si,
+                                                                    field,
+                                                                    bindIndex,
+                                                                )}
+                                                                type="button"
+                                                                tabindex="-1"
+                                                                title={isRecording(
+                                                                    gi,
+                                                                    si,
+                                                                    field,
+                                                                    bindIndex,
+                                                                )
+                                                                    ? "Stop recording"
+                                                                    : "Record shortcut"}
+                                                                onmousedown={(
+                                                                    e,
+                                                                ) =>
+                                                                    e.preventDefault()}
+                                                                onclick={() =>
+                                                                    toggleRecording(
+                                                                        gi,
+                                                                        si,
+                                                                        field,
+                                                                        bindIndex,
+                                                                    )}
+                                                            >
+                                                                <span
+                                                                    class="record-dot"
+                                                                ></span>
+                                                            </button>
                                                             {#if shortcut[field].length > 1 || bind.length > 0}
                                                                 <button
                                                                     class="bind-remove"
@@ -916,10 +1103,48 @@
     }
 
     .shortcuts-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
         font-size: 13px;
         font-weight: 600;
         color: #555555;
         padding: 8px 12px 2px;
+    }
+
+    .info-hint {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        color: #3f3f3f;
+        cursor: help;
+    }
+
+    .info-hint:hover {
+        color: #666666;
+    }
+
+    .info-tooltip {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: -4px;
+        z-index: 10;
+        width: 220px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        color: #a1a1a1;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 1.5;
+        white-space: normal;
+    }
+
+    .info-hint:hover .info-tooltip {
+        display: block;
     }
 
     .shortcut-entry {
@@ -997,6 +1222,60 @@
         color: #ff5a5a;
     }
 
+    .bind-record {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        background: none;
+        border: 1px solid #2a2a2a;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 0;
+        transition:
+            border-color 0.15s,
+            background 0.15s;
+    }
+
+    .record-dot {
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #525252;
+        transition: background 0.15s;
+    }
+
+    .bind-record:hover {
+        border-color: #b33b3b;
+    }
+
+    .bind-record:hover .record-dot {
+        background: #d94444;
+    }
+
+    .bind-record.active {
+        border-color: #d94444;
+        background: #2a1515;
+    }
+
+    .bind-record.active .record-dot {
+        background: #ef4444;
+        animation: pulse-record 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-record {
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.4;
+        }
+    }
+
     .bind-add {
         align-self: flex-start;
         background: none;
@@ -1041,6 +1320,15 @@
 
     .chips-wrap:focus-within {
         border-color: #3a88ed;
+    }
+
+    .chips-wrap.recording {
+        border-color: #b33b3b;
+        background: #251717;
+    }
+
+    .chips-wrap.recording:focus-within {
+        border-color: #d94444;
     }
 
     .chip {
@@ -1095,6 +1383,11 @@
         font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
             monospace;
         padding: 0;
+    }
+
+    .chips-input[readonly] {
+        cursor: default;
+        caret-color: transparent;
     }
 
     .chips-input::placeholder {
