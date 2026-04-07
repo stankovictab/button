@@ -165,6 +165,20 @@ func (a *App) SetHasSeenWelcome() error {
 	return config.WriteUserConfig(cfg)
 }
 
+// SetListPreferences stores persistent app list UI preferences.
+func (a *App) SetListPreferences(sortMode string, groupByTag bool) error {
+	switch sortMode {
+	case "alpha", "last-updated":
+	default:
+		sortMode = "alpha"
+	}
+
+	cfg, _ := config.ReadUserConfig()
+	cfg.LastSortMode = sortMode
+	cfg.GroupByTag = groupByTag
+	return config.WriteUserConfig(cfg)
+}
+
 // GetRegistryApps returns the list of apps available in the built-in registry.
 func (a *App) GetRegistryApps() ([]registry.RegistryEntry, error) {
 	return a.registry.ListApps()

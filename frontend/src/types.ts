@@ -28,6 +28,8 @@ export type RegistryEntry = {
 
 export type UserConfig = {
     hasSeenWelcome: boolean
+    lastSortMode?: SortMode
+    groupByTag?: boolean
 }
 
 export type SortMode = "alpha" | "last-updated"
