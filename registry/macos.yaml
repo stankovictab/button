@@ -1,0 +1,19 @@
+app: macOS
+icon: macos
+tags: ["Operating System", "macOS"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Switch to next app
+          macos: [Cmd, Tab]
+        - desc: Force quit app
+          macos: [Cmd, Alt, Esc]
+        - desc: Lock screen
+          macos: [Ctrl, Cmd, q]
+        - desc: Open emoji and symbols
+          macos: [Ctrl, Cmd, Space]
+        - desc: Screenshot full screen
+          macos: [Cmd, Shift, "3"]
+        - desc: Screenshot selection
+          macos: [Cmd, Shift, "4"]

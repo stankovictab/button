@@ -1,13 +1,18 @@
 /**
  * Icon map: resolves YAML `icon` field values to SVG strings.
  *
+ * Registry apps can safely ship before their icons do.
+ * If an `icon` key from a YAML file is missing here, the UI falls back to the
+ * first letter of the app name.
+ *
  * - Simple Icons: brand logos imported from the `simple-icons` package
  * - Custom SVGs: raw SVG files from `./custom/` for apps missing from Simple Icons
  * - Lucide: UI chrome icons are handled separately in Toolbar.svelte
  *
  * To add a new icon:
- *   1. If it exists in Simple Icons: import it and add an entry below
- *   2. If not: add an SVG to `./custom/`, import it as `?raw`, and add an entry
+ *   1. Pick the `icon:` key used by the app YAML in `registry/` or a user config
+ *   2. If it exists in Simple Icons: import it and add an entry below
+ *   3. If not: add an SVG to `./custom/`, import it as `?raw`, and add an entry
  */
 
 import {

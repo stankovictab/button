@@ -1,0 +1,19 @@
+app: Microsoft Visual Studio
+icon: microsoftvisualstudio
+tags: ["IDE", "Developer Tools", "Windows"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Quick Launch
+          linux: [Ctrl, q]
+        - desc: Go to All
+          linux: [Ctrl, Comma]
+        - desc: Build solution
+          linux: [Ctrl, Shift, b]
+        - desc: Start debugging
+          linux: [F5]
+        - desc: Toggle breakpoint
+          linux: [F9]
+        - desc: Go to definition
+          linux: [F12]

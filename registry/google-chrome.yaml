@@ -1,0 +1,37 @@
+app: Google Chrome
+icon: googlechrome
+tags: ["Browser"]
+default: true
+groups:
+    - category: Tabs & Windows
+      shortcuts:
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: New incognito window
+          keys: [Ctrl, Shift, n]
+          macos: [Cmd, Shift, n]
+        - desc: Reopen last closed tab
+          keys: [Ctrl, Shift, t]
+          macos: [Cmd, Shift, t]
+        - desc: Next tab
+          keys: [Ctrl, Tab]
+          macos:
+            - [Ctrl, Tab]
+            - [Cmd, RightBracket]
+        - desc: Previous tab
+          keys: [Ctrl, Shift, Tab]
+          macos:
+            - [Ctrl, Shift, Tab]
+            - [Cmd, LeftBracket]
+    - category: General
+      shortcuts:
+        - desc: Focus address bar
+          keys: [Ctrl, l]
+          macos: [Cmd, l]
+        - desc: Find in page
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Open downloads
+          keys: [Ctrl, j]
+          macos: [Cmd, Shift, j]

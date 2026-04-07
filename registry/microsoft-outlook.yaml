@@ -1,0 +1,28 @@
+app: Microsoft Outlook
+icon: microsoftoutlook
+tags: ["Email", "Office"]
+default: true
+groups:
+    - category: Mail
+      shortcuts:
+        - desc: Create new message
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: Reply
+          keys: [Ctrl, r]
+          macos: [Cmd, r]
+        - desc: Reply all
+          keys: [Ctrl, Shift, r]
+          macos: [Cmd, Shift, r]
+        - desc: Forward
+          keys: [Ctrl, f]
+          macos: [Cmd, j]
+        - desc: Send message
+          keys: [Ctrl, Enter]
+          macos: [Cmd, Enter]
+        - desc: Search
+          keys: [Ctrl, e]
+          macos: [Alt, Cmd, f]
+        - desc: Show keyboard shortcuts
+          keys: ["?"]
+          macos: ["?"]

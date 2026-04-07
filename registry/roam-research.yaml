@@ -1,0 +1,28 @@
+app: Roam Research
+icon: roamresearch
+tags: ["Notes", "Knowledge Base", "Web App"]
+default: true
+groups:
+    - category: Blocks & Pages
+      shortcuts:
+        - desc: Open command menu
+          keys: [Slash]
+          macos: [Slash]
+        - desc: Search the graph
+          keys: [Ctrl, u]
+          macos: [Cmd, u]
+        - desc: Search within current page
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Jump to Daily Notes
+          keys: [Ctrl, Shift, d]
+          macos: [Cmd, Shift, d]
+        - desc: Create or toggle TODO
+          keys: [Ctrl, Enter]
+          macos: [Cmd, Enter]
+        - desc: Indent block
+          keys: [Tab]
+          macos: [Tab]
+        - desc: Un-indent block
+          keys: [Shift, Tab]
+          macos: [Shift, Tab]

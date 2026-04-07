@@ -1,0 +1,25 @@
+app: IntelliJ IDEA
+icon: intellijidea
+tags: ["IDE", "Developer Tools", "JetBrains"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Find Action
+          keys: [Ctrl, Shift, a]
+          macos: [Cmd, Shift, a]
+        - desc: Recent Files
+          keys: [Ctrl, e]
+          macos: [Cmd, e]
+        - desc: Show intention actions and quick fixes
+          keys: [Alt, Enter]
+          macos: [Alt, Enter]
+        - desc: Reformat code
+          keys: [Ctrl, Alt, l]
+          macos: [Cmd, Alt, l]
+        - desc: Go to declaration
+          keys: [Ctrl, b]
+          macos: [Cmd, b]
+        - desc: Open project tool window
+          keys: [Alt, "1"]
+          macos: [Cmd, "1"]

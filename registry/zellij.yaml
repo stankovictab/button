@@ -1,0 +1,29 @@
+app: Zellij
+icon: zellij
+tags: ["Terminal", "Developer Tools"]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: New pane
+          keys: [Alt, n]
+        - desc: Move focus left
+          keys:
+            - [Alt, h]
+            - [Alt, ArrowLeft]
+        - desc: Move focus down
+          keys:
+            - [Alt, j]
+            - [Alt, ArrowDown]
+        - desc: Move focus up
+          keys:
+            - [Alt, k]
+            - [Alt, ArrowUp]
+        - desc: Move focus right
+          keys:
+            - [Alt, l]
+            - [Alt, ArrowRight]
+        - desc: Toggle floating panes
+          keys: [Alt, f]
+        - desc: Lock or unlock interface
+          keys: [Ctrl, g]

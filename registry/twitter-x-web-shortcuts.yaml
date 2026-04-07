@@ -1,0 +1,25 @@
+app: Twitter/X (web shortcuts)
+icon: twitterx
+tags: ["Social", "Web App"]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: New post
+          keys: [n]
+          macos: [n]
+        - desc: Like post
+          keys: [l]
+          macos: [l]
+        - desc: Reply
+          keys: [r]
+          macos: [r]
+        - desc: Repost
+          keys: [t]
+          macos: [t]
+        - desc: Message
+          keys: [m]
+          macos: [m]
+        - desc: Search
+          keys: [Slash]
+          macos: [Slash]

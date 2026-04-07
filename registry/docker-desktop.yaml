@@ -1,0 +1,22 @@
+app: Docker Desktop
+icon: dockerdesktop
+tags: ["Developer Tools", "Containers"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open settings
+          keys: [Ctrl, Comma]
+          macos: [Cmd, Comma]
+        - desc: Find or filter
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Copy selected text
+          keys: [Ctrl, c]
+          macos: [Cmd, c]
+        - desc: Paste
+          keys: [Ctrl, v]
+          macos: [Cmd, v]
+        - desc: Dismiss dialog
+          keys: [Esc]
+          macos: [Esc]

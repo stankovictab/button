@@ -1,0 +1,28 @@
+app: Gmail
+icon: gmail
+tags: ["Email", "Web App"]
+default: true
+groups:
+    - category: Mail
+      shortcuts:
+        - desc: Compose new email
+          keys: [c]
+          macos: [c]
+        - desc: Search mail
+          keys: [Slash]
+          macos: [Slash]
+        - desc: Reply
+          keys: [r]
+          macos: [r]
+        - desc: Reply all
+          keys: [a]
+          macos: [a]
+        - desc: Forward
+          keys: [f]
+          macos: [f]
+        - desc: Archive conversation
+          keys: [e]
+          macos: [e]
+        - desc: Show keyboard shortcuts
+          keys: ["?"]
+          macos: ["?"]

@@ -1,0 +1,28 @@
+app: Discord
+icon: discord
+tags: ["Communication", "Collaboration"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open user settings
+          keys: [Ctrl, Comma]
+          macos: [Cmd, Comma]
+        - desc: Open keyboard shortcuts menu
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]
+        - desc: Search current channel
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Search across all channels
+          keys: [Ctrl, Shift, f]
+          macos: [Cmd, Shift, f]
+        - desc: Open emoji picker
+          keys: [Ctrl, e]
+          macos: [Cmd, e]
+        - desc: Open GIF picker
+          keys: [Ctrl, g]
+          macos: [Cmd, g]
+        - desc: Create or join a server
+          keys: [Ctrl, Shift, n]
+          macos: [Cmd, Shift, n]

@@ -1,0 +1,28 @@
+app: Adobe After Effects
+icon: adobeaftereffects
+tags: ["Creative", "Motion"]
+default: true
+groups:
+    - category: Timeline
+      shortcuts:
+        - desc: Selection tool
+          keys: [v]
+          macos: [v]
+        - desc: Hand tool
+          keys: [h]
+          macos: [h]
+        - desc: Zoom tool
+          keys: [z]
+          macos: [z]
+        - desc: Reveal position
+          keys: [p]
+          macos: [p]
+        - desc: Reveal scale
+          keys: [s]
+          macos: [s]
+        - desc: Reveal rotation
+          keys: [r]
+          macos: [r]
+        - desc: Reveal opacity
+          keys: [t]
+          macos: [t]

@@ -1,0 +1,17 @@
+app: Task Manager
+icon: taskmanager
+tags: ["System UI", "Windows"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open Task Manager
+          linux: [Ctrl, Shift, Esc]
+        - desc: Next tab
+          linux: [Ctrl, Tab]
+        - desc: Previous tab
+          linux: [Ctrl, Shift, Tab]
+        - desc: Refresh process list
+          linux: [F5]
+        - desc: End selected task
+          linux: [Delete]

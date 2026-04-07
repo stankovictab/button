@@ -1,0 +1,28 @@
+app: Adobe Illustrator
+icon: adobeillustrator
+tags: ["Design", "Creative", "Vector"]
+default: true
+groups:
+    - category: Tools
+      shortcuts:
+        - desc: Selection tool
+          keys: [v]
+          macos: [v]
+        - desc: Direct Selection tool
+          keys: [a]
+          macos: [a]
+        - desc: Pen tool
+          keys: [p]
+          macos: [p]
+        - desc: Type tool
+          keys: [t]
+          macos: [t]
+        - desc: Rectangle tool
+          keys: [m]
+          macos: [m]
+        - desc: Group selection
+          keys: [Ctrl, g]
+          macos: [Cmd, g]
+        - desc: Ungroup selection
+          keys: [Ctrl, Shift, g]
+          macos: [Cmd, Shift, g]

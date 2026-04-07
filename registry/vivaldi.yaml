@@ -1,0 +1,33 @@
+app: Vivaldi
+icon: vivaldi
+tags: ["Browser"]
+default: true
+groups:
+    - category: Tabs & Windows
+      shortcuts:
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: Reopen last closed tab
+          keys: [Ctrl, Shift, t]
+          macos: [Cmd, Shift, t]
+        - desc: Next tab
+          keys: [Ctrl, Tab]
+          macos: [Ctrl, Tab]
+        - desc: Previous tab
+          keys: [Ctrl, Shift, Tab]
+          macos: [Ctrl, Shift, Tab]
+        - desc: Open keyboard shortcut cheat sheet
+          keys: [Ctrl, F1]
+          macos: [Cmd, F1]
+    - category: General
+      shortcuts:
+        - desc: Open Quick Commands
+          keys: [F2]
+          macos: [F2]
+        - desc: Focus address bar
+          keys: [Ctrl, l]
+          macos: [Cmd, l]
+        - desc: Find in page
+          keys: [Ctrl, f]
+          macos: [Cmd, f]

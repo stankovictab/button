@@ -1,0 +1,27 @@
+app: Windows Terminal
+icon: windowsterminal
+tags: ["Terminal", "Developer Tools", "Windows"]
+default: true
+groups:
+    - category: Tabs & Panes
+      shortcuts:
+        - desc: New tab
+          linux: [Ctrl, Shift, t]
+        - desc: New window
+          linux: [Ctrl, Shift, n]
+        - desc: Close current tab or pane
+          linux: [Ctrl, Shift, w]
+        - desc: Split pane vertically
+          linux: [Alt, Shift, Plus]
+        - desc: Split pane horizontally
+          linux: [Alt, Shift, Minus]
+        - desc: Next tab
+          linux: [Ctrl, Tab]
+        - desc: Previous tab
+          linux: [Ctrl, Shift, Tab]
+    - category: General
+      shortcuts:
+        - desc: Open settings
+          linux: [Ctrl, Comma]
+        - desc: Find
+          linux: [Ctrl, Shift, f]

@@ -1,0 +1,21 @@
+app: Xcode
+icon: xcode
+tags: ["IDE", "Developer Tools", "macOS"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Build
+          macos: [Cmd, b]
+        - desc: Run
+          macos: [Cmd, r]
+        - desc: Stop
+          macos: [Cmd, Period]
+        - desc: Open Quickly
+          macos: [Cmd, Shift, o]
+        - desc: Find in workspace
+          macos: [Cmd, Shift, f]
+        - desc: Toggle debug area
+          macos: [Cmd, Shift, y]
+        - desc: Toggle line comment
+          macos: [Cmd, Slash]

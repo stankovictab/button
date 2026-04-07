@@ -1,0 +1,28 @@
+app: Adobe Audition
+icon: adobeaudition
+tags: ["Creative", "Audio"]
+default: true
+groups:
+    - category: Audio
+      shortcuts:
+        - desc: Play or stop
+          keys: [Space]
+          macos: [Space]
+        - desc: Record
+          keys: [Shift, Space]
+          macos: [Shift, Space]
+        - desc: Save
+          keys: [Ctrl, s]
+          macos: [Cmd, s]
+        - desc: Undo
+          keys: [Ctrl, z]
+          macos: [Cmd, z]
+        - desc: Redo
+          keys: [Ctrl, Shift, z]
+          macos: [Cmd, Shift, z]
+        - desc: Zoom in
+          keys: [Equals]
+          macos: [Equals]
+        - desc: Zoom out
+          keys: [Minus]
+          macos: [Minus]

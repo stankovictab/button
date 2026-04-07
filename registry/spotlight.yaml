@@ -1,0 +1,19 @@
+app: Spotlight
+icon: spotlight
+tags: ["Launcher", "Search", "macOS"]
+default: true
+groups:
+    - category: Search
+      shortcuts:
+        - desc: Open Spotlight
+          macos: [Cmd, Space]
+        - desc: Open Finder search window
+          macos: [Cmd, Alt, Space]
+        - desc: Open selected result
+          macos: [Enter]
+        - desc: Open selected result in Finder
+          macos: [Cmd, Enter]
+        - desc: Browse results
+          macos: [ArrowUp]
+        - desc: Dismiss Spotlight
+          macos: [Esc]

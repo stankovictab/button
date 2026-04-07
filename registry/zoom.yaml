@@ -1,0 +1,25 @@
+app: Zoom
+icon: zoom
+tags: ["Communication", "Meetings"]
+default: true
+groups:
+    - category: Meetings
+      shortcuts:
+        - desc: Mute or unmute microphone
+          keys: [Alt, a]
+          macos: [Cmd, Shift, a]
+        - desc: Start or stop video
+          keys: [Alt, v]
+          macos: [Cmd, Shift, v]
+        - desc: Start or stop screen sharing
+          keys: [Alt, s]
+          macos: [Cmd, Shift, s]
+        - desc: Pause or resume screen sharing
+          keys: [Alt, t]
+          macos: [Cmd, Shift, t]
+        - desc: Raise or lower hand
+          keys: [Alt, y]
+          macos: [Alt, y]
+        - desc: End or leave meeting
+          keys: [Alt, q]
+          macos: [Cmd, w]

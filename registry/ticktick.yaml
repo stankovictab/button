@@ -1,0 +1,24 @@
+app: TickTick
+icon: ticktick
+tags: ["Productivity", "Tasks"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Quick add task
+          keys: [Ctrl, Shift, a]
+          macos: [Cmd, Shift, a]
+        - desc: Show or hide mini window
+          macos: [Cmd, Shift, o]
+        - desc: Open command menu or search
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Show keyboard shortcuts
+          keys: ["?"]
+          macos: ["?"]
+        - desc: Search current view
+          keys: [Slash]
+          macos: [Slash]
+        - desc: Close dialog
+          keys: [Esc]
+          macos: [Esc]

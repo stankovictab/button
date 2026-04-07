@@ -1,0 +1,22 @@
+app: Telegram Desktop
+icon: telegramdesktop
+tags: ["Communication"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Search chats or messages
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Search contacts or jump to chat
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Compose and send message
+          keys: [Enter]
+          macos: [Enter]
+        - desc: Insert line break
+          keys: [Shift, Enter]
+          macos: [Shift, Enter]
+        - desc: Close current view or dialog
+          keys: [Esc]
+          macos: [Esc]

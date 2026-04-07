@@ -1,0 +1,37 @@
+app: Notion
+icon: notion
+tags: ["Productivity", "Notes"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New page
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: Search or jump to page
+          keys:
+            - [Ctrl, p]
+            - [Ctrl, k]
+          macos:
+            - [Cmd, p]
+            - [Cmd, k]
+        - desc: Search within current page
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Toggle dark mode
+          keys: [Ctrl, Shift, l]
+          macos: [Cmd, Shift, l]
+        - desc: Create comment
+          keys: [Ctrl, Shift, m]
+          macos: [Cmd, Shift, m]
+    - category: Editing
+      shortcuts:
+        - desc: Duplicate selected block
+          keys: [Ctrl, d]
+          macos: [Cmd, d]
+        - desc: Open slash command menu
+          keys: [Slash]
+          macos: [Slash]

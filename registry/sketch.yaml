@@ -1,0 +1,21 @@
+app: Sketch
+icon: sketch
+tags: ["Design", "Creative", "macOS"]
+default: true
+groups:
+    - category: Tools
+      shortcuts:
+        - desc: Insert Artboard
+          macos: [a]
+        - desc: Insert Rectangle
+          macos: [r]
+        - desc: Insert Oval
+          macos: [o]
+        - desc: Insert Text
+          macos: [t]
+        - desc: Group selection
+          macos: [Cmd, g]
+        - desc: Ungroup selection
+          macos: [Cmd, Shift, g]
+        - desc: Zoom to selection
+          macos: [Cmd, "2"]

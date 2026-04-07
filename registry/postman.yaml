@@ -1,0 +1,28 @@
+app: Postman
+icon: postman
+tags: ["Developer Tools", "API"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: New request
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: Save request
+          keys: [Ctrl, s]
+          macos: [Cmd, s]
+        - desc: Send request
+          keys: [Ctrl, Enter]
+          macos: [Cmd, Enter]
+        - desc: Search
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Open Postman Console
+          keys: [Ctrl, Alt, c]
+          macos: [Cmd, Alt, c]
+        - desc: Close tab
+          keys: [Ctrl, w]
+          macos: [Cmd, w]

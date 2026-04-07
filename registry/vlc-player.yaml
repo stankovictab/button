@@ -1,0 +1,28 @@
+app: VLC Player
+icon: vlcplayer
+tags: ["Media", "Video"]
+default: true
+groups:
+    - category: Playback
+      shortcuts:
+        - desc: Play or pause
+          keys: [Space]
+          macos: [Space]
+        - desc: Toggle fullscreen
+          keys: [f]
+          macos: [f]
+        - desc: Mute
+          keys: [m]
+          macos: [m]
+        - desc: Volume up
+          keys: [Ctrl, ArrowUp]
+          macos: [Cmd, ArrowUp]
+        - desc: Volume down
+          keys: [Ctrl, ArrowDown]
+          macos: [Cmd, ArrowDown]
+        - desc: Jump forward
+          keys: [Alt, ArrowRight]
+          macos: [Alt, ArrowRight]
+        - desc: Jump backward
+          keys: [Alt, ArrowLeft]
+          macos: [Alt, ArrowLeft]

@@ -1,0 +1,32 @@
+app: YouTube (web shortcuts)
+icon: youtube
+tags: ["Media", "Video", "Web App"]
+default: true
+groups:
+    - category: Player
+      shortcuts:
+        - desc: Play or pause
+          keys:
+            - [k]
+            - [Space]
+          macos:
+            - [k]
+            - [Space]
+        - desc: Mute or unmute
+          keys: [m]
+          macos: [m]
+        - desc: Seek backward 10 seconds
+          keys: [j]
+          macos: [j]
+        - desc: Seek forward 10 seconds
+          keys: [l]
+          macos: [l]
+        - desc: Toggle fullscreen
+          keys: [f]
+          macos: [f]
+        - desc: Search
+          keys: [Slash]
+          macos: [Slash]
+        - desc: Show keyboard shortcuts
+          keys: [Shift, Slash]
+          macos: [Shift, Slash]

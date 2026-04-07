@@ -1,0 +1,27 @@
+app: Terminal (macOS)
+icon: terminalmacos
+tags: ["Terminal", "macOS"]
+default: true
+groups:
+    - category: Tabs & Windows
+      shortcuts:
+        - desc: New window
+          macos: [Cmd, n]
+        - desc: New tab
+          macos: [Cmd, t]
+        - desc: Close tab
+          macos: [Cmd, w]
+        - desc: Show all tabs
+          macos: [Cmd, Shift, Backslash]
+        - desc: Next tab
+          macos: [Cmd, Shift, RightBracket]
+        - desc: Previous tab
+          macos: [Cmd, Shift, LeftBracket]
+    - category: General
+      shortcuts:
+        - desc: Find
+          macos: [Cmd, f]
+        - desc: Clear screen
+          macos: [Cmd, k]
+        - desc: Open settings
+          macos: [Cmd, Comma]

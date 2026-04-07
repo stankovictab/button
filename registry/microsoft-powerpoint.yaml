@@ -1,0 +1,25 @@
+app: Microsoft PowerPoint
+icon: microsoftpowerpoint
+tags: ["Office", "Presentations"]
+default: true
+groups:
+    - category: Presentation
+      shortcuts:
+        - desc: New presentation
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: New slide
+          keys: [Ctrl, m]
+          macos: [Cmd, Shift, n]
+        - desc: Duplicate selected slide or object
+          keys: [Ctrl, d]
+          macos: [Cmd, d]
+        - desc: Start slideshow from beginning
+          keys: [F5]
+          macos: [Cmd, Shift, Return]
+        - desc: Start slideshow from current slide
+          keys: [Shift, F5]
+          macos: [Cmd, Return]
+        - desc: Find
+          keys: [Ctrl, f]
+          macos: [Cmd, f]

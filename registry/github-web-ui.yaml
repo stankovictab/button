@@ -1,0 +1,31 @@
+app: GitHub (web UI)
+icon: github
+tags: ["Developer Tools", "Web App", "Code Hosting"]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: Focus search bar
+          keys:
+            - [s]
+            - [Slash]
+          macos:
+            - [s]
+            - [Slash]
+        - desc: Show keyboard shortcuts
+          keys: ["?"]
+          macos: ["?"]
+        - desc: Open file finder in repository
+          keys: [t]
+          macos: [t]
+        - desc: Open github.dev web editor
+          keys: [Period]
+          macos: [Period]
+        - desc: Close dialog or hovercard
+          keys: [Esc]
+          macos: [Esc]
+    - category: Writing
+      shortcuts:
+        - desc: Submit comment
+          keys: [Ctrl, Enter]
+          macos: [Cmd, Enter]

@@ -1,0 +1,28 @@
+app: Adobe Premiere Pro
+icon: adobepremierepro
+tags: ["Creative", "Video"]
+default: true
+groups:
+    - category: Timeline
+      shortcuts:
+        - desc: Selection tool
+          keys: [v]
+          macos: [v]
+        - desc: Razor tool
+          keys: [c]
+          macos: [c]
+        - desc: Ripple Edit tool
+          keys: [b]
+          macos: [b]
+        - desc: Play or stop
+          keys: [Space]
+          macos: [Space]
+        - desc: Mark In
+          keys: [i]
+          macos: [i]
+        - desc: Mark Out
+          keys: [o]
+          macos: [o]
+        - desc: Export media
+          keys: [Ctrl, m]
+          macos: [Cmd, m]

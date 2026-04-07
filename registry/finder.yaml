@@ -1,0 +1,21 @@
+app: Finder
+icon: finder
+tags: ["File Manager", "macOS"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New Finder window
+          macos: [Cmd, n]
+        - desc: New folder
+          macos: [Cmd, Shift, n]
+        - desc: Search in current window
+          macos: [Cmd, f]
+        - desc: Open Go to Folder
+          macos: [Cmd, Shift, g]
+        - desc: Rename selected item
+          macos: [Enter]
+        - desc: Show item info
+          macos: [Cmd, i]
+        - desc: Eject selected disk or volume
+          macos: [Cmd, e]

@@ -1,0 +1,31 @@
+app: Bash / Shell
+icon: bashshell
+tags: ["Terminal", "Linux", "Shell"]
+default: true
+groups:
+    - category: Line Editing
+      shortcuts:
+        - desc: Move to beginning of line
+          linux: [Ctrl, a]
+        - desc: Move to end of line
+          linux: [Ctrl, e]
+        - desc: Delete to end of line
+          linux: [Ctrl, k]
+        - desc: Delete to beginning of line
+          linux: [Ctrl, u]
+        - desc: Delete previous word
+          linux: [Ctrl, w]
+        - desc: Clear screen
+          linux: [Ctrl, l]
+    - category: History & Search
+      shortcuts:
+        - desc: Previous command in history
+          linux:
+            - [Ctrl, p]
+            - [ArrowUp]
+        - desc: Next command in history
+          linux:
+            - [Ctrl, n]
+            - [ArrowDown]
+        - desc: Reverse search through history
+          linux: [Ctrl, r]

@@ -1,0 +1,21 @@
+app: Windows 11 System Shortcuts
+icon: windows11
+tags: ["Operating System", "System UI", "Windows"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open Settings
+          linux: [Win, i]
+        - desc: Open File Explorer
+          linux: [Win, e]
+        - desc: Lock PC
+          linux: [Win, l]
+        - desc: Open Search
+          linux: [Win, s]
+        - desc: Open Quick Settings
+          linux: [Win, a]
+        - desc: Open Task Manager
+          linux: [Ctrl, Shift, Esc]
+        - desc: Switch windows
+          linux: [Alt, Tab]

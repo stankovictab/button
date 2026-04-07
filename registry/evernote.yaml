@@ -1,0 +1,33 @@
+app: Evernote
+icon: evernote
+tags: ["Notes", "Productivity"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New note
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: Search
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: New task
+          keys: [Alt, t]
+          macos: [Cmd, t]
+        - desc: Open keyboard shortcuts
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]
+        - desc: Open settings
+          keys: [Ctrl, Comma]
+          macos: [Cmd, Comma]
+        - desc: Rename selected note
+          keys: [F2]
+          macos: [F2]
+    - category: Editing
+      shortcuts:
+        - desc: Find within note
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Add or edit link
+          keys: [Ctrl, k]
+          macos: [Cmd, k]

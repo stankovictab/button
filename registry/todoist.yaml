@@ -1,0 +1,37 @@
+app: Todoist
+icon: todoist
+tags: ["Productivity", "Tasks"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Quick add
+          keys: [q]
+          macos: [q]
+        - desc: Search
+          keys:
+            - [Slash]
+            - [f]
+          macos:
+            - [Slash]
+            - [f]
+        - desc: Open Quick Find
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Show keyboard shortcuts
+          keys: ["?"]
+          macos: ["?"]
+        - desc: Open settings
+          keys: [Ctrl, Comma]
+          macos: [Cmd, Comma]
+    - category: Tasks
+      shortcuts:
+        - desc: Complete focused task
+          keys: [e]
+          macos: [e]
+        - desc: Comment on focused task
+          keys: [c]
+          macos: [c]
+        - desc: Save task edits
+          keys: [Ctrl, Enter]
+          macos: [Cmd, Enter]

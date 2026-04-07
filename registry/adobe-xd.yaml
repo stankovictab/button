@@ -1,0 +1,28 @@
+app: Adobe XD
+icon: adobexd
+tags: ["Design", "Creative"]
+default: true
+groups:
+    - category: Tools
+      shortcuts:
+        - desc: Select tool
+          keys: [v]
+          macos: [v]
+        - desc: Artboard tool
+          keys: [a]
+          macos: [a]
+        - desc: Rectangle tool
+          keys: [r]
+          macos: [r]
+        - desc: Ellipse tool
+          keys: [e]
+          macos: [e]
+        - desc: Text tool
+          keys: [t]
+          macos: [t]
+        - desc: Repeat Grid
+          keys: [Ctrl, r]
+          macos: [Cmd, r]
+        - desc: Preview
+          keys: [Ctrl, Enter]
+          macos: [Cmd, Enter]

@@ -1,0 +1,28 @@
+app: Linear
+icon: linear
+tags: ["Productivity", "Project Management"]
+default: true
+groups:
+    - category: Issues
+      shortcuts:
+        - desc: Create issue
+          keys: [c]
+          macos: [c]
+        - desc: Search workspace
+          keys: [Slash]
+          macos: [Slash]
+        - desc: Search issues in current view
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Open command menu
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Toggle board or list view
+          keys: [Ctrl, b]
+          macos: [Cmd, b]
+        - desc: Select issue
+          keys: [x]
+          macos: [x]
+        - desc: Peek issue
+          keys: [Space]
+          macos: [Space]

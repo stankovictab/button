@@ -1,0 +1,22 @@
+app: GIMP
+icon: gimp
+tags: ["Creative", "Image Editing"]
+default: true
+groups:
+    - category: Tools
+      shortcuts:
+        - desc: Rectangle Select tool
+          keys: [r]
+        - desc: Ellipse Select tool
+          keys: [e]
+        - desc: Move tool
+          keys: [m]
+        - desc: Fuzzy Select tool
+          keys: [u]
+        - desc: Paintbrush tool
+          keys: [p]
+        - desc: Zoom tool
+          keys: [z]
+        - desc: Save
+          keys: [Ctrl, s]
+          macos: [Cmd, s]

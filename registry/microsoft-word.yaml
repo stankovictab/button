@@ -1,0 +1,28 @@
+app: Microsoft Word
+icon: microsoftword
+tags: ["Office", "Writing"]
+default: true
+groups:
+    - category: Writing
+      shortcuts:
+        - desc: New document
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: Save
+          keys: [Ctrl, s]
+          macos: [Cmd, s]
+        - desc: Find
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Bold
+          keys: [Ctrl, b]
+          macos: [Cmd, b]
+        - desc: Italic
+          keys: [Ctrl, i]
+          macos: [Cmd, i]
+        - desc: Underline
+          keys: [Ctrl, u]
+          macos: [Cmd, u]
+        - desc: Print
+          keys: [Ctrl, p]
+          macos: [Cmd, p]

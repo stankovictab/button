@@ -1,0 +1,19 @@
+app: Nautilus (file manager)
+icon: nautilus
+tags: ["File Manager", "Linux", "GNOME"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New window
+          linux: [Ctrl, n]
+        - desc: Search
+          linux: [Ctrl, f]
+        - desc: Rename selected item
+          linux: [F2]
+        - desc: Show item properties
+          linux: [Alt, Enter]
+        - desc: Focus location bar
+          linux: [Ctrl, l]
+        - desc: Close window
+          linux: [Ctrl, w]

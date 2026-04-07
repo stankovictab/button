@@ -1,0 +1,33 @@
+app: Visual Studio Code
+icon: vscode
+tags: ["Code Editor", "IDE", "Developer Tools"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open Command Palette
+          keys: [Ctrl, Shift, p]
+          macos: [Cmd, Shift, p]
+        - desc: Quick Open
+          keys: [Ctrl, p]
+          macos: [Cmd, p]
+        - desc: Toggle integrated terminal
+          keys: [Ctrl, Backtick]
+          macos: [Ctrl, Backtick]
+        - desc: Open settings
+          keys: [Ctrl, Comma]
+          macos: [Cmd, Comma]
+        - desc: Split editor
+          keys: [Ctrl, Backslash]
+          macos: [Cmd, Backslash]
+        - desc: Format document
+          keys: [Shift, Alt, f]
+          macos: [Shift, Alt, f]
+    - category: Editing
+      shortcuts:
+        - desc: Search in files
+          keys: [Ctrl, Shift, f]
+          macos: [Cmd, Shift, f]
+        - desc: Toggle line comment
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]

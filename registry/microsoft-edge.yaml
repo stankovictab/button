@@ -1,0 +1,41 @@
+app: Microsoft Edge
+icon: microsoftedge
+tags: ["Browser"]
+default: true
+groups:
+    - category: Tabs & Windows
+      shortcuts:
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: New InPrivate window
+          keys: [Ctrl, Shift, n]
+          macos: [Cmd, Shift, n]
+        - desc: Reopen last closed tab
+          keys: [Ctrl, Shift, t]
+          macos: [Cmd, Shift, t]
+        - desc: Next tab
+          keys: [Ctrl, Tab]
+          macos:
+            - [Ctrl, Tab]
+            - [Cmd, RightBracket]
+        - desc: Previous tab
+          keys: [Ctrl, Shift, Tab]
+          macos:
+            - [Ctrl, Shift, Tab]
+            - [Cmd, LeftBracket]
+    - category: General
+      shortcuts:
+        - desc: Focus address bar
+          keys: [Alt, d]
+          macos: [Cmd, l]
+        - desc: Find in page
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Open Developer Tools
+          keys:
+            - [Ctrl, Shift, i]
+            - [F12]
+          macos:
+            - [Cmd, Alt, i]
+            - [F12]

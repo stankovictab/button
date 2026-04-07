@@ -1,0 +1,19 @@
+app: macOS System (global shortcuts)
+icon: macossystem
+tags: ["Operating System", "System UI", "macOS"]
+default: true
+groups:
+    - category: Window Management
+      shortcuts:
+        - desc: Mission Control
+          macos: [Ctrl, ArrowUp]
+        - desc: App Expose
+          macos: [Ctrl, ArrowDown]
+        - desc: Next Space
+          macos: [Ctrl, ArrowRight]
+        - desc: Previous Space
+          macos: [Ctrl, ArrowLeft]
+        - desc: Show Desktop
+          macos: [Cmd, F3]
+        - desc: Spotlight search
+          macos: [Cmd, Space]

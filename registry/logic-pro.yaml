@@ -1,0 +1,17 @@
+app: Logic Pro
+icon: logicpro
+tags: ["Creative", "Audio", "macOS"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open Key Commands window
+          macos: [Alt, k]
+        - desc: Start without Core Audio
+          macos: [Ctrl]
+        - desc: Start without project
+          macos: [Alt]
+        - desc: Start with validated Audio Units only
+          macos: [Ctrl, Shift]
+        - desc: Search keyboard shortcuts
+          macos: [Cmd, Shift, Slash]
