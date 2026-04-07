@@ -1,7 +1,13 @@
 <script lang="ts">
     import type { AppConfig, SortMode } from "../../types";
     import AppIcon from "./AppIcon.svelte";
-    import { ArrowDownAZ, Clock, Plus, EllipsisVertical } from "lucide-svelte";
+    import {
+        ArrowDownAZ,
+        Clock,
+        Plus,
+        EllipsisVertical,
+        Tags,
+    } from "lucide-svelte";
 
     let {
         apps,
@@ -11,9 +17,11 @@
         nameMatches = {},
         width = 310,
         sortMode = "alpha",
+        groupByTag = false,
         versionLabel = "dev",
         onSelect,
         onToggleSort,
+        onToggleGroupByTag,
         onCreateApp,
         onEditApp,
         onDeleteApp,
@@ -25,9 +33,11 @@
         nameMatches: Record<number, boolean>;
         width: number;
         sortMode: SortMode;
+        groupByTag: boolean;
         versionLabel?: string;
         onSelect: (index: number) => void;
         onToggleSort: () => void;
+        onToggleGroupByTag: () => void;
         onCreateApp: () => void;
         onEditApp: (index: number) => void;
         onDeleteApp: (index: number) => void;
@@ -60,9 +70,41 @@
         return app.groups.reduce((sum, g) => sum + g.shortcuts.length, 0);
     }
 
+    function primaryTag(app: AppConfig): string | null {
+        const tag = app.tags?.find((value) => value.trim().length > 0)?.trim();
+        return tag || null;
+    }
+
     let totalShortcutsAll = $derived(
         apps.reduce((sum, app) => sum + totalShortcuts(app), 0),
     );
+
+    let sections = $derived.by(() => {
+        if (!groupByTag) {
+            return [
+                {
+                    label: "",
+                    indices: apps.map((_, index) => index),
+                },
+            ];
+        }
+
+        const grouped: { label: string; indices: number[] }[] = [];
+
+        apps.forEach((app, index) => {
+            const label = primaryTag(app) ?? "Untagged";
+            const current = grouped[grouped.length - 1];
+
+            if (current?.label === label) {
+                current.indices.push(index);
+                return;
+            }
+
+            grouped.push({ label, indices: [index] });
+        });
+
+        return grouped;
+    });
 
     let rowEls: HTMLButtonElement[] = $state([]);
 
@@ -81,98 +123,134 @@
         <span class="app-list-header-sep">&bull;</span>
         <span class="app-list-header-count">{totalShortcutsAll}</span>
         <span class="app-list-header-label">Shortcuts</span>
-        <button class="header-icon-btn" onclick={onCreateApp} title="New app">
-            <Plus size={17} />
-        </button>
-        <button
-            class="sort-btn"
-            class:sort-btn--active={sortMode === "last-updated"}
-            onclick={onToggleSort}
-            title={sortMode === "alpha"
-                ? "Sorted alphabetically"
-                : "Sorted by last updated"}
-        >
-            {#if sortMode === "alpha"}
-                <ArrowDownAZ size={15} />
-            {:else}
-                <Clock size={15} />
-            {/if}
-        </button>
+        <div class="app-list-header-actions">
+            <button class="header-icon-btn" onclick={onCreateApp} title="New app">
+                <Plus size={17} />
+            </button>
+            <button
+                class="sort-btn"
+                class:sort-btn--active={groupByTag}
+                onclick={onToggleGroupByTag}
+                title={groupByTag
+                    ? "Grouped by primary category"
+                    : "Group by primary category"}
+            >
+                <Tags size={15} />
+            </button>
+            <button
+                class="sort-btn"
+                class:sort-btn--active={sortMode === "last-updated"}
+                onclick={onToggleSort}
+                title={sortMode === "alpha"
+                    ? "Sorted alphabetically"
+                    : "Sorted by last updated"}
+            >
+                {#if sortMode === "alpha"}
+                    <ArrowDownAZ size={15} />
+                {:else}
+                    <Clock size={15} />
+                {/if}
+            </button>
+        </div>
     </div>
 
     <div class="app-list-items">
-        {#each apps as app, i}
-            {@const count = totalShortcuts(app)}
-            {@const matches = matchCounts[i] ?? 0}
-            {@const isSelected = i === selectedIndex}
-            {@const nameMatch = nameMatches[i] ?? false}
-            {@const hasNoMatches =
-                searchQuery !== "" && matches === 0 && !nameMatch}
-            <div class="app-row-wrapper">
-                <button
-                    bind:this={rowEls[i]}
-                    class="app-row"
-                    class:app-row--selected={isSelected}
-                    class:app-row--dimmed={hasNoMatches}
-                    onclick={() => onSelect(i)}
-                >
-                    <div class="app-row-left">
-                        <div class="app-icon">
-                            <AppIcon icon={app.icon} name={app.app} size={18} />
-                        </div>
-                        <span class="app-row-name">{app.app}</span>
-                    </div>
-                    <div class="app-row-right">
-                        {#if searchQuery && nameMatch}
-                            <span class="app-row-meta">
-                                {count} shortcuts
-                                <span class="app-row-app-match"
-                                    >&middot; app match</span
-                                >
-                            </span>
-                        {:else if searchQuery && matches > 0}
-                            <span class="app-row-meta">
-                                {count} shortcuts
-                                <span class="app-row-match-count"
-                                    >&middot; {matches}
-                                    {matches === 1 ? "match" : "matches"}</span
-                                >
-                            </span>
-                        {:else}
-                            <span class="app-row-meta">{count} shortcuts</span>
-                        {/if}
-                    </div>
-                </button>
-                <button
-                    class="menu-trigger"
-                    onclick={(e) => toggleMenu(e, i)}
-                    title="App actions"
-                >
-                    <EllipsisVertical size={15} />
-                </button>
-                {#if menuOpenIndex === i}
-                    <div
-                        class="context-menu"
-                        role="menu"
-                        tabindex="-1"
-                        aria-label={`Actions for ${app.app}`}
-                        onclick={(e) => e.stopPropagation()}
-                        onkeydown={(e) => e.stopPropagation()}
+        {#each sections as section}
+            {#if groupByTag}
+                <div class="detail-tags-row app-section-tags">
+                    <span
+                        class="tag-pill"
+                        class:tag-pill--untagged={section.label === "Untagged"}
                     >
-                        <button
-                            class="context-menu-item"
-                            role="menuitem"
-                            onclick={(e) => handleMenuEdit(e, i)}>Edit</button
+                        {section.label}
+                    </span>
+                </div>
+            {/if}
+            {#each section.indices as i}
+                {@const app = apps[i]}
+                {@const count = totalShortcuts(app)}
+                {@const matches = matchCounts[i] ?? 0}
+                {@const isSelected = i === selectedIndex}
+                {@const nameMatch = nameMatches[i] ?? false}
+                {@const hasNoMatches =
+                    searchQuery !== "" && matches === 0 && !nameMatch}
+                <div class="app-row-wrapper">
+                    <button
+                        bind:this={rowEls[i]}
+                        class="app-row"
+                        class:app-row--selected={isSelected}
+                        class:app-row--dimmed={hasNoMatches}
+                        onclick={() => onSelect(i)}
+                    >
+                        <div class="app-row-left">
+                            <div class="app-icon">
+                                <AppIcon
+                                    icon={app.icon}
+                                    name={app.app}
+                                    size={18}
+                                />
+                            </div>
+                            <span class="app-row-name">{app.app}</span>
+                        </div>
+                        <div class="app-row-right">
+                            {#if searchQuery && nameMatch}
+                                <span class="app-row-meta">
+                                    {count} shortcuts
+                                    <span class="app-row-app-match"
+                                        >&middot; app match</span
+                                    >
+                                </span>
+                            {:else if searchQuery && matches > 0}
+                                <span class="app-row-meta">
+                                    {count} shortcuts
+                                    <span class="app-row-match-count"
+                                        >&middot; {matches}
+                                        {matches === 1
+                                            ? "match"
+                                            : "matches"}</span
+                                    >
+                                </span>
+                            {:else}
+                                <span class="app-row-meta"
+                                    >{count} shortcuts</span
+                                >
+                            {/if}
+                        </div>
+                    </button>
+                    <button
+                        class="menu-trigger"
+                        onclick={(e) => toggleMenu(e, i)}
+                        title="App actions"
+                    >
+                        <EllipsisVertical size={15} />
+                    </button>
+                    {#if menuOpenIndex === i}
+                        <div
+                            class="context-menu"
+                            role="menu"
+                            tabindex="-1"
+                            aria-label={`Actions for ${app.app}`}
+                            onclick={(e) => e.stopPropagation()}
+                            onkeydown={(e) => e.stopPropagation()}
                         >
-                        <button
-                            class="context-menu-item context-menu-item--danger"
-                            role="menuitem"
-                            onclick={(e) => handleMenuDelete(e, i)}
-                            >Delete</button
-                        >
-                    </div>
-                {/if}
-            </div>
+                            <button
+                                class="context-menu-item"
+                                role="menuitem"
+                                onclick={(e) => handleMenuEdit(e, i)}
+                            >
+                                Edit
+                            </button>
+                            <button
+                                class="context-menu-item context-menu-item--danger"
+                                role="menuitem"
+                                onclick={(e) => handleMenuDelete(e, i)}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    {/if}
+                </div>
+            {/each}
         {/each}
     </div>
 
@@ -202,6 +280,13 @@
     .app-list-header-sep {
         font-size: 12px;
         color: #3a3a3a;
+    }
+
+    .app-list-header-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
     .sort-btn {
@@ -235,7 +320,6 @@
     }
 
     .header-icon-btn {
-        margin-left: auto;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -273,6 +357,32 @@
         flex: 1;
         overflow-y: auto;
         padding: 2px 6px;
+    }
+
+    .detail-tags-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .app-section-tags {
+        padding: 12px 8px 6px;
+    }
+
+    .tag-pill {
+        font-size: 10px;
+        font-weight: 500;
+        color: #aeb9d0;
+        background: #171b24;
+        border: 1px solid #2d3545;
+        padding: 2px 8px;
+        border-radius: 999px;
+    }
+
+    .tag-pill--untagged {
+        color: #9a9a9a;
+        background: #1a1a1a;
+        border-color: #303030;
     }
 
     .app-row {
