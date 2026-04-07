@@ -109,75 +109,79 @@
     <div class="detail-panel">
         <!-- Header -->
         <div class="detail-header">
-            <div class="detail-header-icon">
-                <AppIcon icon={app.icon} name={app.app} size={26} />
-            </div>
-            <div class="detail-header-info">
-                <div class="detail-header-name-row">
-                    <h2 class="detail-header-name">{app.app}</h2>
-                    {#if app.default}
-                        <span class="registry-badge">Registry</span>
+            <div class="detail-header-main">
+                <div class="detail-header-icon">
+                    <AppIcon icon={app.icon} name={app.app} size={26} />
+                </div>
+                <div class="detail-header-info">
+                    <div class="detail-header-name-row">
+                        <h2 class="detail-header-name">{app.app}</h2>
+                        {#if app.default}
+                            <span class="registry-badge">Registry</span>
+                        {/if}
+                    </div>
+                    <span class="detail-header-meta">
+                        {totalShortcuts(app)} shortcuts &middot; {totalGroups(
+                            app,
+                        )}
+                        {totalGroups(app) === 1 ? "group" : "groups"}
+                        {#if app.modTime}
+                            &middot; updated {formatModTime(app.modTime)}
+                        {/if}
+                    </span>
+                </div>
+                <div class="detail-header-actions">
+                    {#if onCreateShortcut}
+                        <button
+                            class="detail-action-btn"
+                            onclick={onCreateShortcut}
+                            title="New shortcut"
+                            aria-label="New shortcut"
+                        >
+                            <Plus size={14} />
+                        </button>
+                    {/if}
+                    {#if onEdit}
+                        <button
+                            class="detail-action-btn"
+                            onclick={onEdit}
+                            title="Edit app"
+                            aria-label="Edit app"
+                        >
+                            <SquarePen size={14} />
+                        </button>
+                    {/if}
+                    {#if app}
+                        <button
+                            class="detail-action-btn"
+                            onclick={() => OpenAppFile(app.app)}
+                            title="Open YAML file"
+                            aria-label="Open YAML file"
+                        >
+                            <FilePenLine size={14} />
+                        </button>
+                    {/if}
+                    {#if onDelete}
+                        <button
+                            class="detail-action-btn detail-action-btn--danger"
+                            onclick={onDelete}
+                            title="Delete app"
+                            aria-label="Delete app"
+                        >
+                            <Trash2 size={14} />
+                        </button>
                     {/if}
                 </div>
-                <span class="detail-header-meta">
-                    {totalShortcuts(app)} shortcuts &middot; {totalGroups(app)}
-                    {totalGroups(app) === 1 ? "group" : "groups"}
-                    {#if app.modTime}
-                        &middot; updated {formatModTime(app.modTime)}
-                    {/if}
-                </span>
             </div>
-            <div class="detail-header-actions">
-                {#if onCreateShortcut}
-                    <button
-                        class="detail-action-btn"
-                        onclick={onCreateShortcut}
-                        title="New shortcut"
-                        aria-label="New shortcut"
-                    >
-                        <Plus size={14} />
-                    </button>
-                {/if}
-                {#if onEdit}
-                    <button
-                        class="detail-action-btn"
-                        onclick={onEdit}
-                        title="Edit app"
-                        aria-label="Edit app"
-                    >
-                        <SquarePen size={14} />
-                    </button>
-                {/if}
-                {#if app}
-                    <button
-                        class="detail-action-btn"
-                        onclick={() => OpenAppFile(app.app)}
-                        title="Open YAML file"
-                        aria-label="Open YAML file"
-                    >
-                        <FilePenLine size={14} />
-                    </button>
-                {/if}
-                {#if onDelete}
-                    <button
-                        class="detail-action-btn detail-action-btn--danger"
-                        onclick={onDelete}
-                        title="Delete app"
-                        aria-label="Delete app"
-                    >
-                        <Trash2 size={14} />
-                    </button>
-                {/if}
-            </div>
-        </div>
 
-        {#if app.tags && app.tags.length > 0}
-            <div class="detail-tags-row">
-                {#each app.tags as tag}
-                    <span class="tag-pill">{tag}</span>
-                {/each}
-            </div>
-        {/if}
+            {#if app.tags && app.tags.length > 0}
+                <div class="detail-tags-row">
+                    {#each app.tags as tag}
+                        <span class="tag-pill">{tag}</span>
+                    {/each}
+                </div>
+            {/if}
+        </div>
 
         <!-- Shortcut groups -->
         <div class="detail-body" bind:this={detailBody}>
@@ -368,11 +372,17 @@
 
     .detail-header {
         display: flex;
-        align-items: center;
+        flex-direction: column;
         gap: 10px;
         padding: 12px 16px;
         border-bottom: 1px solid #1c1c1c;
         background: #0d0d0d;
+    }
+
+    .detail-header-main {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .detail-header-icon {
@@ -421,18 +431,18 @@
 
     .detail-tags-row {
         display: flex;
-        gap: 4px;
-        padding: 8px 16px 0;
+        flex-wrap: wrap;
+        gap: 6px;
     }
 
     .tag-pill {
         font-size: 10px;
         font-weight: 500;
-        color: #777777;
-        background: #1c1c1c;
-        border: 1px solid #2a2a2a;
-        padding: 1px 8px;
-        border-radius: 10px;
+        color: #aeb9d0;
+        background: #171b24;
+        border: 1px solid #2d3545;
+        padding: 2px 8px;
+        border-radius: 999px;
     }
 
     .detail-header-meta {

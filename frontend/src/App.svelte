@@ -214,6 +214,7 @@
     function cloneAppConfig(app: AppConfig): AppConfig {
         return {
             ...app,
+            tags: app.tags ? [...app.tags] : undefined,
             groups: app.groups.map(
                 (group): Group => ({
                     category: group.category,
