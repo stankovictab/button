@@ -115,8 +115,8 @@
             <li class="tip">
                 <span class="tip-icon"><Monitor size={13} /></span>
                 <span class="tip-text"
-                    ><kbd>h/l</kbd> cycles through Linux, Windows, and macOS shortcut
-                    sets.</span
+                    ><kbd>h/l</kbd> cycles through Linux, Windows, <br />and
+                    macOS shortcut sets.</span
                 >
             </li>
         </ul>

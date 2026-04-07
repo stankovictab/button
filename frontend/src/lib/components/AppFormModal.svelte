@@ -57,6 +57,8 @@
     // svelte-ignore state_referenced_locally
     const initIcon = initial?.icon ?? "";
     // svelte-ignore state_referenced_locally
+    const initTags = initial?.tags ? [...initial.tags] : [];
+    // svelte-ignore state_referenced_locally
     const initGroups: GroupForm[] = initial
         ? initial.groups.map((g) => ({
               category: g.category,
@@ -79,10 +81,13 @@
 
     let appName: string = $state(initApp);
     let iconId: string = $state(initIcon);
+    let tags: string[] = $state(initTags);
+    let tagDraft: string = $state("");
     let groups: GroupForm[] = $state(initGroups);
     let recordingSlot: string | null = $state(null);
     let panelEl: HTMLDivElement | undefined = $state();
     let appNameInput: HTMLInputElement | undefined = $state();
+    let tagsInput: HTMLInputElement | undefined = $state();
 
     function addGroup() {
         groups = [...groups, { category: "", shortcuts: [emptyShortcut()] }];
@@ -90,6 +95,53 @@
 
     function removeGroup(gi: number) {
         groups = groups.filter((_, i) => i !== gi);
+    }
+
+    function appendTags(rawValue: string) {
+        const nextTags = rawValue
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean);
+
+        if (nextTags.length === 0) return;
+
+        const seen = new Set(tags.map((tag) => tag.toLowerCase()));
+        const uniqueNewTags = nextTags.filter((tag) => {
+            const normalized = tag.toLowerCase();
+            if (seen.has(normalized)) return false;
+            seen.add(normalized);
+            return true;
+        });
+
+        if (uniqueNewTags.length > 0) {
+            tags = [...tags, ...uniqueNewTags];
+        }
+    }
+
+    function commitTagDraft() {
+        if (!tagDraft.trim()) return;
+        appendTags(tagDraft);
+        tagDraft = "";
+    }
+
+    function handleTagKeydown(e: KeyboardEvent) {
+        if ((e.key === "Enter" || e.key === ",") && tagDraft.trim()) {
+            e.preventDefault();
+            commitTagDraft();
+            return;
+        }
+
+        if (e.key === "Backspace" && !tagDraft && tags.length > 0) {
+            tags = tags.slice(0, -1);
+        }
+    }
+
+    function handleTagBlur() {
+        commitTagDraft();
+    }
+
+    function removeTag(tagIndex: number) {
+        tags = tags.filter((_, index) => index !== tagIndex);
     }
 
     async function addShortcut(gi: number) {
@@ -343,6 +395,8 @@
     }
 
     function handleSave() {
+        commitTagDraft();
+
         for (let gi = 0; gi < groups.length; gi++) {
             for (let si = 0; si < groups[gi].shortcuts.length; si++) {
                 for (const field of ["keys", "linux", "macos"] as KeyField[]) {
@@ -383,6 +437,7 @@
                     }),
                 ),
         };
+        if (tags.length > 0) appConfig.tags = tags;
         onSave(appConfig);
     }
 
@@ -552,6 +607,38 @@
                         placeholder="myapp"
                     />
                 </label>
+            </div>
+
+            <div class="field field--full">
+                <label class="field-label" for="app-tags-input">Tags</label>
+                <div class="tag-editor">
+                    {#each tags as tag, index}
+                        <span class="tag-chip">
+                            {tag}
+                            <button
+                                class="tag-chip-remove"
+                                type="button"
+                                tabindex="-1"
+                                onclick={() => removeTag(index)}
+                                aria-label={`Remove ${tag} tag`}
+                            >
+                                ×
+                            </button>
+                        </span>
+                    {/each}
+                    <input
+                        bind:this={tagsInput}
+                        id="app-tags-input"
+                        type="text"
+                        class="tag-input"
+                        bind:value={tagDraft}
+                        placeholder={tags.length === 0
+                            ? "Type a tag and press Enter"
+                            : "Add tag"}
+                        onkeydown={handleTagKeydown}
+                        onblur={handleTagBlur}
+                    />
+                </div>
             </div>
 
             <!-- Groups -->
@@ -962,6 +1049,10 @@
         flex: 0 0 140px;
     }
 
+    .field--full {
+        margin-bottom: 16px;
+    }
+
     .field-label {
         font-size: 10px;
         font-weight: 600;
@@ -986,6 +1077,74 @@
     }
 
     .field-input::placeholder {
+        color: #3f3f3f;
+    }
+
+    .tag-editor {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        min-height: 38px;
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid #2a2a2a;
+        background: #1c1c1c;
+        cursor: text;
+        transition: border-color 0.1s;
+    }
+
+    .tag-editor:focus-within {
+        border-color: #3a88ed;
+    }
+
+    .tag-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid #2e3340;
+        background: #171b24;
+        color: #b8c2d9;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .tag-chip-remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 14px;
+        padding: 0;
+        border: none;
+        background: none;
+        color: #6b7280;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+    }
+
+    .tag-chip-remove:hover {
+        color: #f87171;
+    }
+
+    .tag-input {
+        flex: 1;
+        min-width: 140px;
+        padding: 0;
+        border: none;
+        background: none;
+        color: #d4d4d4;
+        font-size: 13px;
+        font-family: inherit;
+        outline: none;
+    }
+
+    .tag-input::placeholder {
         color: #3f3f3f;
     }
 
