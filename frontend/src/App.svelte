@@ -47,6 +47,7 @@
     let listWidth: number = $state(310);
     let isResizing: boolean = $state(false);
     let sortMode: SortMode = $state("alpha");
+    let groupByTag: boolean = $state(false);
     let appInfo: AppInfo = $state({
         name: "Button",
         version: "",
@@ -79,13 +80,43 @@
     let flamingoTrigger = $state(0);
 
     // --- Derived: sorted base apps ---
+    function primaryTag(app: AppConfig): string | null {
+        const tag = app.tags?.find((value) => value.trim().length > 0)?.trim();
+        return tag || null;
+    }
+
+    function compareApps(a: AppConfig, b: AppConfig): number {
+        if (sortMode === "alpha") {
+            return a.app.localeCompare(b.app);
+        }
+
+        return b.modTime - a.modTime || a.app.localeCompare(b.app);
+    }
+
+    function comparePrimaryTags(a: AppConfig, b: AppConfig): number {
+        const aTag = primaryTag(a);
+        const bTag = primaryTag(b);
+
+        if (!aTag && bTag) return 1;
+        if (aTag && !bTag) return -1;
+        if (aTag && bTag) {
+            const tagCompare = aTag.localeCompare(bTag);
+            if (tagCompare !== 0) return tagCompare;
+        }
+
+        return 0;
+    }
+
+    function compareTagBuckets(a: AppConfig, b: AppConfig): number {
+        const tagCompare = comparePrimaryTags(a, b);
+        if (tagCompare !== 0) return tagCompare;
+
+        return compareApps(a, b);
+    }
+
     let sortedBaseApps = $derived.by(() => {
         const copy = apps.slice();
-        if (sortMode === "alpha") {
-            copy.sort((a, b) => a.app.localeCompare(b.app));
-        } else {
-            copy.sort((a, b) => b.modTime - a.modTime);
-        }
+        copy.sort(groupByTag ? compareTagBuckets : compareApps);
         return copy;
     });
 
@@ -128,14 +159,20 @@
             };
         });
 
-        // Sort: apps with matches first (by match count desc), then name matches, then the rest
+        // Sort search results by relevance, while preserving tag buckets when the
+        // category grouping view is enabled.
         scored.sort((a, b) => {
+            if (groupByTag) {
+                const tagCompare = comparePrimaryTags(a.app, b.app);
+                if (tagCompare !== 0) return tagCompare;
+            }
+
             const aHasMatch = a.nameMatch || a.matchCount > 0 ? 1 : 0;
             const bHasMatch = b.nameMatch || b.matchCount > 0 ? 1 : 0;
             if (aHasMatch !== bHasMatch) return bHasMatch - aHasMatch;
             if (a.matchCount !== b.matchCount)
                 return b.matchCount - a.matchCount;
-            return 0;
+            return compareApps(a.app, b.app);
         });
 
         const sortedApps = scored.map((s) => s.app);
@@ -563,6 +600,11 @@
         selectedIndex = 0;
     }
 
+    function toggleGroupByTag() {
+        groupByTag = !groupByTag;
+        selectedIndex = 0;
+    }
+
     function scrollDetailPane(direction: "up" | "down") {
         const amount = Math.max((detailBody?.clientHeight ?? 320) * 0.75, 160);
         detailBody?.scrollBy({
@@ -926,6 +968,7 @@
             nameMatches={searchResults.nameMatches}
             width={listWidth}
             {sortMode}
+            {groupByTag}
             versionLabel={appVersionLabel}
             onSelect={(i) => {
                 selectedIndex = i;
@@ -933,6 +976,7 @@
             onToggleSort={() => {
                 cycleSortMode();
             }}
+            onToggleGroupByTag={toggleGroupByTag}
             onCreateApp={handleCreateApp}
             onEditApp={handleEditApp}
             onDeleteApp={handleDeleteApp}

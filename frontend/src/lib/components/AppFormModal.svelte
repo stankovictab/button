@@ -610,7 +610,17 @@
             </div>
 
             <div class="field field--full">
-                <label class="field-label" for="app-tags-input">Tags</label>
+                <label class="field-label" for="app-tags-input">
+                    Tags
+                    <span class="info-hint">
+                        <Info size={12} />
+                        <span class="info-tooltip"
+                            >The first tag is treated as the primary tag. It is
+                            the one used for app list sorting and import
+                            grouping.</span
+                        >
+                    </span>
+                </label>
                 <div class="tag-editor">
                     {#each tags as tag, index}
                         <span class="tag-chip">
@@ -1296,6 +1306,7 @@
         color: #a1a1a1;
         font-size: 11px;
         font-weight: 400;
+        letter-spacing: normal;
         line-height: 1.5;
         white-space: normal;
     }
@@ -1465,6 +1476,8 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        flex: 1;
+        min-width: 0;
         gap: 4px;
         padding: 4px 6px;
         min-height: 30px;
