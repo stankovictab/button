@@ -3,18 +3,24 @@
         $props();
 </script>
 
-<div class="flex items-center gap-1">
+<div class="key-badge-row">
     {#each keys as key, i}
         <kbd class="key-badge" class:key-badge--highlight={highlight}>
             {key}
         </kbd>
         {#if i < keys.length - 1}
-            <span class="text-[11px] text-[#525252]">+</span>
+            <span class="key-separator">+</span>
         {/if}
     {/each}
 </div>
 
 <style>
+    .key-badge-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
     .key-badge {
         display: inline-flex;
         align-items: center;
@@ -40,5 +46,10 @@
         background: #151b33;
         border-color: #234879;
         border-bottom-color: #3173c8;
+    }
+
+    .key-separator {
+        font-size: 11px;
+        color: #525252;
     }
 </style>

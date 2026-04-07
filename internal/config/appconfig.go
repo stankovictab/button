@@ -13,7 +13,9 @@ import (
 // UserConfig holds persistent user preferences stored in config.yaml.
 // New fields can be added here as Button gains more settings.
 type UserConfig struct {
-	HasSeenWelcome bool `yaml:"hasSeenWelcome" json:"hasSeenWelcome"`
+	HasSeenWelcome bool   `yaml:"hasSeenWelcome" json:"hasSeenWelcome"`
+	LastSortMode   string `yaml:"lastSortMode,omitempty" json:"lastSortMode"`
+	GroupByTag     bool   `yaml:"groupByTag" json:"groupByTag"`
 }
 
 // BaseDir returns the base button config directory (parent of the apps dir).

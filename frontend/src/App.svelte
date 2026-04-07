@@ -9,6 +9,7 @@
         GetMigrationResult,
         GetUserConfig,
         SetHasSeenWelcome,
+        SetListPreferences,
         ImportRegistryApps,
     } from "../wailsjs/go/main/App.js";
     import { EventsOn } from "../wailsjs/runtime/runtime.js";
@@ -598,11 +599,19 @@
     function cycleSortMode() {
         sortMode = sortMode === "alpha" ? "last-updated" : "alpha";
         selectedIndex = 0;
+        persistListPreferences();
     }
 
     function toggleGroupByTag() {
         groupByTag = !groupByTag;
         selectedIndex = 0;
+        persistListPreferences();
+    }
+
+    function persistListPreferences() {
+        SetListPreferences(sortMode, groupByTag).catch((err: any) => {
+            addNotification("error", String(err));
+        });
     }
 
     function scrollDetailPane(direction: "up" | "down") {
@@ -892,7 +901,14 @@
 
         // Check if welcome panel should be shown
         GetUserConfig()
-            .then((cfg: any) => {
+            .then((cfg) => {
+                if (
+                    cfg.lastSortMode === "alpha" ||
+                    cfg.lastSortMode === "last-updated"
+                ) {
+                    sortMode = cfg.lastSortMode;
+                }
+                groupByTag = cfg.groupByTag ?? false;
                 if (!cfg.hasSeenWelcome) {
                     showWelcome = true;
                 }
