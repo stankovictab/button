@@ -3,26 +3,440 @@ icon: linear
 tags: ["Productivity", "Project Management"]
 default: true
 groups:
-    - category: Issues
-      shortcuts:
-        - desc: Create issue
-          keys: [c]
-          macos: [c]
-        - desc: Search workspace
-          keys: [Slash]
-          macos: [Slash]
-        - desc: Search issues in current view
-          keys: [Ctrl, f]
-          macos: [Cmd, f]
-        - desc: Open command menu
-          keys: [Ctrl, k]
-          macos: [Cmd, k]
-        - desc: Toggle board or list view
-          keys: [Ctrl, b]
-          macos: [Cmd, b]
-        - desc: Select issue
-          keys: [x]
-          macos: [x]
-        - desc: Peek issue
-          keys: [Space]
-          macos: [Space]
+  - category: General
+    shortcuts:
+      - desc: Open command menu
+        keys: [Ctrl, k]
+        macos: [Cmd, k]
+      - desc: Save or submit
+        keys: [Ctrl, Enter]
+        macos: [Cmd, Enter]
+      - desc: Send comment
+        keys: [Ctrl, Enter]
+        macos: [Cmd, Enter]
+      - desc: Back
+        keys: [Esc]
+      - desc: Open search
+        keys: [Slash]
+      - desc: Open help center
+        keys: ["?"]
+      - desc: View keyboard shortcuts
+        keys: [Ctrl, Slash]
+        macos: [Cmd, Slash]
+      - desc: Switch workspace
+        keys: [o, w]
+      - desc: Log out
+        keys: [Alt, Shift, q]
+
+  - category: Navigation
+    shortcuts:
+      - desc: Toggle left sidebar
+        keys: ["["]
+      - desc: Toggle right sidebar
+        keys: ["]"]
+      - desc: Open issue
+        keys: [o, i]
+      - desc: Open parent issue
+        keys: [Ctrl, Shift, ArrowUp]
+        macos: [Cmd, Shift, ArrowUp]
+      - desc: Go to team
+        keys: [Ctrl, Shift, "1-9"]
+      - desc: Go to inbox
+        keys: [g, i]
+      - desc: Go to my issues
+        keys: [g, m]
+      - desc: Go to triage
+        keys: [g, t]
+      - desc: Go to drafts
+        keys: [g, d]
+      - desc: Go to active issues
+        keys: [g, a]
+      - desc: Go to backlog
+        keys: [g, b]
+      - desc: Open team archive
+        keys: [g, x]
+      - desc: Go to all issues
+        keys: [g, e]
+      - desc: Go to cycles
+        keys: [g, c]
+      - desc: Go to current cycle
+        keys: [g, v]
+      - desc: Go to upcoming cycle
+        keys: [g, w]
+      - desc: Go to projects
+        keys: [g, p]
+      - desc: Go to settings
+        keys: [g, s]
+      - desc: Open a favorite
+        keys: [o, f]
+      - desc: Open a project
+        keys: [o, p]
+      - desc: Open a cycle
+        keys: [o, c]
+      - desc: Open a user
+        keys: [o, u]
+      - desc: Open a team
+        keys: [o, t]
+      - desc: Open view
+        keys: [o, v]
+      - desc: Go to initiatives
+        keys: [g, n]
+      - desc: Open initiative
+        keys: [o, n]
+      - desc: Go to customers
+        keys: [g, q]
+      - desc: Open a customer
+        keys: [o, q]
+      - desc: Open link from last toast
+        keys: [Ctrl, Alt, o]
+        macos: [Cmd, Alt, o]
+      - desc: Show display options
+        keys: [Shift, v]
+
+  - category: Issues
+    shortcuts:
+      - desc: New issue
+        keys: [c]
+      - desc: New issue from template
+        keys: [Alt, c]
+      - desc: New issue in full screen view
+        keys: [v]
+      - desc: Assign issue to user
+        keys: [a]
+      - desc: Assign to me
+        keys: [i]
+      - desc: Apply template to issue
+        keys: [Ctrl, Alt, Shift, t]
+      - desc: Change labels
+        keys: [l]
+      - desc: Change issue status
+        keys: [s]
+      - desc: Change priority
+        keys: [p]
+      - desc: Change estimate
+        keys: [Shift, e]
+      - desc: Set due date
+        keys: [Shift, d]
+      - desc: Remove due date
+        keys: [Ctrl, Shift, d]
+        macos: [Cmd, Shift, d]
+      - desc: Rename
+        keys: [Shift, r]
+      - desc: Focus issue description input
+        keys: [Ctrl, Shift, i]
+      - desc: Mark as favorite
+        keys: [Alt, f]
+      - desc: Remind about issue
+        keys: [Shift, h]
+      - desc: Move to another team
+        keys: [Ctrl, Shift, m]
+        macos: [Cmd, Shift, m]
+      - desc: Delete issue
+        keys: [Ctrl, Backspace]
+        macos: [Cmd, Backspace]
+      - desc: Restore issue
+        keys: ["#"]
+      - desc: Subscribe to issue
+        keys: [Shift, s]
+      - desc: Manage issue subscribers
+        keys: [Ctrl, Shift, s]
+        macos: [Cmd, Shift, s]
+      - desc: Mark as blocked
+        keys: [m, b]
+      - desc: Mark as blocking
+        keys: [m, x]
+      - desc: Reference related issue
+        keys: [m, r]
+      - desc: Mark as duplicate of another issue
+        keys: [m, m]
+      - desc: Link any URL to issue
+        keys: [Ctrl, l]
+      - desc: Copy issue id
+        keys: [Ctrl, "."]
+        macos: [Cmd, "."]
+      - desc: Copy git branch name
+        keys: [Ctrl, Shift, "."]
+        macos: [Cmd, Shift, "."]
+      - desc: Copy issue URL
+        keys: [Ctrl, Shift, ","]
+        macos: [Cmd, Shift, ","]
+      - desc: Copy issue title
+        keys: [Ctrl, Shift, "'"]
+        macos: [Cmd, Shift, "'"]
+      - desc: Create sub-issue
+        keys: [Ctrl, Shift, o]
+        macos: [Cmd, Shift, o]
+      - desc: Add to cycle
+        keys: [Shift, c]
+      - desc: Add to project
+        keys: [Shift, p]
+      - desc: Add to project milestone
+        keys: [Shift, m]
+      - desc: Set parent issue
+        keys: [Ctrl, Shift, p]
+        macos: [Cmd, Shift, p]
+      - desc: Open sub-issue
+        keys: [Ctrl, Shift, ArrowDown]
+        macos: [Cmd, Shift, ArrowDown]
+      - desc: Toggle links section
+        keys: [Ctrl, Shift, l]
+
+  - category: Projects
+    shortcuts:
+      - desc: New project
+        keys: [n, p]
+      - desc: Change project status
+        keys: [p, s]
+      - desc: Change project initiatives
+        keys: [p, n]
+      - desc: Change project lead
+        keys: [p, a]
+      - desc: Change project members
+        keys: [p, m]
+      - desc: Change project teams
+        keys: [p, t]
+      - desc: Change project labels
+        keys: [p, l]
+      - desc: Set start date
+        keys: [Ctrl, Alt, s]
+      - desc: Set target date
+        keys: [Ctrl, Alt, d]
+      - desc: Mark as favorite
+        keys: [Alt, f]
+      - desc: Remind about project
+        keys: [Shift, h]
+      - desc: Open project updates & activity
+        keys: [Ctrl, u]
+        macos: [Cmd, u]
+      - desc: Write new project update
+        keys: [Ctrl, Shift, u]
+        macos: [Cmd, Shift, u]
+      - desc: Copy project URL
+        keys: [Ctrl, Shift, ","]
+        macos: [Cmd, Shift, ","]
+      - desc: Copy project title
+        keys: [Ctrl, Shift, "'"]
+        macos: [Cmd, Shift, "'"]
+
+  - category: Initiatives
+    shortcuts:
+      - desc: Change initiative owner
+        keys: [n, o]
+      - desc: Set target date
+        keys: [Ctrl, Alt, d]
+      - desc: Mark as favorite
+        keys: [Alt, f]
+      - desc: Remind about initiative
+        keys: [Shift, h]
+      - desc: Open initiative updates & activity
+        keys: [Ctrl, u]
+        macos: [Cmd, u]
+      - desc: Write new initiative update
+        keys: [Ctrl, Shift, u]
+        macos: [Cmd, Shift, u]
+      - desc: Copy initiative URL
+        keys: [Ctrl, Shift, ","]
+        macos: [Cmd, Shift, ","]
+      - desc: Copy initiative title
+        keys: [Ctrl, Shift, "'"]
+        macos: [Cmd, Shift, "'"]
+
+  - category: List / Board
+    shortcuts:
+      - desc: Peek into item
+        keys: [Space]
+      - desc: Open focused item
+        keys: [Enter]
+      - desc: Select item
+        keys: [x]
+      - desc: Select all items in a group
+        keys: [Ctrl, Alt, a]
+        macos: [Cmd, Alt, a]
+      - desc: Select all items
+        keys: [Ctrl, a]
+        macos: [Cmd, a]
+      - desc: Clear selection
+        keys: [Esc]
+      - desc: Toggle layout view
+        keys: [Ctrl, b]
+        macos: [Cmd, b]
+      - desc: Copy page URL
+        keys: [Ctrl, Shift, c]
+        macos: [Cmd, Shift, c]
+      - desc: Move up
+        keys:
+          - [ArrowUp]
+          - [k]
+      - desc: Move down
+        keys:
+          - [ArrowDown]
+          - [j]
+      - desc: Move right
+        keys: [ArrowRight]
+      - desc: Move left
+        keys: [ArrowLeft]
+      - desc: Select multiple items in a list
+        keys: [Shift, Click]
+      - desc: Move to top of the group
+        keys: [Alt, Shift, ArrowUp]
+      - desc: Move one position up
+        keys: [Alt, ArrowUp]
+      - desc: Move one position down
+        keys: [Alt, ArrowDown]
+      - desc: Move to bottom of the group
+        keys: [Alt, Shift, ArrowDown]
+      - desc: Move to the left column
+        keys: [Alt, ArrowLeft]
+      - desc: Move to the right column
+        keys: [Alt, ArrowRight]
+      - desc: Collapse/expand row
+        keys: [t]
+      - desc: Collapse/expand all rows
+        keys: [Alt, t]
+
+  - category: Timeline
+    shortcuts:
+      - desc: Toggle timeline project list
+        keys: [Shift, "{"]
+      - desc: Select project / milestone
+        keys: [x]
+      - desc: Select project or next milestone
+        keys: [ArrowRight]
+      - desc: Select previous milestone or project
+        keys: [ArrowLeft]
+      - desc: Deselect project or milestone
+        keys: [Esc]
+      - desc: Keep dependencies & milestones in place
+        keys: [Ctrl, "Drag project"]
+        macos: [Cmd, "Drag project"]
+      - desc: Shift dependencies
+        keys: [Shift, "Drag project"]
+      - desc: Shift subsequent milestones
+        keys: [Shift, "Drag milestone"]
+      - desc: Zoom in/out
+        keys: [Ctrl, Scroll]
+        macos: [Cmd, Scroll]
+      - desc: Zoom out
+        keys: ["-"]
+      - desc: Zoom in
+        keys: ["="]
+      - desc: Zoom to year
+        keys: [y]
+      - desc: Zoom to quarter
+        keys: [q]
+      - desc: Zoom to month
+        keys: [m]
+      - desc: Zoom to week
+        keys: [w]
+
+  - category: Comments
+    shortcuts:
+      - desc: Comment on issue
+        keys: [Ctrl, m]
+      - desc: Reply to comment
+        keys: [r]
+
+  - category: Inbox
+    shortcuts:
+      - desc: Delete notification
+        keys: [Backspace]
+      - desc: Delete all read notifications
+        keys: [Shift, Backspace]
+      - desc: Mark as read/unread
+        keys: [u]
+      - desc: Mark all as read
+        keys: [Alt, u]
+      - desc: Snooze notification
+        keys: [h]
+
+  - category: Filters
+    shortcuts:
+      - desc: Add filter
+        keys: [f]
+      - desc: Clear all filters
+        keys: [Alt, Shift, f]
+      - desc: Clear last issue filter
+        keys: [Shift, f]
+
+  - category: Editor
+    shortcuts:
+      - desc: Bold
+        keys: [Ctrl, b]
+        macos: [Cmd, b]
+      - desc: Italic
+        keys: [Ctrl, i]
+        macos: [Cmd, i]
+      - desc: Underline
+        keys: [Ctrl, u]
+        macos: [Cmd, u]
+      - desc: Strikethrough
+        keys: [Ctrl, s]
+        macos: [Cmd, s]
+      - desc: Attach image/file
+        keys: [Ctrl, Shift, u]
+        macos: [Cmd, Shift, u]
+      - desc: Inline code
+        keys: [Ctrl, e]
+        macos: [Cmd, e]
+      - desc: Turn text into link
+        keys: [Ctrl, k]
+        macos: [Cmd, k]
+      - desc: Blockquote
+        keys: [Alt, Shift, "."]
+      - desc: Regular text
+        keys: [Ctrl, Alt, "0"]
+        macos: [Cmd, Alt, "0"]
+      - desc: Heading 1
+        keys: [Ctrl, Alt, "1"]
+        macos: [Cmd, Alt, "1"]
+      - desc: Heading 2
+        keys: [Ctrl, Alt, "2"]
+        macos: [Cmd, Alt, "2"]
+      - desc: Heading 3
+        keys: [Ctrl, Alt, "3"]
+        macos: [Cmd, Alt, "3"]
+      - desc: Heading 4
+        keys: [Ctrl, Alt, "4"]
+        macos: [Cmd, Alt, "4"]
+      - desc: Checklist
+        keys: [Ctrl, Shift, "7"]
+        macos: [Cmd, Shift, "7"]
+      - desc: Toggle checklist
+        keys: [Alt, Enter]
+      - desc: Toggle nested checklist
+        keys: [Alt, Shift, Enter]
+      - desc: Bulleted list
+        keys: [Ctrl, Shift, "8"]
+        macos: [Cmd, Shift, "8"]
+      - desc: Numbered list
+        keys: [Ctrl, Shift, "9"]
+        macos: [Cmd, Shift, "9"]
+      - desc: Code block
+        keys: [Ctrl, Shift, "\\"]
+        macos: [Cmd, Shift, "\\"]
+      - desc: New line in document
+        keys: [Enter]
+      - desc: New line in comment
+        keys: [Enter]
+      - desc: Move selection up
+        keys: [Alt, ArrowUp]
+      - desc: Move selection down
+        keys: [Alt, ArrowDown]
+      - desc: Undo
+        keys: [Ctrl, z]
+        macos: [Cmd, z]
+      - desc: Redo
+        keys: [Ctrl, Shift, z]
+        macos: [Cmd, Shift, z]
+
+  - category: Find in page
+    shortcuts:
+      - desc: Open find
+        keys: [Ctrl, f]
+        macos: [Cmd, f]
+      - desc: Next match
+        keys: [Ctrl, g]
+        macos: [Cmd, g]
+      - desc: Previous match
+        keys: [Ctrl, Shift, g]
+        macos: [Cmd, Shift, g]

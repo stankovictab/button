@@ -3,29 +3,251 @@ icon: github
 tags: ["Developer Tools", "Web App", "Code Hosting"]
 default: true
 groups:
-    - category: Navigation
-      shortcuts:
-        - desc: Focus search bar
-          keys:
-            - [s]
-            - [Slash]
-          macos:
-            - [s]
-            - [Slash]
-        - desc: Show keyboard shortcuts
-          keys: ["?"]
-          macos: ["?"]
-        - desc: Open file finder in repository
-          keys: [t]
-          macos: [t]
-        - desc: Open github.dev web editor
-          keys: [Period]
-          macos: [Period]
-        - desc: Close dialog or hovercard
-          keys: [Esc]
-          macos: [Esc]
-    - category: Writing
-      shortcuts:
-        - desc: Submit comment
-          keys: [Ctrl, Enter]
-          macos: [Cmd, Enter]
+  - category: Navigation
+    shortcuts:
+      - desc: Show keyboard shortcuts
+        keys: ["?"]
+        macos: ["?"]
+      - desc: Focus search bar
+        keys:
+          - [s]
+          - ["/"]
+      - desc: Open file finder in repository
+        keys: [t]
+        macos: [t]
+      - desc: Open github.dev web editor
+        keys: ["."]
+  - category: Repositories
+    shortcuts:
+      - desc: Go to code tab
+        keys: [g, c]
+      - desc: Go to issues tab
+        keys: [g, i]
+      - desc: Go to pull requests tab
+        keys: [g, p]
+      - desc: Go to actions tab
+        keys: [g, a]
+      - desc: Go to wiki tab
+        keys: [g, w]
+      - desc: Go to discussions tab
+        keys: [g, g]
+      - desc: Go to security and quality tab
+        keys: [g, s]
+      - desc: Go to notifications
+        keys: [g, n]
+  - category: Source Code Editing
+    shortcuts:
+      - desc: Open github.dev web editor in new tab
+        keys: [Shift, Period]
+      - desc: Open source code file in the Edit file tab
+        keys: [e]
+      - desc: Start searching in file editor
+        keys: [Ctrl, f]
+        macos: [Cmd, f]
+      - desc: Find next in file editor
+        keys: [Ctrl, g]
+        macos: [Cmd, g]
+      - desc: Find previous in file editor
+        keys: [Ctrl, Shift, g]
+        macos: [Cmd, Shift, g]
+      - desc: Replace in file editor
+        keys: [Ctrl, Shift, f]
+        macos: [Cmd, Alt, f]
+      - desc: Replace all in file editor
+        keys: [Ctrl, Shift, r]
+        macos: [Cmd, Shift, Alt, f]
+      - desc: Jump to line
+        keys: [Alt, g]
+      - desc: Undo
+        keys: [Ctrl, z]
+        macos: [Cmd, z]
+      - desc: Redo
+        keys: [Ctrl, y]
+        macos: [Cmd, y]
+      - desc: Toggle edit and preview tabs
+        keys: [Ctrl, Shift, p]
+        macos: [Cmd, Shift, p]
+      - desc: Write commit message
+        keys: [Ctrl, s]
+        macos: [Cmd, s]
+  - category: Source Code Browsing
+    shortcuts:
+      - desc: Activate the file finder
+        keys: [t]
+      - desc: Jump to a line in your code
+        keys: [l]
+      - desc: Switch to a new branch or tag
+        keys: [w]
+      - desc: Expand a URL to its canonical form
+        keys: [y]
+      - desc: Show or hide comments on diffs
+        keys: [i]
+      - desc: Show or hide annotations on diffs
+        keys: [a]
+      - desc: Open blame view
+        keys: [b]
+  - category: Navigating within Code Files
+    shortcuts:
+      - desc: Highlight the selected line
+        keys: [Shift, j]
+      - desc: Open the line menu for the selected line
+        keys: [Shift, Alt, c]
+      - desc: Highlight the selected code symbol
+        keys: [Ctrl, Enter]
+        macos: [Cmd, Enter]
+  - category: Comments
+    shortcuts:
+      - desc: Toggle write and preview comment tabs
+        keys: [Ctrl, Shift, p]
+        macos: [Cmd, Shift, p]
+      - desc: Paste HTML link as plain text
+        keys: [Ctrl, Shift, v]
+        macos: [Cmd, Shift, v]
+      - desc: Paste HTML link as plain text from formatted HTML
+        keys: [Ctrl, Shift, Alt, v]
+        macos: [Cmd, Shift, Alt, v]
+      - desc: Insert a suggestion
+        keys: [Ctrl, g]
+        macos: [Cmd, g]
+      - desc: Quote the selected text
+        keys: [r]
+  - category: Issue and Pull Request Lists
+    shortcuts:
+      - desc: Create an issue
+        keys: [c]
+      - desc: Focus the issues or pull requests search bar
+        keys: [Ctrl, Slash]
+        macos: [Cmd, Slash]
+      - desc: Filter by author
+        keys: [u]
+      - desc: Filter by or edit labels
+        keys: [l]
+      - desc: Filter by or edit milestones
+        keys: [m]
+      - desc: Filter by or edit assignee
+        keys: [a]
+      - desc: Open issue
+        keys:
+          - [o]
+          - [Enter]
+  - category: Issues and Pull Requests
+    shortcuts:
+      - desc: Request a reviewer
+        keys: [q]
+      - desc: Set a milestone
+        keys: [m]
+      - desc: Apply a label
+        keys: [l]
+      - desc: Set an assignee
+        keys: [a]
+      - desc: Link an issue or pull request from the same repository
+        keys: [x]
+      - desc: Create a new sub-issue
+        keys: [Alt, Shift, c]
+        macos: [Alt, Shift, c]
+      - desc: Add an existing issue as a sub-issue
+        keys: [Alt, Shift, a]
+        macos: [Alt, Shift, a]
+      - desc: Edit parent issue
+        keys: [Alt, Shift, p]
+        macos: [Alt, Shift, p]
+  - category: Files Changed
+    shortcuts:
+      - desc: Open the Commits dropdown menu
+        keys: [c]
+      - desc: Move focus to the Filter changed files field
+        keys: [t]
+      - desc: Submit a review comment
+        keys: [Ctrl, Shift, Enter]
+        macos: [Cmd, Shift, Enter]
+  - category: Projects
+    shortcuts:
+      - desc: Focus the filter field
+        keys: [Ctrl, f]
+        macos: [Cmd, f]
+      - desc: Move focus left
+        keys: [ArrowLeft]
+      - desc: Move focus right
+        keys: [ArrowRight]
+      - desc: Move focus up
+        keys: [ArrowUp]
+      - desc: Move focus down
+        keys: [ArrowDown]
+      - desc: Toggle edit mode for the focused cell
+        keys: [Enter]
+      - desc: Cancel editing for the focused cell
+        keys: [Esc]
+      - desc: Open row actions menu
+        keys: [Ctrl, Shift, Backslash]
+        macos: [Cmd, Shift, Backslash]
+      - desc: Select item
+        keys: [Shift, Space]
+      - desc: Add cell or card below to selection
+        keys: [Shift, ArrowDown]
+      - desc: Add cell or card above to selection
+        keys: [Shift, ArrowUp]
+      - desc: Open selected item
+        keys: [Space]
+      - desc: Archive selected items
+        keys: [e]
+  - category: GitHub Actions
+    shortcuts:
+      - desc: Get workflow editor suggestions
+        keys: [Ctrl, Space]
+        macos: [Cmd, Space]
+      - desc: Go to the workflow file
+        keys: [g, f]
+      - desc: Toggle timestamps in logs
+        keys:
+          - [Shift, t]
+          - [t]
+      - desc: Toggle full-screen logs
+        keys:
+          - [Shift, f]
+          - [f]
+      - desc: Exit full-screen logs
+        keys: [Esc]
+  - category: Notifications
+    shortcuts:
+      - desc: Mark as done
+        keys: [e]
+      - desc: Mark as unread
+        keys: [Shift, u]
+      - desc: Mark as read
+        keys: [Shift, i]
+      - desc: Unsubscribe
+        keys: [Shift, m]
+  - category: Network Graph
+    shortcuts:
+      - desc: Scroll left
+        keys:
+          - [ArrowLeft]
+          - [h]
+      - desc: Scroll right
+        keys:
+          - [ArrowRight]
+          - [l]
+      - desc: Scroll up
+        keys:
+          - [ArrowUp]
+          - [k]
+      - desc: Scroll down
+        keys:
+          - [ArrowDown]
+          - [j]
+      - desc: Scroll all the way left
+        keys:
+          - [Shift, ArrowLeft]
+          - [Shift, h]
+      - desc: Scroll all the way right
+        keys:
+          - [Shift, ArrowRight]
+          - [Shift, l]
+      - desc: Scroll all the way up
+        keys:
+          - [Shift, ArrowUp]
+          - [Shift, k]
+      - desc: Scroll all the way down
+        keys:
+          - [Shift, ArrowDown]
+          - [Shift, j]

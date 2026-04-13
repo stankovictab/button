@@ -6,28 +6,28 @@ groups:
     - category: Navigation
       shortcuts:
         - desc: Go to My Tasks
-          keys: ["Tab then z"]
-          macos: ["Tab then z"]
+          keys: [Tab, z]
+          macos: [Tab, z]
         - desc: Go to Inbox
-          keys: ["Tab then i"]
-          macos: ["Tab then i"]
+          keys: [Tab, i]
+          macos: [Tab, i]
         - desc: Go to Home
-          keys: ["Tab then h"]
-          macos: ["Tab then h"]
+          keys: [Tab, h]
+          macos: [Tab, h]
         - desc: Search
-          keys: ["Tab then /"]
-          macos: ["Tab then /"]
+          keys: [Tab, /]
+          macos: [Tab, /]
         - desc: Quick add task
-          keys: ["Tab then q"]
-          macos: ["Tab then q"]
+          keys: [Tab, q]
+          macos: [Tab, q]
     - category: General
       shortcuts:
         - desc: Show keyboard shortcuts
           keys: [Ctrl, Slash]
           macos: [Cmd, Slash]
         - desc: Post comment
-          keys: ["Tab then Enter"]
-          macos: ["Tab then Enter"]
+          keys: [Tab, Enter]
+          macos: [Tab, Enter]
         - desc: Collapse right pane
           keys: [Esc]
           macos: [Esc]

@@ -12,11 +12,11 @@ groups:
           keys: [Slash]
           macos: [Slash]
         - desc: Go to navigation panel
-          keys: ["Alt then g then n"]
-          macos: ["Option then g then n"]
+          keys: [Alt, g, n]
+          macos: [Option, g, n]
         - desc: Go to items view
-          keys: ["Alt then g then i"]
-          macos: ["Option then g then i"]
+          keys: [Alt, g, i]
+          macos: [Option, g, i]
         - desc: Go to details pane
-          keys: ["Alt then g then d"]
-          macos: ["Option then g then d"]
+          keys: [Alt, g, d]
+          macos: [Option, g, d]
