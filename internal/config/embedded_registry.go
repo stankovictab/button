@@ -1,4 +1,4 @@
-package registry
+package config
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// RegistryEntry holds the metadata for a single registry app.
+// RegistryEntry holds the metadata for a single built-in app.
 type RegistryEntry struct {
 	Filename string   `json:"filename"`
 	App      string   `json:"app"`
@@ -17,28 +17,28 @@ type RegistryEntry struct {
 	Tags     []string `json:"tags"`
 }
 
-// registryApp is used only for unmarshalling YAML metadata.
-type registryApp struct {
+// embeddedRegistryApp is used only for unmarshalling YAML metadata.
+type embeddedRegistryApp struct {
 	App  string   `yaml:"app"`
 	Icon string   `yaml:"icon"`
 	Tags []string `yaml:"tags"`
 }
 
-// Registry holds the embedded filesystem and provides access to registry apps.
-type Registry struct {
+// EmbeddedRegistry holds the embedded filesystem and provides access to built-in apps.
+type EmbeddedRegistry struct {
 	fs fs.FS
 }
 
-// New creates a Registry backed by the given filesystem.
-func New(f fs.FS) *Registry {
-	return &Registry{fs: f}
+// NewEmbeddedRegistry creates an EmbeddedRegistry backed by the given filesystem.
+func NewEmbeddedRegistry(f fs.FS) *EmbeddedRegistry {
+	return &EmbeddedRegistry{fs: f}
 }
 
 // ListApps reads all embedded YAML files and returns their metadata.
-func (r *Registry) ListApps() ([]RegistryEntry, error) {
+func (r *EmbeddedRegistry) ListApps() ([]RegistryEntry, error) {
 	entries, err := fs.ReadDir(r.fs, ".")
 	if err != nil {
-		return nil, fmt.Errorf("failed to read registry: %w", err)
+		return nil, fmt.Errorf("failed to read built-in registry: %w", err)
 	}
 
 	var result []RegistryEntry
@@ -53,7 +53,7 @@ func (r *Registry) ListApps() ([]RegistryEntry, error) {
 			continue
 		}
 
-		var app registryApp
+		var app embeddedRegistryApp
 		if err := yaml.Unmarshal(data, &app); err != nil || app.App == "" {
 			continue
 		}
@@ -69,12 +69,12 @@ func (r *Registry) ListApps() ([]RegistryEntry, error) {
 	return result, nil
 }
 
-// GetAppYAML returns the raw YAML bytes for a registry app by filename.
-func (r *Registry) GetAppYAML(filename string) ([]byte, error) {
+// GetAppYAML returns the raw YAML bytes for a built-in app by filename.
+func (r *EmbeddedRegistry) GetAppYAML(filename string) ([]byte, error) {
 	clean := filepath.Base(filename)
 	data, err := fs.ReadFile(r.fs, clean)
 	if err != nil {
-		return nil, fmt.Errorf("registry app %q not found: %w", clean, err)
+		return nil, fmt.Errorf("built-in registry app %q not found: %w", clean, err)
 	}
 	return data, nil
 }

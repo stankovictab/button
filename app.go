@@ -2,7 +2,6 @@ package main
 
 import (
 	"button/internal/config"
-	"button/internal/registry"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -29,12 +28,12 @@ type AppInfo struct {
 type App struct {
 	ctx             context.Context
 	migrationResult MigrationResult
-	registry        *registry.Registry
+	builtInRegistry *config.EmbeddedRegistry
 }
 
 // NewApp creates a new App application struct
-func NewApp(reg *registry.Registry) *App {
-	return &App{registry: reg}
+func NewApp(builtInRegistry *config.EmbeddedRegistry) *App {
+	return &App{builtInRegistry: builtInRegistry}
 }
 
 // startup is called when the app starts. The context is saved
@@ -180,8 +179,8 @@ func (a *App) SetListPreferences(sortMode string, groupByTag bool) error {
 }
 
 // GetRegistryApps returns the list of apps available in the built-in registry.
-func (a *App) GetRegistryApps() ([]registry.RegistryEntry, error) {
-	return a.registry.ListApps()
+func (a *App) GetRegistryApps() ([]config.RegistryEntry, error) {
+	return a.builtInRegistry.ListApps()
 }
 
 // GetExistingAppFiles returns the list of YAML filenames in the user's config directory.
@@ -215,7 +214,7 @@ func (a *App) ImportRegistryApps(filenames []string) (int, error) {
 	for _, filename := range filenames {
 		destPath := filepath.Join(dir, filename)
 
-		data, err := a.registry.GetAppYAML(filename)
+		data, err := a.builtInRegistry.GetAppYAML(filename)
 		if err != nil {
 			return imported, fmt.Errorf("failed to read registry app %s: %w", filename, err)
 		}
