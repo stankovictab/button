@@ -1,0 +1,19 @@
+app: Ubuntu / GNOME Shell Shortcuts
+icon: ubuntu
+tags: ["Operating System", "Linux", "Desktop Environment"]
+default: true
+groups:
+    - category: Desktop
+      shortcuts:
+        - desc: Open Activities overview
+          linux:
+            - [Super]
+            - [Alt, F1]
+        - desc: Open run command
+          linux: [Alt, F2]
+        - desc: Switch applications
+          linux: [Super, Tab]
+        - desc: Switch windows in current workspace
+          linux: [Alt, Esc]
+        - desc: Move focus to top bar and system UI
+          linux: [Ctrl, Alt, Tab]

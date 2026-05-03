@@ -1,0 +1,25 @@
+app: Obsidian
+icon: obsidian
+tags: ["Notes", "Knowledge Base"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: Bold text
+          keys: [Ctrl, b]
+          macos: [Cmd, b]
+        - desc: Italic text
+          keys: [Ctrl, i]
+          macos: [Cmd, i]
+        - desc: Paste without formatting
+          keys: [Ctrl, Shift, v]
+          macos: [Cmd, Shift, v]
+        - desc: Delete current line
+          keys: [Ctrl, Shift, k]
+          macos: [Cmd, Shift, k]
+        - desc: Select all
+          keys: [Ctrl, a]
+          macos: [Cmd, a]

@@ -1,0 +1,28 @@
+app: Trello
+icon: trello
+tags: ["Productivity", "Project Management", "Web App"]
+default: true
+groups:
+    - category: Boards & Cards
+      shortcuts:
+        - desc: Search and open a board
+          keys: [b]
+          macos: [b]
+        - desc: Open card filter
+          keys: [f]
+          macos: [f]
+        - desc: Clear active filters
+          keys: [x]
+          macos: [x]
+        - desc: Edit card title
+          keys: [t]
+          macos: [t]
+        - desc: Create a card
+          keys: [n]
+          macos: [n]
+        - desc: Archive a card
+          keys: [c]
+          macos: [c]
+        - desc: Show keyboard shortcuts
+          keys: [Shift, Slash]
+          macos: [Shift, Slash]

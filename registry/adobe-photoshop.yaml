@@ -1,0 +1,28 @@
+app: Adobe Photoshop
+icon: adobephotoshop
+tags: ["Design", "Creative", "Photo"]
+default: true
+groups:
+    - category: Tools
+      shortcuts:
+        - desc: Move tool
+          keys: [v]
+          macos: [v]
+        - desc: Brush tool
+          keys: [b]
+          macos: [b]
+        - desc: Crop tool
+          keys: [c]
+          macos: [c]
+        - desc: Hand tool
+          keys: [h]
+          macos: [h]
+        - desc: Zoom tool
+          keys: [z]
+          macos: [z]
+        - desc: Free Transform
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: Save
+          keys: [Ctrl, s]
+          macos: [Cmd, s]

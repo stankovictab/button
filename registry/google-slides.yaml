@@ -1,0 +1,25 @@
+app: Google Slides
+icon: googleslides
+tags: ["Office", "Presentations", "Web App"]
+default: true
+groups:
+    - category: Presentation
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]
+        - desc: Open tool finder
+          keys: [Alt, Slash]
+          macos: [Alt, Slash]
+        - desc: New slide
+          keys: [Ctrl, m]
+          macos: [Cmd, m]
+        - desc: Duplicate slide
+          keys: [Ctrl, d]
+          macos: [Cmd, d]
+        - desc: Find
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Insert or edit link
+          keys: [Ctrl, k]
+          macos: [Cmd, k]

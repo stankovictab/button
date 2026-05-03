@@ -1,0 +1,25 @@
+app: Affinity Suite
+icon: affinitysuite
+tags: ["Design", "Creative"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Duplicate selection
+          keys: [Ctrl, j]
+          macos: [Cmd, j]
+        - desc: Group
+          keys: [Ctrl, g]
+          macos: [Cmd, g]
+        - desc: Ungroup
+          keys: [Ctrl, Shift, g]
+          macos: [Cmd, Shift, g]
+        - desc: Zoom in
+          keys: [Ctrl, Plus]
+          macos: [Cmd, Plus]
+        - desc: Zoom out
+          keys: [Ctrl, Minus]
+          macos: [Cmd, Minus]
+        - desc: Pan view
+          keys: [Space]
+          macos: [Space]

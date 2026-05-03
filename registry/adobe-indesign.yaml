@@ -1,0 +1,25 @@
+app: Adobe InDesign
+icon: adobeindesign
+tags: ["Design", "Creative", "Publishing"]
+default: true
+groups:
+    - category: Tools
+      shortcuts:
+        - desc: Selection tool
+          keys: [v]
+          macos: [v]
+        - desc: Type tool
+          keys: [t]
+          macos: [t]
+        - desc: Rectangle Frame tool
+          keys: [f]
+          macos: [f]
+        - desc: Place asset
+          keys: [Ctrl, d]
+          macos: [Cmd, d]
+        - desc: Save
+          keys: [Ctrl, s]
+          macos: [Cmd, s]
+        - desc: Toggle preview mode
+          keys: [w]
+          macos: [w]

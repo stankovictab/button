@@ -1,0 +1,23 @@
+app: Emacs
+icon: emacs
+tags: ["Code Editor", "Terminal"]
+default: true
+groups:
+    - category: Editing
+      shortcuts:
+        - desc: Move to beginning of line
+          keys: [Ctrl, a]
+        - desc: Move to end of line
+          keys: [Ctrl, e]
+        - desc: Kill to end of line
+          keys: [Ctrl, k]
+        - desc: Yank
+          keys: [Ctrl, y]
+        - desc: Set mark
+          keys: [Ctrl, Space]
+        - desc: Undo
+          keys: [Ctrl, Slash]
+        - desc: Forward search
+          keys: [Ctrl, s]
+        - desc: Reverse search
+          keys: [Ctrl, r]

@@ -1,0 +1,34 @@
+app: Arc
+icon: arc
+tags: ["Browser", "Productivity"]
+default: true
+groups:
+    - category: Everyday Use
+      shortcuts:
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: New incognito window
+          keys: [Ctrl, Shift, n]
+          macos: [Cmd, Shift, n]
+        - desc: Reopen last closed tab
+          keys: [Ctrl, Shift, t]
+          macos: [Cmd, Shift, t]
+        - desc: Change current tab URL
+          keys:
+            - [Ctrl, l]
+            - [Alt, d]
+          macos: [Cmd, l]
+        - desc: Show or hide sidebar
+          keys: [Ctrl, s]
+          macos: [Cmd, s]
+    - category: Navigation
+      shortcuts:
+        - desc: Find in page
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Switch recent tabs
+          keys: [Ctrl, Tab]
+          macos: [Ctrl, Tab]
+        - desc: Open Little Arc
+          macos: [Cmd, Alt, n]

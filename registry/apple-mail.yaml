@@ -1,0 +1,21 @@
+app: Apple Mail
+icon: applemail
+tags: ["Email", "macOS"]
+default: true
+groups:
+    - category: Mail
+      shortcuts:
+        - desc: New message
+          macos: [Cmd, n]
+        - desc: Send message
+          macos: [Cmd, Shift, d]
+        - desc: Reply
+          macos: [Cmd, r]
+        - desc: Reply all
+          macos: [Cmd, Shift, r]
+        - desc: Forward
+          macos: [Cmd, Shift, f]
+        - desc: Archive email
+          macos: [Ctrl, Cmd, a]
+        - desc: Get new mail
+          macos: [Cmd, Shift, n]

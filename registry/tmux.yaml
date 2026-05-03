@@ -1,0 +1,23 @@
+app: Tmux
+icon: tmux
+tags: ["Terminal", "Developer Tools"]
+default: true
+groups:
+  - category: Prefix
+    shortcuts:
+      - desc: Default prefix key
+        keys: [Ctrl, b]
+  - category: Common Actions
+    shortcuts:
+      - desc: New window after prefix
+        keys: [Prefix, c]
+      - desc: Split pane vertically after prefix
+        keys: [Prefix, "%"]
+      - desc: Split pane horizontally after prefix
+        keys: [Prefix, '"']
+      - desc: Move to next pane after prefix
+        keys: [Prefix, o]
+      - desc: List windows after prefix
+        keys: [Prefix, w]
+      - desc: Detach session after prefix
+        keys: [Prefix, d]

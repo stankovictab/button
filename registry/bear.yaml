@@ -1,0 +1,21 @@
+app: Bear
+icon: bear
+tags: ["Notes", "macOS"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New note
+          macos: [Cmd, n]
+        - desc: Quick Open
+          macos: [Cmd, o]
+        - desc: Search
+          macos: [Cmd, Shift, f]
+        - desc: Bold text
+          macos: [Cmd, b]
+        - desc: Italic text
+          macos: [Cmd, i]
+        - desc: Add todo
+          macos: [Cmd, t]
+        - desc: Open link
+          macos: [Cmd, Shift, k]

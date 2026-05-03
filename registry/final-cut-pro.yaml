@@ -1,0 +1,19 @@
+app: Final Cut Pro
+icon: finalcutpro
+tags: ["Creative", "Video", "macOS"]
+default: true
+groups:
+    - category: Editing
+      shortcuts:
+        - desc: Open Command Editor
+          macos: [Cmd, Alt, k]
+        - desc: Open library
+          macos: [Cmd, o]
+        - desc: Open settings
+          macos: [Cmd, Comma]
+        - desc: Undo
+          macos: [Cmd, z]
+        - desc: Redo
+          macos: [Cmd, Shift, z]
+        - desc: Hide application
+          macos: [Cmd, h]

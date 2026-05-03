@@ -1,0 +1,33 @@
+app: Asana
+icon: asana
+tags: ["Productivity", "Project Management"]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: Go to My Tasks
+          keys: [Tab, z]
+          macos: [Tab, z]
+        - desc: Go to Inbox
+          keys: [Tab, i]
+          macos: [Tab, i]
+        - desc: Go to Home
+          keys: [Tab, h]
+          macos: [Tab, h]
+        - desc: Search
+          keys: [Tab, /]
+          macos: [Tab, /]
+        - desc: Quick add task
+          keys: [Tab, q]
+          macos: [Tab, q]
+    - category: General
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]
+        - desc: Post comment
+          keys: [Tab, Enter]
+          macos: [Tab, Enter]
+        - desc: Collapse right pane
+          keys: [Esc]
+          macos: [Esc]

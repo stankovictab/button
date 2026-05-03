@@ -41,8 +41,8 @@ func (f flowStrings) MarshalYAML() (interface{}, error) {
 //   - 0 binds → omitted via omitempty
 //   - 1 bind  → flat flow sequence: [j, k]
 //   - 2+ binds → block sequence of flow sequences:
-//     - [j, k]
-//     - [ArrowUp, ArrowDown]
+//   - [j, k]
+//   - [ArrowUp, ArrowDown]
 type multiBindYAML [][]string
 
 func (m multiBindYAML) MarshalYAML() (interface{}, error) {
@@ -91,7 +91,7 @@ type yamlGroup struct {
 
 // yamlAppConfig is the subset of AppConfig that gets persisted to YAML
 // (excludes runtime-only fields like ModTime).
-// Default is intentionally omitted — any user save strips the registry flag.
+// Default is intentionally omitted — any user save strips the built-in registry flag.
 type yamlAppConfig struct {
 	App    string      `yaml:"app"`
 	Icon   string      `yaml:"icon"`

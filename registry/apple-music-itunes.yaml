@@ -1,0 +1,21 @@
+app: Apple Music / iTunes
+icon: applemusic
+tags: ["Media", "Music", "macOS"]
+default: true
+groups:
+    - category: Playback
+      shortcuts:
+        - desc: Play or pause
+          macos: [Space]
+        - desc: Stop playback
+          macos: [Cmd, Period]
+        - desc: Next song
+          macos: [ArrowRight]
+        - desc: Previous song
+          macos: [ArrowLeft]
+        - desc: Show current song
+          macos: [Cmd, l]
+        - desc: Show queue
+          macos: [Cmd, Alt, u]
+        - desc: Search
+          macos: [Cmd, f]

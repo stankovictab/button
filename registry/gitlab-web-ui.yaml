@@ -1,0 +1,34 @@
+app: GitLab (web UI)
+icon: gitlab
+tags: ["Developer Tools", "Web App", "Code Hosting"]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: ["?"]
+          macos: ["?"]
+        - desc: Focus search bar
+          keys:
+            - [s]
+            - [Slash]
+          macos:
+            - [s]
+            - [Slash]
+        - desc: Focus filter bar
+          keys: [f]
+          macos: [f]
+        - desc: Open Web IDE
+          keys: [Period]
+          macos: [Period]
+        - desc: Open GitLab Duo Chat
+          keys: [d]
+          macos: [d]
+        - desc: Dismiss popover
+          keys: [Esc]
+          macos: [Esc]
+    - category: Writing
+      shortcuts:
+        - desc: Submit or save changes
+          keys: [Ctrl, Enter]
+          macos: [Cmd, Enter]

@@ -1,0 +1,21 @@
+app: Neovim
+icon: neovim
+tags: ["Code Editor", "Terminal"]
+default: true
+groups:
+    - category: Modes & Editing
+      shortcuts:
+        - desc: Enter Insert mode before cursor
+          keys: [i]
+        - desc: Append at end of line
+          keys: [A]
+        - desc: Open new line below
+          keys: [o]
+        - desc: Enter Visual mode
+          keys: [v]
+        - desc: Undo
+          keys: [u]
+        - desc: Redo
+          keys: [Ctrl, r]
+        - desc: Enter command-line mode
+          keys: [":"]

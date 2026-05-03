@@ -1,0 +1,29 @@
+app: Spotify
+icon: spotify
+tags: ["Media", "Music"]
+default: true
+groups:
+    - category: Playback
+      shortcuts:
+        - desc: Play or pause
+          keys: [Space]
+          macos: [Space]
+        - desc: Next track
+          keys: [Ctrl, ArrowRight]
+          macos: [Cmd, ArrowRight]
+        - desc: Previous track
+          keys: [Ctrl, ArrowLeft]
+          macos: [Cmd, ArrowLeft]
+        - desc: Volume up
+          keys: [Ctrl, ArrowUp]
+          macos: [Cmd, ArrowUp]
+        - desc: Volume down
+          keys: [Ctrl, ArrowDown]
+          macos: [Cmd, ArrowDown]
+        - desc: Show keyboard shortcuts
+          keys:
+            - [Ctrl, Backslash]
+            - [Ctrl, Shift, Slash]
+          macos:
+            - [Cmd, Backslash]
+            - [Cmd, Shift, Slash]

@@ -60,6 +60,21 @@ See [this example](examples/template.yaml) for an app configuration.
 
 > **Note:** The config directory `~/.config/button/apps/` is created automatically on first launch. Drop `.yaml` or `.yml` files there to populate the app. Changes are picked up live without needing a restart.
 
+### Adding built-in registry apps
+
+To add a new app to the built-in registry that ships with Button:
+
+1. Add a new YAML file in `registry/` and use `registry/slack.yaml` as the reference shape.
+2. Set `app`, `icon`, `tags`, and `default: true`.
+3. Add shortcut groups under `groups`, using `keys` for the Linux/Windows default bind and `macos` when macOS differs.
+4. For macOS-only apps, for example, it's fine to define only `macos`. 
+5. Only add real keyboard shortcuts. Do not include shell commands, aliases, menu paths, or other non-shortcut actions.
+6. If the app has a logo, add its `icon` key to `frontend/src/lib/icons/iconMap.ts`. If you skip this for now, Button falls back to the app's initial automatically.
+
+You can use either:
+- a Simple Icons import in `frontend/src/lib/icons/iconMap.ts`, or
+- a custom SVG under `frontend/src/lib/icons/custom/` imported as `?raw`.
+
 ---
 
 ## CI/CD
@@ -118,6 +133,8 @@ Compiles everything into a single self-contained binary: builds the frontend, em
 
 ```bash
 wails build
+# Or, if you have webkitgtk-4.1 installed instead :
+wails build -tags webkit2_41
 # Output: build/bin/button (Linux), build/bin/button.app (macOS), or build/bin/button.exe (Windows)
 ```
 
@@ -127,6 +144,8 @@ Run the app in dev mode with hot-reload:
 
 ```bash
 wails dev
+# Or, if you have webkitgtk-4.1 installed instead :
+wails dev -tags webkit2_41
 ```
 
 This starts:

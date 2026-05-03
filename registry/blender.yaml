@@ -1,0 +1,31 @@
+app: Blender
+icon: blender
+tags: ["Creative", "3D"]
+default: true
+groups:
+    - category: Modeling
+      shortcuts:
+        - desc: Search menu
+          keys: [F3]
+          macos: [F3]
+        - desc: Move
+          keys: [g]
+          macos: [g]
+        - desc: Rotate
+          keys: [r]
+          macos: [r]
+        - desc: Scale
+          keys: [s]
+          macos: [s]
+        - desc: Duplicate
+          keys: [Shift, d]
+          macos: [Shift, d]
+        - desc: Delete
+          keys: [x]
+          macos: [x]
+        - desc: Play or stop animation
+          keys: [Space]
+          macos: [Space]
+        - desc: Render image
+          keys: [F12]
+          macos: [F12]

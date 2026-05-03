@@ -1,0 +1,22 @@
+app: Google Drive
+icon: googledrive
+tags: ["Cloud Storage", "Web App"]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]
+        - desc: Search files and folders
+          keys: [Slash]
+          macos: [Slash]
+        - desc: Go to navigation panel
+          keys: [Alt, g, n]
+          macos: [Option, g, n]
+        - desc: Go to items view
+          keys: [Alt, g, i]
+          macos: [Option, g, i]
+        - desc: Go to details pane
+          keys: [Alt, g, d]
+          macos: [Option, g, d]

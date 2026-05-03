@@ -1,0 +1,25 @@
+app: Google Docs
+icon: googledocs
+tags: ["Office", "Writing", "Web App"]
+default: true
+groups:
+    - category: Writing
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]
+        - desc: Open tool finder
+          keys: [Alt, Slash]
+          macos: [Alt, Slash]
+        - desc: Find
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Insert or edit link
+          keys: [Ctrl, k]
+          macos: [Cmd, k]
+        - desc: Insert comment
+          keys: [Ctrl, Alt, m]
+          macos: [Cmd, Alt, m]
+        - desc: Bold
+          keys: [Ctrl, b]
+          macos: [Cmd, b]

@@ -1,0 +1,29 @@
+app: iTerm2
+icon: iterm2
+tags: ["Terminal", "Developer Tools", "macOS"]
+default: true
+groups:
+    - category: Tabs & Panes
+      shortcuts:
+        - desc: New window
+          macos: [Cmd, n]
+        - desc: New tab
+          macos: [Cmd, t]
+        - desc: Split pane vertically
+          macos: [Cmd, d]
+        - desc: Split pane horizontally
+          macos: [Cmd, Shift, d]
+        - desc: Move to next split pane
+          macos:
+            - [Cmd, RightBracket]
+            - [Cmd, Alt, ArrowRight]
+        - desc: Move to previous split pane
+          macos:
+            - [Cmd, LeftBracket]
+            - [Cmd, Alt, ArrowLeft]
+        - desc: Maximize current pane
+          macos: [Cmd, Shift, Enter]
+    - category: General
+      shortcuts:
+        - desc: Find
+          macos: [Cmd, f]

@@ -1,0 +1,33 @@
+app: Firefox
+icon: firefox
+tags: ["Browser"]
+default: true
+groups:
+    - category: Tabs & Windows
+      shortcuts:
+        - desc: New tab
+          keys: [Ctrl, t]
+          macos: [Cmd, t]
+        - desc: New private window
+          keys: [Ctrl, Shift, p]
+          macos: [Cmd, Shift, p]
+        - desc: Reopen last closed tab
+          keys: [Ctrl, Shift, t]
+          macos: [Cmd, Shift, t]
+        - desc: Next tab
+          keys: [Ctrl, Tab]
+          macos: [Ctrl, Tab]
+        - desc: Previous tab
+          keys: [Ctrl, Shift, Tab]
+          macos: [Ctrl, Shift, Tab]
+    - category: General
+      shortcuts:
+        - desc: Focus address bar
+          keys: [Ctrl, l]
+          macos: [Cmd, l]
+        - desc: Find in page
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Open downloads
+          keys: [Ctrl, j]
+          macos: [Cmd, j]

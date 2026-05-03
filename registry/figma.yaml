@@ -1,0 +1,25 @@
+app: Figma
+icon: figma
+tags: ["Design", "Creative"]
+default: true
+groups:
+    - category: Tools
+      shortcuts:
+        - desc: Move tool
+          keys: [v]
+          macos: [v]
+        - desc: Frame tool
+          keys: [f]
+          macos: [f]
+        - desc: Rectangle tool
+          keys: [r]
+          macos: [r]
+        - desc: Text tool
+          keys: [t]
+          macos: [t]
+        - desc: Comment tool
+          keys: [c]
+          macos: [c]
+        - desc: Show or hide UI
+          keys: [Ctrl, Backslash]
+          macos: [Cmd, Backslash]

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"button/internal/registry"
+	"button/internal/config"
 	"embed"
 	"io/fs"
 	"log"
@@ -27,15 +27,15 @@ var registryFS embed.FS
 
 func main() {
 	// The registry/ embed includes the "registry" prefix in paths.
-	// Sub into it so the Registry sees flat filenames.
+	// Sub into it so the embedded registry sees flat filenames.
 	regFS, err := fs.Sub(registryFS, "registry")
 	if err != nil {
 		log.Fatal("failed to load registry:", err)
 	}
-	reg := registry.New(regFS)
+	builtInRegistry := config.NewEmbeddedRegistry(regFS)
 
 	// Create an instance of the app structure
-	app := NewApp(reg)
+	app := NewApp(builtInRegistry)
 
 	// Create application with options
 	err = wails.Run(&options.App{

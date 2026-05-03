@@ -1,0 +1,25 @@
+app: Microsoft Teams
+icon: microsoftteams
+tags: ["Communication", "Collaboration"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: [Ctrl, Period]
+          macos: [Cmd, Period]
+        - desc: Focus search
+          keys: [Ctrl, e]
+          macos: [Cmd, e]
+        - desc: Start new chat
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: Mute or unmute audio
+          keys: [Ctrl, Shift, m]
+          macos: [Cmd, Shift, m]
+        - desc: Toggle camera
+          keys: [Ctrl, Shift, o]
+          macos: [Cmd, Shift, o]
+        - desc: Close dialog or popover
+          keys: [Esc]
+          macos: [Esc]

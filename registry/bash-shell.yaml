@@ -1,0 +1,61 @@
+app: Bash / Shell
+icon: gnubash
+tags: ["Terminal", "Shell"]
+default: true
+groups:
+  - category: Line Editing
+    shortcuts:
+      - desc: Move to beginning of line
+        keys: [Ctrl, a]
+      - desc: Move to end of line
+        keys: [Ctrl, e]
+      - desc: Move backward one character
+        keys: [Ctrl, b]
+      - desc: Move forward one character
+        keys: [Ctrl, f]
+      - desc: Delete previous character
+        keys: [Ctrl, h]
+      - desc: Delete forward character or exit on an empty line
+        keys: [Ctrl, d]
+      - desc: Delete to end of line
+        keys: [Ctrl, k]
+      - desc: Delete to beginning of line
+        keys: [Ctrl, u]
+      - desc: Delete previous word
+        keys: [Ctrl, w]
+      - desc: Delete next word
+        keys: [Alt, d]
+      - desc: Transpose characters
+        keys: [Ctrl, t]
+      - desc: Insert last killed text
+        keys: [Ctrl, y]
+      - desc: Clear screen
+        keys: [Ctrl, l]
+      - desc: Tab completion
+        keys: [Tab]
+  - category: History & Search
+    shortcuts:
+      - desc: Previous command in history
+        keys:
+          - [Ctrl, p]
+          - [ArrowUp]
+      - desc: Next command in history
+        keys:
+          - [Ctrl, n]
+          - [ArrowDown]
+      - desc: Reverse search through history
+        keys: [Ctrl, r]
+      - desc: Forward search through history
+        keys: [Ctrl, s]
+  - category: Word Movement
+    shortcuts:
+      - desc: Move backward one word
+        keys: [Alt, b]
+      - desc: Move forward one word
+        keys: [Alt, f]
+  - category: Job Control
+    shortcuts:
+      - desc: Interrupt current command
+        keys: [Ctrl, c]
+      - desc: Suspend current command
+        keys: [Ctrl, z]

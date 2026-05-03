@@ -1,0 +1,19 @@
+app: Raycast
+icon: raycast
+tags: ["Launcher", "Productivity", "macOS"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open Raycast
+          macos: [Alt, Space]
+        - desc: Open Action Panel
+          macos: [Cmd, k]
+        - desc: Open settings
+          macos: [Cmd, Comma]
+        - desc: Close Raycast window
+          macos: [Cmd, w]
+        - desc: Go back
+          macos: [Esc]
+        - desc: Go back to root search
+          macos: [Cmd, Esc]

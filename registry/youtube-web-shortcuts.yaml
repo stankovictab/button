@@ -1,0 +1,23 @@
+app: YouTube (web shortcuts)
+icon: youtube
+tags: ["Media", "Video", "Web App"]
+default: true
+groups:
+  - category: Player
+    shortcuts:
+      - desc: Show keyboard shortcuts
+        keys: [Shift, "/"]
+      - desc: Play or pause
+        keys:
+          - [k]
+          - [Space]
+      - desc: Mute or unmute
+        keys: [m]
+      - desc: Seek backward 10 seconds
+        keys: [j]
+      - desc: Seek forward 10 seconds
+        keys: [l]
+      - desc: Toggle fullscreen
+        keys: [f]
+      - desc: Search
+        keys: ["/"]

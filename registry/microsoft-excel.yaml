@@ -1,0 +1,25 @@
+app: Microsoft Excel
+icon: microsoftexcel
+tags: ["Office", "Spreadsheets"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: New workbook
+          keys: [Ctrl, n]
+          macos: [Cmd, n]
+        - desc: Save workbook
+          keys: [Ctrl, s]
+          macos: [Cmd, s]
+        - desc: Find
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Open Format Cells
+          keys: [Ctrl, "1"]
+          macos: [Cmd, "1"]
+        - desc: Fill down
+          keys: [Ctrl, d]
+          macos: [Cmd, d]
+        - desc: Bold
+          keys: [Ctrl, b]
+          macos: [Cmd, b]

@@ -1,0 +1,29 @@
+app: Safari
+icon: safari
+tags: ["Browser", "macOS"]
+default: true
+groups:
+    - category: Tabs & Windows
+      shortcuts:
+        - desc: New tab
+          macos: [Cmd, t]
+        - desc: Reopen last closed tab
+          macos: [Cmd, Shift, t]
+        - desc: Next tab
+          macos:
+            - [Ctrl, Tab]
+            - [Cmd, Shift, RightBracket]
+        - desc: Previous tab
+          macos:
+            - [Ctrl, Shift, Tab]
+            - [Cmd, Shift, LeftBracket]
+        - desc: Show tab overview
+          macos: [Cmd, Shift, Backslash]
+    - category: General
+      shortcuts:
+        - desc: Find in page
+          macos: [Cmd, f]
+        - desc: Go to homepage
+          macos: [Cmd, Shift, h]
+        - desc: Open settings
+          macos: [Cmd, Comma]

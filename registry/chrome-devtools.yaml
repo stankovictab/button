@@ -1,0 +1,27 @@
+app: Chrome DevTools
+icon: chromedevtools
+tags: ["Browser", "Developer Tools", "Web Development"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Open DevTools
+          keys:
+            - [Ctrl, Shift, j]
+            - [F12]
+          macos: [Cmd, Alt, i]
+        - desc: Open Command Menu
+          keys: [Ctrl, Shift, p]
+          macos: [Cmd, Shift, p]
+        - desc: Search in current panel
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Search across all sources
+          keys: [Ctrl, Shift, f]
+          macos: [Cmd, Alt, f]
+        - desc: Go to next panel
+          keys: [Ctrl, RightBracket]
+          macos: [Cmd, RightBracket]
+        - desc: Go to previous panel
+          keys: [Ctrl, LeftBracket]
+          macos: [Cmd, LeftBracket]

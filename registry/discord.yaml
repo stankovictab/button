@@ -1,0 +1,119 @@
+app: Discord
+icon: discord
+tags: [ "Communication", "Collaboration" ]
+default: true
+groups:
+  - category: Messages (focus on message)
+    shortcuts:
+      - desc: Edit message
+        keys: [ e ]
+      - desc: Delete message
+        keys: [ Backspace ]
+      - desc: Pin message
+        keys: [ p ]
+      - desc: Add reaction
+        keys: [ Plus ]
+      - desc: Reply
+        keys: [ r ]
+      - desc: Forward message
+        keys: [ f ]
+      - desc: Speak message
+        keys: [ s ]
+      - desc: Copy text
+        keys: [ Ctrl, c ]
+      - desc: Mark unread
+        keys: [ Alt, Enter ]
+      - desc: Focus text area
+        keys: [ AnyKey ]
+  - category: Navigation
+    shortcuts:
+      - desc: Navigate between servers
+        keys:
+          - [ Ctrl, Alt, ArrowUp ]
+          - [ Ctrl, Alt, ArrowDown ]
+      - desc: Navigate between channels
+        keys:
+          - [ Alt, ArrowUp ]
+          - [ Alt, ArrowDown ]
+      - desc: Navigate forward and backward in page history
+        keys:
+          - [ Alt, ArrowLeft ]
+          - [ Alt, ArrowRight ]
+      - desc: Navigate between unread channels
+        keys:
+          - [ Alt, Shift, ArrowUp ]
+          - [ Alt, Shift, ArrowDown ]
+      - desc: Navigate between unread channels with mentions
+        keys:
+          - [ Ctrl, Shift, Alt, ArrowUp ]
+          - [ Ctrl, Shift, Alt, ArrowDown ]
+      - desc: Navigate to current call
+        keys: [ Ctrl, Shift, Alt, v ]
+      - desc: Toggle between last server and DMs
+        keys: [ Ctrl, Alt, ArrowRight ]
+      - desc: Toggle QuickSwitcher
+        keys: [ Ctrl, k ]
+      - desc: Create or join a server
+        keys: [ Ctrl, Shift, n ]
+  - category: Voice and Video
+    shortcuts:
+      - desc: Toggle mute
+        keys: [ Ctrl, Shift, m ]
+      - desc: Toggle deafen
+        keys: [ Ctrl, Shift, d ]
+      - desc: Answer incoming call
+        keys: [ Ctrl, Enter ]
+      - desc: Decline incoming call
+        keys: [ Esc ]
+      - desc: Start call in private message or group
+        keys: [ Ctrl, "'" ]
+      - desc: Toggle soundboard
+        keys: [ Ctrl, Shift, b ]
+  - category: Chat
+    shortcuts:
+      - desc: Mark server read
+        keys: [ Shift, Esc ]
+      - desc: Mark channel as read
+        keys: [ Esc ]
+      - desc: Create a private group
+        keys: [ Ctrl, Shift, t ]
+      - desc: Toggle pins popout
+        keys: [ Ctrl, p ]
+      - desc: Toggle inbox popout
+        keys: [ Ctrl, i ]
+      - desc: Mark top inbox channel read
+        keys: [ Ctrl, Shift, e ]
+      - desc: Toggle channel member list or voice text chat
+        keys: [ Ctrl, u ]
+      - desc: Toggle emoji picker
+        keys: [ Ctrl, e ]
+      - desc: Toggle GIF picker
+        keys: [ Ctrl, g ]
+      - desc: Toggle sticker picker
+        keys: [ Ctrl, s ]
+      - desc: Scroll chat up or down
+        keys:
+          - [ PageUp ]
+          - [ PageDown ]
+      - desc: Jump to oldest unread message
+        keys: [ Shift, PageUp ]
+      - desc: Upload a file
+        keys: [ Ctrl, Shift, u ]
+      - desc: Copy channel link
+        keys: [ Ctrl, Shift, l ]
+      - desc: Focus text area
+        keys: [ AnyKey ]
+  - category: Miscellaneous
+    shortcuts:
+      - desc: Show shortcut list
+        keys: [ Ctrl, Slash ]
+      - desc: Get help
+        keys: [ Ctrl, Shift, h ]
+      - desc: Search
+        keys: [ Ctrl, f ]
+      - desc: Open context menu
+        keys: [ Shift, F10 ]
+      - desc: Raging Demon
+        keys: [ h, h, ArrowRight, n, k ]
+      - desc: Listen to Lofi Beats with Wumpus
+        keys: [ Ctrl, Alt, Shift, w ]

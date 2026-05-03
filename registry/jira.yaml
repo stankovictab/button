@@ -1,0 +1,37 @@
+app: Jira
+icon: jira
+tags: ["Productivity", "Project Management", "Web App"]
+default: true
+groups:
+    - category: Navigation
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: ["?"]
+          macos: ["?"]
+        - desc: Move to next work item
+          keys:
+            - [j]
+            - [ArrowDown]
+          macos:
+            - [j]
+            - [ArrowDown]
+        - desc: Move to previous work item
+          keys:
+            - [k]
+            - [ArrowUp]
+          macos:
+            - [k]
+            - [ArrowUp]
+        - desc: Open selected work item
+          keys:
+            - [o]
+            - [Enter]
+          macos:
+            - [o]
+            - [Enter]
+        - desc: Assign selected work item to yourself
+          keys: [i]
+          macos: [i]
+        - desc: Add comment
+          keys: [m]
+          macos: [m]

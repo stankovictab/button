@@ -1,0 +1,25 @@
+app: Google Sheets
+icon: googlesheets
+tags: ["Office", "Spreadsheets", "Web App"]
+default: true
+groups:
+    - category: General
+      shortcuts:
+        - desc: Show keyboard shortcuts
+          keys: [Ctrl, Slash]
+          macos: [Cmd, Slash]
+        - desc: Open tool finder
+          keys: [Alt, Slash]
+          macos: [Alt, Slash]
+        - desc: Find
+          keys: [Ctrl, f]
+          macos: [Cmd, f]
+        - desc: Find and replace
+          keys: [Ctrl, h]
+          macos: [Cmd, Shift, h]
+        - desc: Fill down
+          keys: [Ctrl, d]
+          macos: [Cmd, d]
+        - desc: Fill right
+          keys: [Ctrl, r]
+          macos: [Cmd, r]

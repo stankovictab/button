@@ -1,0 +1,115 @@
+app: macOS
+icon: macos
+tags: ["Operating System", "macOS"]
+default: true
+groups:
+  - category: General
+    shortcuts:
+      - desc: Cut
+        macos: [Cmd, x]
+      - desc: Copy
+        macos: [Cmd, c]
+      - desc: Paste
+        macos: [Cmd, v]
+      - desc: Undo
+        macos: [Cmd, z]
+      - desc: Redo
+        macos: [Cmd, Shift, z]
+      - desc: Select all
+        macos: [Cmd, a]
+      - desc: Find
+        macos: [Cmd, f]
+      - desc: Find next
+        macos: [Cmd, g]
+      - desc: Find previous
+        macos: [Cmd, Shift, g]
+      - desc: Open
+        macos: [Cmd, o]
+      - desc: Save
+        macos: [Cmd, s]
+      - desc: Print
+        macos: [Cmd, p]
+      - desc: Close window
+        macos: [Cmd, w]
+      - desc: Quit app
+        macos: [Cmd, q]
+      - desc: Open settings
+        macos: [Cmd, Comma]
+      - desc: Switch to next app
+        macos: [Cmd, Tab]
+      - desc: Force quit app
+        macos: [Cmd, Option, Esc]
+      - desc: Show emoji and symbols
+        macos: [Ctrl, Cmd, Space]
+      - desc: Use full screen
+        macos: [Ctrl, Cmd, F]
+      - desc: Open Spotlight
+        macos: [Cmd, Space]
+
+  - category: Screenshots & Session
+    shortcuts:
+      - desc: Screenshot full screen
+        macos: [Cmd, Shift, "3"]
+      - desc: Screenshot selection
+        macos: [Cmd, Shift, "4"]
+      - desc: Screenshot options
+        macos: [Cmd, Shift, "5"]
+      - desc: Lock screen
+        macos: [Ctrl, Cmd, q]
+      - desc: Log out
+        macos: [Cmd, Shift, q]
+
+  - category: Window Management
+    shortcuts:
+      - desc: Mission Control
+        macos: [Ctrl, ArrowUp]
+      - desc: App Expose
+        macos: [Ctrl, ArrowDown]
+      - desc: Next Space
+        macos: [Ctrl, ArrowRight]
+      - desc: Previous Space
+        macos: [Ctrl, ArrowLeft]
+      - desc: Show Desktop
+        macos: [Cmd, F3]
+
+  - category: Finder & Files
+    shortcuts:
+      - desc: New Finder window
+        macos: [Cmd, n]
+      - desc: New folder
+        macos: [Cmd, Shift, n]
+      - desc: Go to Folder
+        macos: [Cmd, Shift, g]
+      - desc: Search in Finder
+        macos: [Cmd, f]
+      - desc: Get Info
+        macos: [Cmd, i]
+      - desc: Duplicate selected files
+        macos: [Cmd, d]
+      - desc: Eject selected disk or volume
+        macos: [Cmd, e]
+      - desc: Quick Look selected files
+        macos: [Cmd, y]
+      - desc: Show View Options
+        macos: [Cmd, j]
+
+  - category: Text Editing
+    shortcuts:
+      - desc: Bold
+        macos: [Cmd, b]
+      - desc: Italic
+        macos: [Cmd, i]
+      - desc: Underline
+        macos: [Cmd, u]
+      - desc: Add web link
+        macos: [Cmd, k]
+      - desc: Delete
+        macos: [Fn, Backspace]
+      - desc: Delete word to the left
+        macos: [Option, Backspace]
+      - desc: Delete word to the right
+        macos: [Option, Fn, Backspace]
+      - desc: Delete character to the left
+        macos: [Ctrl, h]
+      - desc: Delete character to the right
+        macos: [Ctrl, d]

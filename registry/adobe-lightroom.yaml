@@ -1,0 +1,25 @@
+app: Adobe Lightroom
+icon: adobelightroom
+tags: ["Creative", "Photo"]
+default: true
+groups:
+    - category: Views
+      shortcuts:
+        - desc: Grid view
+          keys: [g]
+          macos: [g]
+        - desc: Loupe view
+          keys: [e]
+          macos: [e]
+        - desc: Develop module
+          keys: [d]
+          macos: [d]
+        - desc: Compare view
+          keys: [c]
+          macos: [c]
+        - desc: Survey view
+          keys: [n]
+          macos: [n]
+        - desc: Full screen
+          keys: [f]
+          macos: [f]
