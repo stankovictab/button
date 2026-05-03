@@ -133,6 +133,8 @@ Compiles everything into a single self-contained binary: builds the frontend, em
 
 ```bash
 wails build
+# Or, if you have webkitgtk-4.1 installed instead :
+wails build -tags webkit2_41
 # Output: build/bin/button (Linux), build/bin/button.app (macOS), or build/bin/button.exe (Windows)
 ```
 
@@ -142,6 +144,8 @@ Run the app in dev mode with hot-reload:
 
 ```bash
 wails dev
+# Or, if you have webkitgtk-4.1 installed instead :
+wails dev -tags webkit2_41
 ```
 
 This starts:
