@@ -1,157 +1,170 @@
 app: Ghostty
 icon: ghostty
-tags: ["Terminal", "Developer Tools"]
+tags: [ "Terminal", "Developer Tools" ]
 default: true
 groups:
-    - category: Window Management
-      shortcuts:
-        - desc: New window
-          linux: [Ctrl, Shift, n]
-          macos: [Cmd, n]
-        - desc: Close window
-          linux: [Alt, F4]
-          macos: [Cmd, Shift, w]
-        - desc: Close all windows
-          macos: [Cmd, Shift, Option, w]
-        - desc: Toggle fullscreen
-          linux: [Ctrl, Enter]
-          macos:
-            - [Cmd, Enter]
-            - [Ctrl, Cmd, F]
-        - desc: Quit application
-          linux: [Ctrl, Shift, q]
-          macos: [Cmd, q]
-    - category: Tab Management
-      shortcuts:
-        - desc: New tab
-          linux: [Ctrl, Shift, t]
-          macos: [Cmd, t]
-        - desc: Close tab or surface
-          linux: [Ctrl, Shift, w]
-          macos: [Cmd, w]
-        - desc: Previous tab
-          linux:
-            - [Ctrl, Shift, Tab]
-            - [Ctrl, Shift, ArrowLeft]
-            - [Ctrl, PageUp]
-          macos: [Cmd, Shift, LeftBracket]
-        - desc: Next tab
-          linux:
-            - [Ctrl, Tab]
-            - [Ctrl, Shift, ArrowRight]
-            - [Ctrl, PageDown]
-          macos: [Cmd, Shift, RightBracket]
-        - desc: Go to tab 1-8
-          linux: [Alt, "1-8"]
-          macos: [Cmd, "1-8"]
-        - desc: Go to last tab
-          linux: [Alt, "9"]
-          macos: [Cmd, "9"]
-    - category: Split Management
-      shortcuts:
-        - desc: New split (right)
-          linux: [Ctrl, Shift, o]
-          macos: [Cmd, d]
-        - desc: New split (down)
-          linux: [Ctrl, Shift, e]
-          macos: [Cmd, Shift, d]
-        - desc: Focus previous split
-          linux: [Ctrl, Super, LeftBracket]
-          macos: [Cmd, LeftBracket]
-        - desc: Focus next split
-          linux: [Ctrl, Super, RightBracket]
-          macos: [Cmd, RightBracket]
-        - desc: Focus split up
-          linux: [Ctrl, Alt, ArrowUp]
-          macos: [Cmd, Option, ArrowUp]
-        - desc: Focus split down
-          linux: [Ctrl, Alt, ArrowDown]
-          macos: [Cmd, Option, ArrowDown]
-        - desc: Focus split left
-          linux: [Ctrl, Alt, ArrowLeft]
-          macos: [Cmd, Option, ArrowLeft]
-        - desc: Focus split right
-          linux: [Ctrl, Alt, ArrowRight]
-          macos: [Cmd, Option, ArrowRight]
-        - desc: Toggle split zoom
-          linux: [Ctrl, Shift, Enter]
-          macos: [Cmd, Shift, Enter]
-        - desc: Resize split up
-          linux: [Ctrl, Super, Shift, ArrowUp]
-          macos: [Ctrl, Cmd, ArrowUp]
-        - desc: Resize split down
-          linux: [Ctrl, Super, Shift, ArrowDown]
-          macos: [Ctrl, Cmd, ArrowDown]
-        - desc: Resize split left
-          linux: [Ctrl, Super, Shift, ArrowLeft]
-          macos: [Ctrl, Cmd, ArrowLeft]
-        - desc: Resize split right
-          linux: [Ctrl, Super, Shift, ArrowRight]
-          macos: [Ctrl, Cmd, ArrowRight]
-        - desc: Equalize splits
-          linux: [Ctrl, Super, Shift, Equals]
-          macos: [Ctrl, Cmd, Equals]
-    - category: Copy & Paste
-      shortcuts:
-        - desc: Copy
-          linux: [Ctrl, Shift, c]
-          macos: [Cmd, c]
-        - desc: Paste
-          linux: [Ctrl, Shift, v]
-          macos: [Cmd, v]
-        - desc: Paste from selection
-          linux: [Shift, Insert]
-    - category: Text Navigation
-      shortcuts:
-        - desc: Scroll to top
-          linux: [Shift, Home]
-          macos: [Cmd, Home]
-        - desc: Scroll to bottom
-          linux: [Shift, End]
-          macos: [Cmd, End]
-        - desc: Scroll page up
-          linux: [Shift, PageUp]
-          macos: [Cmd, PageUp]
-        - desc: Scroll page down
-          linux: [Shift, PageDown]
-          macos: [Cmd, PageDown]
-        - desc: Jump to previous prompt
-          linux: [Ctrl, Shift, PageUp]
-          macos: [Cmd, ArrowUp]
-        - desc: Jump to next prompt
-          linux: [Ctrl, Shift, PageDown]
-          macos: [Cmd, ArrowDown]
-        - desc: Clear screen
-          macos: [Cmd, k]
-    - category: Font Size
-      shortcuts:
-        - desc: Increase font size
-          linux: [Ctrl, Plus]
-          macos: [Cmd, Plus]
-        - desc: Decrease font size
-          linux: [Ctrl, Minus]
-          macos: [Cmd, Minus]
-        - desc: Reset font size
-          linux: [Ctrl, "0"]
-          macos: [Cmd, "0"]
-    - category: Configuration
-      shortcuts:
-        - desc: Open config
-          linux: [Ctrl, Comma]
-          macos: [Cmd, Comma]
-        - desc: Reload config
-          linux: [Ctrl, Shift, Comma]
-          macos: [Cmd, Shift, Comma]
-    - category: Inspector
-      shortcuts:
-        - desc: Toggle inspector
-          linux: [Ctrl, Shift, i]
-          macos: [Cmd, Option, i]
-    - category: Scrollback
-      shortcuts:
-        - desc: Write scrollback to file (paste)
-          linux: [Ctrl, Shift, j]
-          macos: [Cmd, Shift, j]
-        - desc: Write scrollback to file (open)
-          linux: [Ctrl, Shift, Alt, j]
-          macos: [Cmd, Shift, Option, j]
+  - category: Window Management
+    shortcuts:
+      - desc: New window
+        linux: [ Ctrl, Shift, n ]
+        macos: [ Cmd, n ]
+      - desc: Close window
+        linux: [ Alt, F4 ]
+        macos: [ Cmd, Shift, w ]
+      - desc: Close all windows
+        macos: [ Cmd, Shift, Option, w ]
+      - desc: Toggle fullscreen
+        linux: [ Ctrl, Enter ]
+        macos:
+          - [ Cmd, Enter ]
+          - [ Ctrl, Cmd, f ]
+      - desc: Quit application
+        linux: [ Ctrl, Shift, q ]
+        macos: [ Cmd, q ]
+  - category: Tab Management
+    shortcuts:
+      - desc: New tab
+        linux: [ Ctrl, Shift, t ]
+        macos: [ Cmd, t ]
+      - desc: Close tab or surface
+        linux: [ Ctrl, Shift, w ]
+        macos: [ Cmd, w ]
+      - desc: Previous tab
+        linux:
+          - [ Ctrl, Shift, Tab ]
+          - [ Ctrl, Shift, ArrowLeft ]
+          - [ Ctrl, PageUp ]
+        macos: [ Cmd, Shift, LeftBracket ]
+      - desc: Next tab
+        linux:
+          - [ Ctrl, Tab ]
+          - [ Ctrl, Shift, ArrowRight ]
+          - [ Ctrl, PageDown ]
+        macos: [ Cmd, Shift, RightBracket ]
+      - desc: Go to tab 1-8
+        linux: [ Alt, "1-8" ]
+        macos: [ Cmd, "1-8" ]
+      - desc: Go to last tab
+        linux: [ Alt, "9" ]
+        macos: [ Cmd, "9" ]
+  - category: Split Management
+    shortcuts:
+      - desc: New split (right)
+        linux: [ Ctrl, Shift, o ]
+        macos: [ Cmd, d ]
+      - desc: New split (down)
+        linux: [ Ctrl, Shift, e ]
+        macos: [ Cmd, Shift, d ]
+      - desc: Focus previous split
+        linux: [ Ctrl, Super, LeftBracket ]
+        macos: [ Cmd, LeftBracket ]
+      - desc: Focus next split
+        linux: [ Ctrl, Super, RightBracket ]
+        macos: [ Cmd, RightBracket ]
+      - desc: Focus split up
+        linux: [ Ctrl, Alt, ArrowUp ]
+        macos: [ Cmd, Option, ArrowUp ]
+      - desc: Focus split down
+        linux: [ Ctrl, Alt, ArrowDown ]
+        macos: [ Cmd, Option, ArrowDown ]
+      - desc: Focus split left
+        linux: [ Ctrl, Alt, ArrowLeft ]
+        macos: [ Cmd, Option, ArrowLeft ]
+      - desc: Focus split right
+        linux: [ Ctrl, Alt, ArrowRight ]
+        macos: [ Cmd, Option, ArrowRight ]
+      - desc: Toggle split zoom
+        linux: [ Ctrl, Shift, Enter ]
+        macos: [ Cmd, Shift, Enter ]
+      - desc: Resize split up
+        linux: [ Ctrl, Super, Shift, ArrowUp ]
+        macos: [ Ctrl, Cmd, ArrowUp ]
+      - desc: Resize split down
+        linux: [ Ctrl, Super, Shift, ArrowDown ]
+        macos: [ Ctrl, Cmd, ArrowDown ]
+      - desc: Resize split left
+        linux: [ Ctrl, Super, Shift, ArrowLeft ]
+        macos: [ Ctrl, Cmd, ArrowLeft ]
+      - desc: Resize split right
+        linux: [ Ctrl, Super, Shift, ArrowRight ]
+        macos: [ Ctrl, Cmd, ArrowRight ]
+      - desc: Equalize splits
+        linux: [ Ctrl, Super, Shift, Equals ]
+        macos: [ Ctrl, Cmd, Equals ]
+  - category: Copy & Paste
+    shortcuts:
+      - desc: Select all
+        linux: [ Ctrl, Shift, a ]
+        macos: [ Cmd, a ]
+      - desc: Copy
+        linux: [ Ctrl, Shift, c ]
+        macos: [ Cmd, c ]
+      - desc: Paste
+        linux: [ Ctrl, Shift, v ]
+        macos: [ Cmd, v ]
+      - desc: Paste from selection
+        linux: [ Shift, Insert ]
+  - category: Text Navigation
+    shortcuts:
+      - desc: Start search
+        linux: [ Ctrl, Shift, f ]
+        macos: [ Cmd, Shift, f ]
+      - desc: Scroll to top
+        linux: [ Shift, Home ]
+        macos: [ Cmd, Home ]
+      - desc: Scroll to bottom
+        linux: [ Shift, End ]
+        macos: [ Cmd, End ]
+      - desc: Scroll page up
+        linux: [ Shift, PageUp ]
+        macos: [ Cmd, PageUp ]
+      - desc: Scroll page down
+        linux: [ Shift, PageDown ]
+        macos: [ Cmd, PageDown ]
+      - desc: Jump to previous prompt
+        linux: [ Ctrl, Shift, PageUp ]
+        macos: [ Cmd, ArrowUp ]
+      - desc: Jump to next prompt
+        linux: [ Ctrl, Shift, PageDown ]
+        macos: [ Cmd, ArrowDown ]
+      - desc: End search
+        linux: [ Escape ]
+        macos: [ Escape ]
+      - desc: Clear screen
+        macos: [ Cmd, k ]
+  - category: Font Size
+    shortcuts:
+      - desc: Increase font size
+        linux: [ Ctrl, Plus ]
+        macos: [ Cmd, Plus ]
+      - desc: Decrease font size
+        linux: [ Ctrl, Minus ]
+        macos: [ Cmd, Minus ]
+      - desc: Reset font size
+        linux: [ Ctrl, "0" ]
+        macos: [ Cmd, "0" ]
+  - category: Configuration
+    shortcuts:
+      - desc: Toggle command palette
+        linux: [ Ctrl, Shift, p ]
+        macos: [ Cmd, Shift, p ]
+      - desc: Open config
+        linux: [ Ctrl, Comma ]
+        macos: [ Cmd, Comma ]
+      - desc: Reload config
+        linux: [ Ctrl, Shift, Comma ]
+        macos: [ Cmd, Shift, Comma ]
+      - desc: Toggle inspector
+        linux: [ Ctrl, Shift, i ]
+        macos: [ Cmd, Option, i ]
+  - category: Scrollback
+    shortcuts:
+      - desc: Write scrollback to file (copy)
+        linux: [ Ctrl, Super, Shift, j ]
+        macos: [ Ctrl, Cmd, Shift, j ]
+      - desc: Write scrollback to file (paste)
+        linux: [ Ctrl, Shift, j ]
+        macos: [ Cmd, Shift, j ]
+      - desc: Write scrollback to file (open)
+        linux: [ Ctrl, Shift, Alt, j ]
+        macos: [ Cmd, Shift, Option, j ]
