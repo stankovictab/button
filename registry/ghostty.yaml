@@ -61,33 +61,15 @@ groups:
       - desc: Focus next split
         linux: [ Ctrl, Super, RightBracket ]
         macos: [ Cmd, RightBracket ]
-      - desc: Focus split up
-        linux: [ Ctrl, Alt, ArrowUp ]
-        macos: [ Cmd, Option, ArrowUp ]
-      - desc: Focus split down
-        linux: [ Ctrl, Alt, ArrowDown ]
-        macos: [ Cmd, Option, ArrowDown ]
-      - desc: Focus split left
-        linux: [ Ctrl, Alt, ArrowLeft ]
-        macos: [ Cmd, Option, ArrowLeft ]
-      - desc: Focus split right
-        linux: [ Ctrl, Alt, ArrowRight ]
-        macos: [ Cmd, Option, ArrowRight ]
+      - desc: Focus split
+        linux: [ Ctrl, Alt, ArrowUp/ArrowDown/ArrowLeft/ArrowRight ]
+        macos: [ Cmd, Option, ArrowUp/ArrowDown/ArrowLeft/ArrowRight ]
       - desc: Toggle split zoom
         linux: [ Ctrl, Shift, Enter ]
         macos: [ Cmd, Shift, Enter ]
-      - desc: Resize split up
-        linux: [ Ctrl, Super, Shift, ArrowUp ]
-        macos: [ Ctrl, Cmd, ArrowUp ]
-      - desc: Resize split down
-        linux: [ Ctrl, Super, Shift, ArrowDown ]
-        macos: [ Ctrl, Cmd, ArrowDown ]
-      - desc: Resize split left
-        linux: [ Ctrl, Super, Shift, ArrowLeft ]
-        macos: [ Ctrl, Cmd, ArrowLeft ]
-      - desc: Resize split right
-        linux: [ Ctrl, Super, Shift, ArrowRight ]
-        macos: [ Ctrl, Cmd, ArrowRight ]
+      - desc: Resize split
+        linux: [ Ctrl, Super, Shift, ArrowUp/ArrowDown/ArrowLeft/ArrowRight ]
+        macos: [ Ctrl, Cmd, ArrowUp/ArrowDown/ArrowLeft/ArrowRight ]
       - desc: Equalize splits
         linux: [ Ctrl, Super, Shift, Equals ]
         macos: [ Ctrl, Cmd, Equals ]
