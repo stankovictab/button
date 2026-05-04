@@ -160,17 +160,19 @@
             };
         });
 
-        // Sort search results by relevance, while preserving tag buckets when the
-        // category grouping view is enabled.
+        // Sort search results by relevance first. Category grouping still applies
+        // within matching and non-matching result sets, so empty category buckets
+        // cannot outrank real search hits.
         scored.sort((a, b) => {
+            const aHasMatch = a.nameMatch || a.matchCount > 0 ? 1 : 0;
+            const bHasMatch = b.nameMatch || b.matchCount > 0 ? 1 : 0;
+            if (aHasMatch !== bHasMatch) return bHasMatch - aHasMatch;
+
             if (groupByTag) {
                 const tagCompare = comparePrimaryTags(a.app, b.app);
                 if (tagCompare !== 0) return tagCompare;
             }
 
-            const aHasMatch = a.nameMatch || a.matchCount > 0 ? 1 : 0;
-            const bHasMatch = b.nameMatch || b.matchCount > 0 ? 1 : 0;
-            if (aHasMatch !== bHasMatch) return bHasMatch - aHasMatch;
             if (a.matchCount !== b.matchCount)
                 return b.matchCount - a.matchCount;
             return compareApps(a.app, b.app);
