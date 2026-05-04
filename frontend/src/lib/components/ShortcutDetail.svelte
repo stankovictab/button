@@ -9,6 +9,7 @@
         Plus,
         FilePenLine,
         FolderOpen,
+        BadgeCheck,
     } from "lucide-svelte";
     import { OpenAppFile } from "../../../wailsjs/go/main/App";
 
@@ -117,7 +118,10 @@
                     <div class="detail-header-name-row">
                         <h2 class="detail-header-name">{app.app}</h2>
                         {#if app.default}
-                            <span class="registry-badge">Registry</span>
+                            <span class="registry-badge">
+                                <BadgeCheck size={13} strokeWidth={2.4} />
+                                Registry
+                            </span>
                         {/if}
                     </div>
                     <span class="detail-header-meta">
@@ -419,6 +423,9 @@
     }
 
     .registry-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
         font-size: 10px;
         font-weight: 600;
         color: #93c5fd;
