@@ -7,6 +7,7 @@
         Plus,
         EllipsisVertical,
         Tags,
+        BadgeCheck,
     } from "lucide-svelte";
 
     let {
@@ -191,6 +192,15 @@
                                 />
                             </div>
                             <span class="app-row-name">{app.app}</span>
+                            {#if app.default}
+                                <span
+                                    class="registry-icon"
+                                    title="Registry defaults"
+                                    aria-label="Registry defaults"
+                                >
+                                    <BadgeCheck size={14} strokeWidth={2.4} />
+                                </span>
+                            {/if}
                         </div>
                         <div class="app-row-right">
                             {#if searchQuery && nameMatch}
@@ -449,6 +459,14 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .registry-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #4597f5;
+        flex-shrink: 0;
     }
 
     .app-row--selected .app-row-name {
