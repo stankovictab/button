@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { X, Settings } from "lucide-svelte";
+    import { X, Settings, Info } from "lucide-svelte";
     import {
         GetAutostartEnabled,
         SetAutostartEnabled,
@@ -88,7 +88,23 @@
                 onchange={toggleAutostart}
             />
             <span class="setting-copy">
-                <span class="setting-label">Run Button on login</span>
+                <span class="setting-label">
+                    Run Button on login
+                    <button
+                        type="button"
+                        class="info-hint"
+                        aria-label="Autostart details"
+                        onclick={(e) => e.stopPropagation()}
+                    >
+                        <Info size={12} />
+                        <span class="info-tooltip"
+                            >Button writes a desktop entry to <code
+                                >~/.config/autostart/button.desktop</code
+                            > using the stable Button binary path. Turning this
+                            off removes that Button autostart file.</span
+                        >
+                    </button>
+                </span>
                 <span class="setting-note">
                     Creates a user autostart entry for this Button binary.
                 </span>
@@ -185,6 +201,9 @@
     }
 
     .setting-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
         color: #e5e5e5;
         font-size: 13px;
         font-weight: 600;
@@ -194,5 +213,51 @@
         color: #777777;
         font-size: 12px;
         line-height: 1.4;
+    }
+
+    .info-hint {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: #3f3f3f;
+        cursor: help;
+    }
+
+    .info-hint:hover {
+        color: #666666;
+    }
+
+    .info-tooltip {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: -4px;
+        z-index: 10;
+        width: 245px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        color: #a1a1a1;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 1.5;
+        white-space: normal;
+    }
+
+    .info-tooltip code {
+        color: #d4d4d4;
+        font-family:
+            "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
+            "Courier New", monospace;
+        font-size: 10px;
+    }
+
+    .info-hint:hover .info-tooltip {
+        display: block;
     }
 </style>

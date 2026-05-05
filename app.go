@@ -106,9 +106,9 @@ func (a *App) beforeClose(ctx context.Context) bool {
 		a.mu.Unlock()
 		return false
 	}
-	a.windowVisible = false
 	a.mu.Unlock()
-	return false
+	a.hideWindow()
+	return true
 }
 
 func (a *App) handleSecondInstanceLaunch(args []string) {
@@ -386,6 +386,7 @@ func installLinuxAssets() {
 		fmt.Println("Warning: could not determine executable path:", err)
 		return
 	}
+	exe = preferredExecutablePath(exe)
 	desktopContent := fmt.Sprintf(`[Desktop Entry]
 Type=Application
 Name=Button
@@ -438,6 +439,7 @@ func writeAutostartFile() error {
 	if err != nil {
 		return err
 	}
+	exe = preferredExecutablePath(exe)
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return err
 	}
@@ -473,6 +475,20 @@ func removeAutostartFile() error {
 		return fmt.Errorf("refusing to remove %s because it does not reference Button", path)
 	}
 	return os.Remove(path)
+}
+
+func preferredExecutablePath(exe string) string {
+	base := filepath.Base(exe)
+	if !strings.HasPrefix(base, "button-dev") {
+		return exe
+	}
+
+	stablePath := filepath.Join(filepath.Dir(exe), "button")
+	info, err := os.Stat(stablePath)
+	if err != nil || info.IsDir() || info.Mode().Perm()&0111 == 0 {
+		return exe
+	}
+	return stablePath
 }
 
 func desktopExecValue(path string) string {

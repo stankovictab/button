@@ -22,7 +22,7 @@ var assets embed.FS
 //go:embed build/appicon.png
 var appIcon []byte
 
-//go:embed assets/images/button-logo-simple-white.png
+//go:embed assets/images/button-logo-systray.png
 var trayIcon []byte
 
 //go:embed wails.json
@@ -57,11 +57,10 @@ func main() {
 
 	// Create application with options
 	err = wails.Run(&options.App{
-		Title:             "Button",
-		Width:             900,
-		Height:            600,
-		StartHidden:       action == launchQuit,
-		HideWindowOnClose: true,
+		Title:       "Button",
+		Width:       900,
+		Height:      600,
+		StartHidden: action == launchQuit,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"image/color"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -23,6 +24,7 @@ const (
 
 type Tray struct {
 	iconPNG  []byte
+	pixmaps  []iconPixmap
 	conn     *dbus.Conn
 	item     *statusNotifierItem
 	menu     *dbusMenu
@@ -31,7 +33,10 @@ type Tray struct {
 }
 
 func New(icon []byte) *Tray {
-	return &Tray{iconPNG: icon}
+	return &Tray{
+		iconPNG: icon,
+		pixmaps: decodeIconPixmaps(icon),
+	}
 }
 
 func (t *Tray) Start(ctx context.Context, onToggle func(), onQuit func()) error {
@@ -59,7 +64,7 @@ func (t *Tray) Start(ctx context.Context, onToggle func(), onQuit func()) error 
 	trayCtx, cancel := context.WithCancel(ctx)
 	t.conn = conn
 	t.cancel = cancel
-	t.item = &statusNotifierItem{onActivate: onToggle}
+	t.item = &statusNotifierItem{pixmaps: t.pixmaps, onActivate: onToggle}
 	t.menu = &dbusMenu{onToggle: onToggle, onQuit: onQuit}
 
 	if err := conn.Export(t.item, itemPath, itemInterface); err != nil {
@@ -105,6 +110,7 @@ func (t *Tray) Stop() {
 }
 
 type statusNotifierItem struct {
+	pixmaps    []iconPixmap
 	onActivate func()
 }
 
@@ -151,12 +157,15 @@ func (i *statusNotifierItem) properties() map[string]dbus.Variant {
 		"Title":                 dbus.MakeVariant("Button"),
 		"Status":                dbus.MakeVariant("Active"),
 		"WindowId":              dbus.MakeVariant(uint32(0)),
-		"IconName":              dbus.MakeVariant("button-tray"),
+		"IconName":              dbus.MakeVariant(""),
+		"IconPixmap":            dbus.MakeVariant(i.pixmaps),
 		"IconThemePath":         dbus.MakeVariant(""),
 		"AttentionIconName":     dbus.MakeVariant(""),
+		"AttentionIconPixmap":   dbus.MakeVariant([]iconPixmap{}),
 		"AttentionMovieName":    dbus.MakeVariant(""),
 		"OverlayIconName":       dbus.MakeVariant(""),
-		"ToolTip":               dbus.MakeVariant(statusNotifierToolTip{}),
+		"OverlayIconPixmap":     dbus.MakeVariant([]iconPixmap{}),
+		"ToolTip":               dbus.MakeVariant(statusNotifierToolTip{Pixmaps: i.pixmaps, Title: "Button"}),
 		"ItemIsMenu":            dbus.MakeVariant(false),
 		"Menu":                  dbus.MakeVariant(menuPath),
 		"XAyatanaOrderingIndex": dbus.MakeVariant(uint32(0)),
@@ -351,4 +360,41 @@ func installTrayIcon(iconPNG []byte) error {
 		return err
 	}
 	return os.WriteFile(filepath.Join(iconDir, "button-tray.png"), iconPNG, 0644)
+}
+
+func decodeIconPixmaps(iconPNG []byte) []iconPixmap {
+	if len(iconPNG) == 0 {
+		return nil
+	}
+	img, err := png.Decode(bytes.NewReader(iconPNG))
+	if err != nil {
+		return nil
+	}
+	bounds := img.Bounds()
+	width := bounds.Dx()
+	height := bounds.Dy()
+	if width <= 0 || height <= 0 {
+		return nil
+	}
+
+	pixels := make([]byte, 0, width*height*4)
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			r, g, b, a := rgba8(img.At(x, y))
+			pixels = append(pixels, a, r, g, b)
+		}
+	}
+
+	return []iconPixmap{
+		{
+			Width:  int32(width),
+			Height: int32(height),
+			Bytes:  pixels,
+		},
+	}
+}
+
+func rgba8(c color.Color) (byte, byte, byte, byte) {
+	r, g, b, a := c.RGBA()
+	return byte(r >> 8), byte(g >> 8), byte(b >> 8), byte(a >> 8)
 }
