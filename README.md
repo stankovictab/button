@@ -21,6 +21,34 @@ Extract the binary and run the executable.
 
 > **Note:** AUR support is planned for the future.
 
+#### Linux background mode
+
+Button keeps a single app process alive per user session. Closing the window hides it instead of exiting, so it can be shown again from the status bar icon or from the command line.
+
+The Linux binary accepts a small control surface:
+
+```bash
+button
+button --toggle
+button --quit
+```
+
+- `button` starts Button, or focuses the existing window if Button is already running.
+- `button --toggle` shows or hides the existing window. If Button is not running, it starts Button and shows the window.
+- `button --quit` asks the running Button process to exit cleanly. If Button is not running, it exits successfully.
+
+On KDE Plasma, the status bar icon can show or hide Button and can quit the background process. The Settings button in Button includes **Run Button on login**, which creates or removes the current user's `~/.config/autostart/button.desktop` file.
+
+To bind a KDE global shortcut such as `Meta+B`:
+
+1. Open KDE **System Settings**.
+2. Go to **Keyboard > Shortcuts**. 
+3. Add a command shortcut.
+4. Set the command to `button --toggle` if Button is installed on your `PATH`, or `/absolute/path/to/button --toggle`.
+5. Bind it to `Meta+B`.
+
+Native global hotkey registration is intentionally not implemented yet because Wayland shortcuts are mediated by the compositor or portals.
+
 ### macOS
 
 Download the latest `macos-arm64.zip` from the [Releases](https://github.com/stankovictab/button/releases) page.\
@@ -133,7 +161,7 @@ Compiles everything into a single self-contained binary: builds the frontend, em
 
 ```bash
 wails build
-# Or, if you have webkitgtk-4.1 installed instead :
+# Or, if you have webkit2gtk-4.1 installed instead :
 wails build -tags webkit2_41
 # Output: build/bin/button (Linux), build/bin/button.app (macOS), or build/bin/button.exe (Windows)
 ```
@@ -144,7 +172,7 @@ Run the app in dev mode with hot-reload:
 
 ```bash
 wails dev
-# Or, if you have webkitgtk-4.1 installed instead :
+# Or, if you have webkit2gtk-4.1 installed instead :
 wails dev -tags webkit2_41
 ```
 

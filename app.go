@@ -2,6 +2,7 @@ package main
 
 import (
 	"button/internal/config"
+	"button/internal/linuxtray"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,9 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
+
+	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // MigrationResult holds the outcome of the .yml → .yaml migration at startup.
@@ -29,11 +33,21 @@ type App struct {
 	ctx             context.Context
 	migrationResult MigrationResult
 	builtInRegistry *config.EmbeddedRegistry
+	launchAction    launchAction
+	tray            *linuxtray.Tray
+	mu              sync.Mutex
+	windowVisible   bool
+	allowQuit       bool
 }
 
 // NewApp creates a new App application struct
-func NewApp(builtInRegistry *config.EmbeddedRegistry) *App {
-	return &App{builtInRegistry: builtInRegistry}
+func NewApp(builtInRegistry *config.EmbeddedRegistry, action launchAction, tray *linuxtray.Tray) *App {
+	return &App{
+		builtInRegistry: builtInRegistry,
+		launchAction:    action,
+		tray:            tray,
+		windowVisible:   true,
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -60,12 +74,114 @@ func (a *App) startup(ctx context.Context) {
 
 	if runtime.GOOS == "linux" {
 		installLinuxAssets()
+		if a.tray != nil {
+			if err := a.tray.Start(ctx, a.toggleWindow, a.quitApp); err != nil {
+				fmt.Println("Warning: could not start tray icon:", err)
+			}
+		}
 	}
 
 	// Start watching the config directory for changes
 	if err := config.WatchConfigDir(ctx); err != nil {
 		fmt.Println("Warning: could not start config watcher:", err)
 	}
+
+}
+
+func (a *App) domReady(ctx context.Context) {
+	if a.launchAction == launchQuit {
+		a.quitApp()
+	}
+}
+
+func (a *App) shutdown(ctx context.Context) {
+	if a.tray != nil {
+		a.tray.Stop()
+	}
+}
+
+func (a *App) beforeClose(ctx context.Context) bool {
+	a.mu.Lock()
+	if a.allowQuit {
+		a.mu.Unlock()
+		return false
+	}
+	a.mu.Unlock()
+	a.hideWindow()
+	return true
+}
+
+func (a *App) handleSecondInstanceLaunch(args []string) {
+	action, err := parseLaunchAction(normalizeSecondInstanceArgs(args))
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		printUsage()
+		return
+	}
+	a.dispatchLaunchAction(action)
+}
+
+func normalizeSecondInstanceArgs(args []string) []string {
+	if len(args) == 0 {
+		return args
+	}
+	if strings.HasPrefix(args[0], "-") {
+		return args
+	}
+	return args[1:]
+}
+
+func (a *App) dispatchLaunchAction(action launchAction) {
+	switch action {
+	case launchToggle:
+		a.toggleWindow()
+	case launchQuit:
+		a.quitApp()
+	default:
+		a.showWindow()
+	}
+}
+
+func (a *App) showWindow() {
+	if a.ctx == nil {
+		return
+	}
+	a.mu.Lock()
+	a.windowVisible = true
+	a.mu.Unlock()
+	wailsruntime.WindowShow(a.ctx)
+	wailsruntime.WindowUnminimise(a.ctx)
+}
+
+func (a *App) hideWindow() {
+	if a.ctx == nil {
+		return
+	}
+	a.mu.Lock()
+	a.windowVisible = false
+	a.mu.Unlock()
+	wailsruntime.WindowHide(a.ctx)
+}
+
+func (a *App) toggleWindow() {
+	a.mu.Lock()
+	visible := a.windowVisible
+	a.mu.Unlock()
+	if visible {
+		a.hideWindow()
+		return
+	}
+	a.showWindow()
+}
+
+func (a *App) quitApp() {
+	if a.ctx == nil {
+		return
+	}
+	a.mu.Lock()
+	a.allowQuit = true
+	a.mu.Unlock()
+	wailsruntime.Quit(a.ctx)
 }
 
 // GetApps reads all YAML config files from ~/.config/button/apps/
@@ -202,6 +318,19 @@ func (a *App) GetExistingAppFiles() ([]string, error) {
 	return names, nil
 }
 
+// GetAutostartEnabled reports whether Button's user autostart desktop file exists.
+func (a *App) GetAutostartEnabled() (bool, error) {
+	return autostartEnabled()
+}
+
+// SetAutostartEnabled creates or removes Button's user autostart desktop file.
+func (a *App) SetAutostartEnabled(enabled bool) error {
+	if enabled {
+		return writeAutostartFile()
+	}
+	return removeAutostartFile()
+}
+
 // ImportRegistryApps copies selected registry apps to the user's config directory.
 // Overwrites existing files if present. Returns the number of apps imported.
 func (a *App) ImportRegistryApps(filenames []string) (int, error) {
@@ -257,6 +386,7 @@ func installLinuxAssets() {
 		fmt.Println("Warning: could not determine executable path:", err)
 		return
 	}
+	exe = preferredExecutablePath(exe)
 	desktopContent := fmt.Sprintf(`[Desktop Entry]
 Type=Application
 Name=Button
@@ -264,7 +394,8 @@ Exec=%s
 Icon=button
 Categories=Utility;
 StartupWMClass=button
-`, exe)
+StartupNotify=false
+`, desktopExecValue(exe))
 	desktopPath := filepath.Join(desktopDir, "button.desktop")
 	if err := os.WriteFile(desktopPath, []byte(desktopContent), 0644); err != nil {
 		fmt.Println("Warning: could not write .desktop file:", err)
@@ -273,4 +404,105 @@ StartupWMClass=button
 
 	// Refresh the desktop database so the compositor picks up the changes immediately
 	exec.Command("update-desktop-database", desktopDir).Run()
+}
+
+func autostartPath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, ".config", "autostart", "button.desktop"), nil
+}
+
+func autostartEnabled() (bool, error) {
+	path, err := autostartPath()
+	if err != nil {
+		return false, err
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	content := string(data)
+	return strings.Contains(content, "Name=Button") && strings.Contains(content, "X-GNOME-Autostart-enabled=true"), nil
+}
+
+func writeAutostartFile() error {
+	path, err := autostartPath()
+	if err != nil {
+		return err
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	exe = preferredExecutablePath(exe)
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
+	content := fmt.Sprintf(`[Desktop Entry]
+Type=Application
+Name=Button
+Exec=%s
+Icon=button
+Categories=Utility;
+StartupNotify=false
+X-GNOME-Autostart-enabled=true
+`, desktopExecValue(exe))
+	return os.WriteFile(path, []byte(content), 0644)
+}
+
+func removeAutostartFile() error {
+	path, err := autostartPath()
+	if err != nil {
+		return err
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	content := string(data)
+	if !strings.Contains(content, "Name=Button") {
+		return fmt.Errorf("refusing to remove %s because it does not look like Button's autostart file", path)
+	}
+	if !strings.Contains(strings.ToLower(content), "button") {
+		return fmt.Errorf("refusing to remove %s because it does not reference Button", path)
+	}
+	return os.Remove(path)
+}
+
+func preferredExecutablePath(exe string) string {
+	base := filepath.Base(exe)
+	if !strings.HasPrefix(base, "button-dev") {
+		return exe
+	}
+
+	stablePath := filepath.Join(filepath.Dir(exe), "button")
+	info, err := os.Stat(stablePath)
+	if err != nil || info.IsDir() || info.Mode().Perm()&0111 == 0 {
+		return exe
+	}
+	return stablePath
+}
+
+func desktopExecValue(path string) string {
+	if path == "" {
+		return path
+	}
+	if !strings.ContainsAny(path, " \t\n\"'\\`$") {
+		return path
+	}
+	replacer := strings.NewReplacer(
+		"\\", "\\\\",
+		"\"", "\\\"",
+		"`", "\\`",
+		"$", "\\$",
+	)
+	return `"` + replacer.Replace(path) + `"`
 }
