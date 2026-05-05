@@ -34,6 +34,7 @@
     import NotificationBar from "./lib/components/NotificationBar.svelte";
     import HelpPanel from "./lib/components/HelpPanel.svelte";
     import DonatePanel from "./lib/components/DonatePanel.svelte";
+    import SettingsPanel from "./lib/components/SettingsPanel.svelte";
     import WelcomePanel from "./lib/components/WelcomePanel.svelte";
     import ImportPanel from "./lib/components/ImportPanel.svelte";
     import FlamingoEasterEgg from "./lib/components/FlamingoEasterEgg.svelte";
@@ -73,6 +74,7 @@
     let pendingOverwriteOldName: string = $state("");
     let showHelp: boolean = $state(false);
     let showDonate: boolean = $state(false);
+    let showSettings: boolean = $state(false);
     let showWelcome: boolean = $state(false);
     let showImport: boolean = $state(false);
     let cameFromWelcome: boolean = $state(false);
@@ -552,6 +554,7 @@
             showOverwriteConfirm ||
             showHelp ||
             showDonate ||
+            showSettings ||
             showWelcome ||
             showImport
         );
@@ -969,6 +972,7 @@
         bind:showHelp
         bind:showDonate
         bind:showImport
+        bind:showSettings
         {currentOS}
         matchingDescs={currentMatchingDescs}
         onSetOS={setOS}
@@ -1083,6 +1087,13 @@
 
     {#if showDonate}
         <DonatePanel onClose={() => (showDonate = false)} />
+    {/if}
+
+    {#if showSettings}
+        <SettingsPanel
+            onClose={() => (showSettings = false)}
+            onNotify={addNotification}
+        />
     {/if}
 
     {#if showWelcome}
