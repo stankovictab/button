@@ -210,7 +210,7 @@
                                     <span class="entry-name">{entry.app}</span>
                                     {#if existingFiles.has(entry.filename)}
                                         <span class="exists-badge"
-                                            >Installed</span
+                                            >Present</span
                                         >
                                     {/if}
                                 </label>
