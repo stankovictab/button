@@ -1,4 +1,4 @@
-//go:build linux
+//go:build linux && !bindings
 
 package main
 
@@ -12,47 +12,44 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 )
 
-func handleExistingLinuxInstance(uniqueID string, action launchAction, args []string) bool {
+func handleExistingLinuxInstance(uniqueID string, action launchAction, args []string) (bool, error) {
 	name, path := linuxSingleInstanceAddress(uniqueID)
 	conn, err := dbus.ConnectSessionBus()
 	if err != nil {
-		return action == launchQuit
+		return false, fmt.Errorf("connect to session bus: %w", err)
 	}
 	defer conn.Close()
 
 	reply, err := conn.RequestName(name, dbus.NameFlagDoNotQueue)
 	if err != nil {
-		return action == launchQuit
+		return false, fmt.Errorf("check running Button instance: %w", err)
 	}
 
 	if reply == dbus.RequestNameReplyPrimaryOwner {
 		_, _ = conn.ReleaseName(name)
-		return action == launchQuit
+		return action == launchQuit, nil
 	}
 	if reply != dbus.RequestNameReplyExists {
-		return action == launchQuit
+		return false, fmt.Errorf("unexpected D-Bus name reply: %d", reply)
 	}
 
 	workingDir, err := os.Getwd()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to get working directory:", err)
-		return action == launchQuit
+		return false, fmt.Errorf("get working directory: %w", err)
 	}
 	data, err := json.Marshal(options.SecondInstanceData{
 		Args:             args,
 		WorkingDirectory: workingDir,
 	})
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to marshal second-instance data:", err)
-		return action == launchQuit
+		return false, fmt.Errorf("marshal second-instance data: %w", err)
 	}
 
 	call := conn.Object(name, dbus.ObjectPath(path)).Call(name+".SendMessage", 0, string(data))
 	if call.Err != nil {
-		fmt.Fprintln(os.Stderr, "failed to contact running Button instance:", call.Err)
-		return action == launchQuit
+		return false, fmt.Errorf("contact running Button instance: %w", call.Err)
 	}
-	return true
+	return true, nil
 }
 
 func linuxSingleInstanceAddress(uniqueID string) (string, string) {

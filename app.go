@@ -38,6 +38,8 @@ type App struct {
 	mu              sync.Mutex
 	windowVisible   bool
 	allowQuit       bool
+	closeToTray     bool
+	trayReady       bool
 }
 
 // NewApp creates a new App application struct
@@ -54,6 +56,13 @@ func NewApp(builtInRegistry *config.EmbeddedRegistry, action launchAction, tray 
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	cfg, err := config.ReadUserConfig()
+	if err != nil {
+		fmt.Println("Warning: could not read user preferences:", err)
+	}
+	a.mu.Lock()
+	a.closeToTray = cfg.CloseToTray
+	a.mu.Unlock()
 
 	// Ensure the config directory exists before any reads
 	if err := config.EnsureConfigDir(); err != nil {
@@ -77,6 +86,10 @@ func (a *App) startup(ctx context.Context) {
 		if a.tray != nil {
 			if err := a.tray.Start(ctx, a.toggleWindow, a.quitApp); err != nil {
 				fmt.Println("Warning: could not start tray icon:", err)
+			} else {
+				a.mu.Lock()
+				a.trayReady = true
+				a.mu.Unlock()
 			}
 		}
 	}
@@ -102,7 +115,7 @@ func (a *App) shutdown(ctx context.Context) {
 
 func (a *App) beforeClose(ctx context.Context) bool {
 	a.mu.Lock()
-	if a.allowQuit {
+	if a.allowQuit || !a.closeToTray || !a.trayReady || runtime.GOOS != "linux" {
 		a.mu.Unlock()
 		return false
 	}
@@ -318,13 +331,45 @@ func (a *App) GetExistingAppFiles() ([]string, error) {
 	return names, nil
 }
 
+// GetTrayAvailable reports whether the tray started successfully in this session.
+func (a *App) GetTrayAvailable() bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return runtime.GOOS == "linux" && a.trayReady
+}
+
+// SetCloseToTray stores the preference and updates the current session.
+func (a *App) SetCloseToTray(enabled bool) error {
+	if runtime.GOOS != "linux" {
+		return fmt.Errorf("close to tray is currently supported only on Linux")
+	}
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	cfg, err := config.ReadUserConfig()
+	if err != nil {
+		return err
+	}
+	cfg.CloseToTray = enabled
+	if err := config.WriteUserConfig(cfg); err != nil {
+		return err
+	}
+	a.closeToTray = enabled
+	return nil
+}
+
 // GetAutostartEnabled reports whether Button's user autostart desktop file exists.
 func (a *App) GetAutostartEnabled() (bool, error) {
+	if runtime.GOOS != "linux" {
+		return false, nil
+	}
 	return autostartEnabled()
 }
 
 // SetAutostartEnabled creates or removes Button's user autostart desktop file.
 func (a *App) SetAutostartEnabled(enabled bool) error {
+	if runtime.GOOS != "linux" {
+		return fmt.Errorf("run on login is currently supported only on Linux")
+	}
 	if enabled {
 		return writeAutostartFile()
 	}

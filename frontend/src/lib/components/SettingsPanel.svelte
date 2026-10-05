@@ -3,6 +3,10 @@
     import { X, Settings, Info } from "lucide-svelte";
     import {
         GetAutostartEnabled,
+        GetCurrentOS,
+        GetUserConfig,
+        GetTrayAvailable,
+        SetCloseToTray,
         SetAutostartEnabled,
     } from "../../../wailsjs/go/main/App.js";
     import type { NotificationType } from "../../types";
@@ -16,6 +20,9 @@
     } = $props();
 
     let autostartEnabled: boolean = $state(false);
+    let closeToTray: boolean = $state(false);
+    let linuxSupported: boolean = $state(false);
+    let trayAvailable: boolean = $state(false);
     let loading: boolean = $state(true);
     let saving: boolean = $state(false);
 
@@ -27,18 +34,34 @@
         if (e.key === "Escape") onClose();
     }
 
-    function loadAutostart() {
+    async function loadSettings() {
         loading = true;
-        GetAutostartEnabled()
-            .then((enabled: boolean) => {
-                autostartEnabled = enabled;
-            })
-            .catch((err: any) => {
-                onNotify("error", String(err));
-            })
-            .finally(() => {
-                loading = false;
-            });
+        try {
+            const [os, config, available] = await Promise.all([
+                GetCurrentOS(), GetUserConfig(), GetTrayAvailable(),
+            ]);
+            linuxSupported = os === "linux";
+            closeToTray = config.closeToTray;
+            trayAvailable = available;
+            autostartEnabled = linuxSupported ? await GetAutostartEnabled() : false;
+        } catch (err) {
+            onNotify("error", String(err));
+        } finally {
+            loading = false;
+        }
+    }
+
+    async function toggleCloseToTray() {
+        saving = true;
+        try {
+            const next = !closeToTray;
+            await SetCloseToTray(next);
+            closeToTray = next;
+        } catch (err) {
+            onNotify("error", String(err));
+        } finally {
+            saving = false;
+        }
     }
 
     function toggleAutostart() {
@@ -50,14 +73,14 @@
             })
             .catch((err: any) => {
                 onNotify("error", String(err));
-                loadAutostart();
+                loadSettings();
             })
             .finally(() => {
                 saving = false;
             });
     }
 
-    onMount(loadAutostart);
+    onMount(loadSettings);
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -80,11 +103,34 @@
             <h2 class="title">Settings</h2>
         </div>
 
-        <label class="setting-row" class:setting-row--disabled={loading || saving}>
+        <label class="setting-row" class:setting-row--disabled={loading || saving || !linuxSupported}>
+            <input
+                type="checkbox"
+                checked={linuxSupported && closeToTray}
+                disabled={loading || saving || !linuxSupported}
+                onchange={toggleCloseToTray}
+            />
+            <span class="setting-copy">
+                <span class="setting-label">
+                    Close to tray
+                </span>
+                <span class="setting-note">
+                    Keep Button running when you close its window. Use the tray menu to quit.
+                </span>
+                <span class="support-note">
+                    Linux only for now{#if !loading && !linuxSupported} · unsupported on this platform{/if}
+                </span>
+                {#if !loading && linuxSupported && !trayAvailable}
+                    <span class="support-note">Tray unavailable in this session. Closing the window will exit Button.</span>
+                {/if}
+            </span>
+        </label>
+
+        <label class="setting-row" class:setting-row--disabled={loading || saving || !linuxSupported}>
             <input
                 type="checkbox"
                 checked={autostartEnabled}
-                disabled={loading || saving}
+                disabled={loading || saving || !linuxSupported}
                 onchange={toggleAutostart}
             />
             <span class="setting-copy">
@@ -107,6 +153,9 @@
                 </span>
                 <span class="setting-note">
                     Creates a user autostart entry for this Button binary.
+                </span>
+                <span class="support-note">
+                    Linux only for now{#if !loading && !linuxSupported} · unsupported on this platform{/if}
                 </span>
             </span>
         </label>
@@ -184,6 +233,16 @@
         cursor: pointer;
     }
 
+    .setting-row + .setting-row {
+        margin-top: 12px;
+    }
+
+    .support-note {
+        font-size: 11px;
+        font-weight: 400;
+        color: #a1a1a1;
+    }
+
     .setting-row--disabled {
         cursor: default;
         opacity: 0.7;
@@ -204,6 +263,7 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
+        flex-wrap: wrap;
         color: #e5e5e5;
         font-size: 13px;
         font-weight: 600;

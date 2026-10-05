@@ -23,7 +23,7 @@ Extract the binary and run the executable.
 
 #### Linux background mode
 
-Button keeps a single app process alive per user session. Closing the window hides it instead of exiting, so it can be shown again from the status bar icon or from the command line.
+Button keeps a single app process alive per user session. Enable **Close to tray** in Settings to hide the window instead of exiting, so it can be shown again from the status bar icon or from the command line. This preference is off by default. If the tray cannot start, closing the window exits Button.
 
 The Linux binary accepts a small control surface:
 
@@ -35,9 +35,9 @@ button --quit
 
 - `button` starts Button, or focuses the existing window if Button is already running.
 - `button --toggle` shows or hides the existing window. If Button is not running, it starts Button and shows the window.
-- `button --quit` asks the running Button process to exit cleanly. If Button is not running, it exits successfully.
+- `button --quit` asks the running Button process to exit cleanly. If Button is not running, it exits successfully. If communication with the running instance fails, it reports an error and exits with a nonzero status.
 
-On KDE Plasma, the status bar icon can show or hide Button and can quit the background process. The Settings button in Button includes **Run Button on login**, which creates or removes the current user's `~/.config/autostart/button.desktop` file.
+On KDE Plasma, the status bar icon can show or hide Button and can quit the background process. Settings are visible on all platforms; unsupported options are disabled and labeled. **Close to tray** and **Run Button on login** currently support Linux only. The Settings button in Button includes **Run Button on login**, which creates or removes the current user's `~/.config/autostart/button.desktop` file.
 
 To bind a KDE global shortcut such as `Meta+B`:
 
@@ -126,7 +126,7 @@ You can use either:
 
 ### Prerequisites
 
-- [Go](https://go.dev/) 1.21+
+- [Go](https://go.dev/) 1.25+
 - [Wails v2](https://wails.io/docs/gettingstarted/installation) (`go install github.com/wailsapp/wails/v2/cmd/wails@latest`)
 - [Node.js](https://nodejs.org/) (for the frontend)
 

@@ -1,7 +1,7 @@
-//go:build !linux
+//go:build !linux || bindings
 
 package main
 
-func handleExistingLinuxInstance(uniqueID string, action launchAction, args []string) bool {
-	return false
+func handleExistingLinuxInstance(uniqueID string, action launchAction, args []string) (bool, error) {
+	return false, nil
 }

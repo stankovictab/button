@@ -40,7 +40,12 @@ func main() {
 		printUsage()
 		os.Exit(2)
 	}
-	if handled := handleExistingLinuxInstance(singleInstanceID, action, os.Args[1:]); handled {
+	handled, err := handleExistingLinuxInstance(singleInstanceID, action, os.Args[1:])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	if handled {
 		return
 	}
 
