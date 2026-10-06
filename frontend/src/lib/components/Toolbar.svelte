@@ -6,6 +6,7 @@
         Heart,
         ChevronDown,
         Download,
+        Settings,
     } from "lucide-svelte";
     import { siGithub } from "simple-icons";
     import { BrowserOpenURL } from "../../../wailsjs/runtime/runtime";
@@ -15,6 +16,7 @@
         showHelp = $bindable(false),
         showDonate = $bindable(false),
         showImport = $bindable(false),
+        showSettings = $bindable(false),
         currentOS,
         matchingDescs = new Set<string>(),
         onSetOS,
@@ -24,6 +26,7 @@
         showHelp: boolean;
         showDonate: boolean;
         showImport: boolean;
+        showSettings: boolean;
         currentOS: "linux" | "darwin" | "windows";
         matchingDescs: Set<string>;
         onSetOS: (os: "linux" | "darwin" | "windows") => void;
@@ -148,6 +151,17 @@
         onclick={() => (showImport = !showImport)}
     >
         <Download size={16} />
+    </button>
+
+    <!-- Settings button -->
+    <button
+        class="icon-btn"
+        class:icon-btn--active={showSettings}
+        aria-label="Settings"
+        title="Settings"
+        onclick={() => (showSettings = !showSettings)}
+    >
+        <Settings size={16} />
     </button>
 
     <!-- Help button -->
